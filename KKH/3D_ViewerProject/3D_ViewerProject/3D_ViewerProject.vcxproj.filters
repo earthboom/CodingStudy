@@ -1,52 +1,106 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="소스 파일">
+    <Filter Include="00.Client">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="01.System">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="헤더 파일">
+    <Filter Include="99.Headers">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="00.Client\99.Default">
+      <UniqueIdentifier>{3228d0cb-2915-4552-9ed1-dc028b7a98a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Client\00.MainApp">
+      <UniqueIdentifier>{afede070-88f0-4378-bc1c-1848142132c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\00.Graphic">
+      <UniqueIdentifier>{da9014ab-783a-4294-bcbc-e3d04944d5fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\01.Time">
+      <UniqueIdentifier>{74f51482-17fc-47bb-ab1f-0771b9a1e570}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\01.Time\Manager">
+      <UniqueIdentifier>{72c281a7-9bdd-477d-aa77-558618b3aded}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\00.Graphic\Manager">
+      <UniqueIdentifier>{8800a7d4-3422-48ec-90ee-6a42269fb56c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>00.Client\99.Default</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>00.Client\99.Default</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>00.Client\99.Default</Filter>
     </ClInclude>
     <ClInclude Include="3D_ViewerProject.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Const.h">
+      <Filter>99.Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Unique_Singleton.h">
+      <Filter>99.Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MainApp.h">
+      <Filter>00.Client\00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicDev.h">
+      <Filter>01.System\00.Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>01.System\01.Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer_Manager.h">
+      <Filter>01.System\01.Time\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic_Manager.h">
+      <Filter>01.System\00.Graphic\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>00.Client\99.Default</Filter>
     </ClCompile>
     <ClCompile Include="3D_ViewerProject.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>00.Client\99.Default</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="3D_ViewerProject.rc">
-      <Filter>리소스 파일</Filter>
-    </ResourceCompile>
+    <ClCompile Include="MainApp.cpp">
+      <Filter>00.Client\00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicDev.cpp">
+      <Filter>01.System\00.Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>01.System\01.Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer_Manager.cpp">
+      <Filter>01.System\01.Time\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphic_Manager.cpp">
+      <Filter>01.System\00.Graphic\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
-      <Filter>리소스 파일</Filter>
+      <Filter>00.Client\99.Default</Filter>
     </Image>
     <Image Include="3D_ViewerProject.ico">
-      <Filter>리소스 파일</Filter>
+      <Filter>00.Client\99.Default</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="3D_ViewerProject.rc">
+      <Filter>00.Client\99.Default</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
