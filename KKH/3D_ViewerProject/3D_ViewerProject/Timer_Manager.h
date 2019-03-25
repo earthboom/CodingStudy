@@ -3,6 +3,8 @@
 #include "Timer.h"
 #include "Unique_Singleton.h"
 
+#define TIME_MGR	CTimer_Manager::GetInstnace()
+
 class CTimer_Manager : public CSingleton<CTimer_Manager>
 {
 public:

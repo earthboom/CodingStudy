@@ -19,7 +19,13 @@
 
 
 // TODO: reference additional headers your program requires here
+#include <D3D11.h>
+#include <dxgi.h>
+#include <d3dcommon.h>
+#include <D3DX10math.h>
+
 #include <memory>
+#include <vector>
 #include <map>
 #include <mutex>
 #include <algorithm>

@@ -5,6 +5,7 @@
 #include "3D_ViewerProject.h"
 
 #include "MainApp.h"
+#include "Timer_Manager.h"
 
 #include "Const.h"
 
@@ -47,6 +48,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	MSG msg = { 0, };
 
+	TIME_MGR.Ready_Timer(L"MainTimer");
+
 	std::shared_ptr<CMainApp> pMainApp = std::make_shared<CMainApp>();
 	pMainApp->Ready_MainApp();
 
@@ -59,7 +62,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 		else
 		{
-			pMainApp->Update_MainApp(0.0f);
+			pMainApp->Update_MainApp(TIME_MGR.Get_TimeDelta(L"MainTimer"));
 			pMainApp->Render_MainApp();
 		}
 	}
