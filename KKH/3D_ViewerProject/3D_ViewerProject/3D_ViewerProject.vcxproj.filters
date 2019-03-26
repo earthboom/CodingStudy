@@ -31,6 +31,9 @@
     <Filter Include="01.System\00.Graphic\Manager">
       <UniqueIdentifier>{8800a7d4-3422-48ec-90ee-6a42269fb56c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Client\90.Camera">
+      <UniqueIdentifier>{f89b274c-7bd6-404f-8b7d-835985f0fa13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -66,6 +69,9 @@
     <ClInclude Include="Graphic_Manager.h">
       <Filter>01.System\00.Graphic\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>00.Client\90.Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -88,6 +94,9 @@
     </ClCompile>
     <ClCompile Include="Graphic_Manager.cpp">
       <Filter>01.System\00.Graphic\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>00.Client\90.Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

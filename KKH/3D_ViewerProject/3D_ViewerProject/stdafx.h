@@ -23,6 +23,7 @@
 #include <dxgi.h>
 #include <d3dcommon.h>
 #include <D3DX10math.h>
+#include <xnamath.h>
 
 #include <memory>
 #include <vector>
