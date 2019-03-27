@@ -19,14 +19,17 @@
 
 
 // 여기서 프로그램에 필요한 추가 헤더를 참조합니다.
-#include <D3D11.h>
-#include <dxgi.h>
+#include <D3D12.h>
+//#include <dxgi.h>
+#include <dxgi1_4.h>
 #include <d3dcommon.h>
-#include <D3DX10math.h>
+#include <DirectXMath.h>
 #include <xnamath.h>
+#include <wrl.h>
 
 #include <memory>
 #include <vector>
 #include <map>
 #include <mutex>
 #include <algorithm>
+#include <unordered_map>

@@ -14,7 +14,7 @@ CMainApp::~CMainApp(void)
 
 HRESULT CMainApp::Ready_MainApp(void)
 {
-	GRAPHIC_MGR.Init_Graphic(WINSIZE_X, WINSIZE_Y, g_hWnd);
+	//GRAPHIC_MGR.Init_Graphic(WINSIZE_X, WINSIZE_Y, g_hWnd);
 
 	return S_OK;
 }
