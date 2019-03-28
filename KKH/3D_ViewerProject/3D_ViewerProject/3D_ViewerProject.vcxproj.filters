@@ -72,6 +72,9 @@
     <ClInclude Include="Camera.h">
       <Filter>00.Client\90.Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Function.h">
+      <Filter>99.Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

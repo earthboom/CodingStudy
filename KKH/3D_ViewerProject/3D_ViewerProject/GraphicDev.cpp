@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GraphicDev.h"
+#include "Function.h"
 
 CGraphicDev::CGraphicDev(void)
 	//: m_pDevice(nullptr)
@@ -335,10 +336,29 @@ CGraphicDev::~CGraphicDev(void)
 //	return;
 //}
 
-void CGraphicDev::LogAdaptor(void)
+bool CGraphicDev::Init_Graphic(void)
+{
+#if defined(DEBUG) || defined (_DEBUG)
+	//D3D12 Debug Layer 활성화
+	Microsoft::WRL::ComPtr<ID3D12Debug> debugController;
+	ThrowIfFailed(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)));
+	debugController->EnableDebugLayer();
+#endif
+
+	ThrowIfFailed(CreateDXGIFactory1(IID_PPV_ARGS(&m_Factory)));
+
+	//하드웨어 어댑터를 나타내는 장치 생성
+	
+
+	//실패하면 WARP 어댑터를 나타내는 장치 생성
+
+	return TRUE;
+}
+
+void CGraphicDev::LogAdapters(void)
 {
 	IDXGIAdapter* adapter = nullptr;
-	std::vector<IDXGIAdapter*>	vecAdaptor;
+	std::vector<IDXGIAdapter*>	vecAdapter;
 
 	UINT i = 0;
 	while (m_Factory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND)
@@ -352,15 +372,64 @@ void CGraphicDev::LogAdaptor(void)
 
 		OutputDebugString(text.c_str());
 
-		vecAdaptor.push_back(adapter);
+		vecAdapter.push_back(adapter);
 
 		++i;
 	}
 
-	for (size_t i = 0; i < vecAdaptor.size(); ++i)
+	for (size_t i = 0; i < vecAdapter.size(); ++i)
 	{
 		LogAdapterOutputs(vecAdapter[i]);
-		ReleaseCom(vecAdaptor[i]);
+		ReleaseCom(vecAdapter[i]);
+	}
+}
+
+void CGraphicDev::LogAdapterOutputs(IDXGIAdapter * adapter)
+{
+	UINT i = 0;
+	IDXGIOutput* output = nullptr;
+
+	while (adapter->EnumOutputs(i, &output) != DXGI_ERROR_NOT_FOUND)
+	{
+		DXGI_OUTPUT_DESC desc;
+		output->GetDesc(&desc);
+
+		std::wstring text = L"***Output : ";
+		text += desc.DeviceName;
+		text += L"\n";
+
+		OutputDebugString(text.c_str());
+
+		LogOutputDisplayModes(output, m_BackBufferFormat);
+
+		ReleaseCom(output);
+
+		++i;
+	}
+}
+
+void CGraphicDev::LogOutputDisplayModes(IDXGIOutput * output, DXGI_FORMAT format)
+{
+	UINT count = 0, flags = 0;
+
+	//nullptr을 인수로 해서 호출하면 목록의 크기(모드 개수)를 얻음
+	output->GetDisplayModeList(format, flags, &count, nullptr);
+
+	std::vector<DXGI_MODE_DESC> modeList(count);
+	output->GetDisplayModeList(format, flags, &count, &modeList[0]);
+
+	for (auto& x : modeList)
+	{
+		UINT n = x.RefreshRate.Numerator;
+		UINT d = x.RefreshRate.Denominator;
+		
+		std::wstring text =
+			L"Width = " + std::to_wstring(x.Width) + L" " +
+			L"Height = " + std::to_wstring(x.Height) + L" " +
+			L"Refresh = " + std::to_wstring(n) + L"/" + std::to_wstring(d) +
+			L"\n";
+
+		::OutputDebugString(text.c_str());
 	}
 }
 

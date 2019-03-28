@@ -19,7 +19,9 @@ public:
 	bool Init_Graphic(void);
 	void ShutDown(void);
 
-	void LogAdaptor(void);	//시스템에 있는 모든 어댑터를 열거
+	void LogAdapters(void);	//시스템에 있는 모든 어댑터를 열거
+	void LogAdapterOutputs(IDXGIAdapter* adapter);	//주어진 한 어댑터에 연관된 모든 출력을 열거
+	void LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format);	//주어진 출력과 디스플레이 형식을 지원하는 모든 디스플레이 모드를 담은 목록을 얻음
 
 	void BeginScene(const float _r, const float _g, const float _b, const float _alpha);
 	void EndScene(void);

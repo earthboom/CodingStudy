@@ -153,6 +153,7 @@
     <ClInclude Include="3D_ViewerProject.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Const.h" />
+    <ClInclude Include="Function.h" />
     <ClInclude Include="GraphicDev.h" />
     <ClInclude Include="Graphic_Manager.h" />
     <ClInclude Include="MainApp.h" />
