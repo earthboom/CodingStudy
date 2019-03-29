@@ -54,6 +54,8 @@ inline std::wstring AnsiToWString(const std::string& str)
 	std::wstring wfn = AnsiToWString(__FILE__);\
 	if (FAILED(hr__)) { throw DxException(hr__, L#x, wfn, __LINE__);}\
 }
+// #는 인자를 문자열화 시켜주는 연산자
+// https://docs.microsoft.com/en-us/cpp/preprocessor/stringizing-operator-hash?view=vs-2017
 #endif
 
 //template<typename T>
