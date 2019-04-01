@@ -26,6 +26,11 @@ public:
 	void BeginScene(const float _r, const float _g, const float _b, const float _alpha);
 	void EndScene(void);
 
+protected:
+	void CreateCommandObjects(void);
+	void CreateSwapChain(void);
+	void CreateRtvAndDsvDescriptorHeaps(void);
+
 private:
 	//ID3D11Device*				m_pDevice;
 	//ID3D11DeviceContext*		m_pContext;
@@ -44,6 +49,10 @@ private:
 	//int		m_vidioCardMemory;
 	//char	m_vidioCardDescription[128];
 
+	//Set true to use 4X MSAA 
+	bool m_4xMsaaState = FALSE;	//4X MSAA enalbed
+	UINT m_4xMsaaQuality = 0;	//quality level of 4X MSAA
+
 	Microsoft::WRL::ComPtr<ID3D12Device>				m_Device;
 	Microsoft::WRL::ComPtr<IDXGIFactory4>				m_Factory;
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				m_SwapChain;
@@ -51,13 +60,13 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Fence>					m_Fence;
 	UINT64												m_iCurrentFence = 0;
 
-	Microsoft::WRL::ComPtr<ID3D12CommandQueue>			m_CommandQueue;
-	Microsoft::WRL::ComPtr<ID3D12CommandAllocator>		m_CommandAllocator;
-	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>	m_CommandList;
+	Microsoft::WRL::ComPtr<ID3D12CommandQueue>			m_CommandQueue;			//Command Queue Interface represented
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator>		m_CommandAllocator;		//Command Allocator Interface represented
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>	m_CommandList;			//Command List Interface represented
 
-	static const int iSwapChainBufferCount = 2;
+	static const int m_iSwapChainBufferCount = 2;
 	int m_iCurrBackBuffer = 0;
-	Microsoft::WRL::ComPtr<ID3D12Resource>				m_SwapChainBuffer[iSwapChainBufferCount];
+	Microsoft::WRL::ComPtr<ID3D12Resource>				m_SwapChainBuffer[m_iSwapChainBufferCount];
 	Microsoft::WRL::ComPtr<ID3D12Resource>				m_DepthStencilBuffer;
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>		m_RtvHeap;
