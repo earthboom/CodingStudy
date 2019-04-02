@@ -546,4 +546,122 @@ void CGraphicDev::CreateSwapChain(void)
 
 void CGraphicDev::CreateRtvAndDsvDescriptorHeaps(void)
 {
+	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
+	rtvHeapDesc.NumDescriptors = m_iSwapChainBufferCount;
+	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	rtvHeapDesc.NodeMask = 0;
+	ThrowIfFailed(m_Device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(m_RtvHeap.GetAddressOf())));
+
+	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
+	dsvHeapDesc.NumDescriptors = 1;
+	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+	dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	dsvHeapDesc.NodeMask = 0;
+	ThrowIfFailed(m_Device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(m_DsvHeap.GetAddressOf())));
+}
+
+void CGraphicDev::OnResize(void)
+{
+	assert(m_Device);
+	assert(m_SwapChain);
+	assert(m_CommandAllocator);
+
+	//Flush before changing any resources.
+	FlushCommandQueue();
+
+	ThrowIfFailed(m_CommandList->Reset(m_CommandAllocator.Get(), nullptr));
+
+	//Release the privious resources we will be recreating.
+	for (int i = 0; i < m_iSwapChainBufferCount; ++i)
+		m_SwapChainBuffer[i].Reset();
+	m_DepthStencilBuffer.Reset();
+
+	//Resize the swap chain.
+	ThrowIfFailed(m_SwapChain->ResizeBuffers(m_iSwapChainBufferCount, WINSIZE_X, WINSIZE_Y, m_BackBufferFormat, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH));
+
+	m_iCurrBackBuffer = 0;
+
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle(m_RtvHeap->GetCPUDescriptorHandleForHeapStart());
+	for (UINT i = 0; i < m_iSwapChainBufferCount; ++i)
+	{
+		//Get Swap chain 'i'th buffer
+		ThrowIfFailed(m_SwapChain->GetBuffer(i, IID_PPV_ARGS(&m_SwapChainBuffer[i])));
+
+		//The buffer's RenderTargetView Create
+		m_Device->CreateRenderTargetView(m_SwapChainBuffer[i].Get(), nullptr, rtvHeapHandle);
+
+		//Next Heap
+		rtvHeapHandle.Offset(1, m_iRtvDescriptiorSize);
+	}
+
+	//Create the depth/stencil buffer and view.
+	D3D12_RESOURCE_DESC depthStencilDesc;
+	depthStencilDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	depthStencilDesc.Alignment = 0;
+	depthStencilDesc.Width = WINSIZE_X;
+	depthStencilDesc.Height = WINSIZE_Y;
+	depthStencilDesc.DepthOrArraySize = 1;
+	depthStencilDesc.MipLevels = 1;
+	depthStencilDesc.Format = m_DepthStencilFormat;
+	depthStencilDesc.SampleDesc.Count = m_4xMsaaState ? 4 : 1;
+	depthStencilDesc.SampleDesc.Quality = m_4xMsaaQuality ? (m_4xMsaaQuality - 1) : 0;
+	depthStencilDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	depthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+
+	D3D12_CLEAR_VALUE optClear;
+	optClear.Format = m_DepthStencilFormat;
+	optClear.DepthStencil.Depth = 1.0f;
+	optClear.DepthStencil.Stencil = 0;
+	ThrowIfFailed(m_Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), 
+		D3D12_HEAP_FLAG_NONE, &depthStencilDesc, D3D12_RESOURCE_STATE_COMMON, 
+		&optClear, IID_PPV_ARGS(m_DepthStencilBuffer.GetAddressOf())));
+	
+	//Create descriptor to mip level 0 of entire resource using the format of the resource.
+	m_Device->CreateDepthStencilView(m_DepthStencilBuffer.Get(), nullptr, Get_DepthStencilView_Handle());
+
+	//Transition the resource from its initial state to be used as a depth buffer.
+	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_DepthStencilBuffer.Get(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE));
+
+
+}
+
+void CGraphicDev::FlushCommandQueue(void)
+{
+	//Advance the fence value to mark commands up to this fence point
+	++m_iCurrentFence;
+
+	// Add an instruction to the command queue to set a new fence point.  Because we 
+	// are on the GPU timeline, the new fence point won't be set until the GPU finishes
+	// processing all the commands prior to this Signal().
+	ThrowIfFailed(m_CommandQueue->Signal(m_Fence.Get(), m_iCurrentFence));
+
+	// Wait until the GPU has completed commands up to this fence point.
+	if (m_Fence->GetCompletedValue() < m_iCurrentFence)
+	{
+		HANDLE eventHandle = CreateEventEx(nullptr, FALSE, FALSE, EVENT_ALL_ACCESS);
+
+		//Fire event when GPU hits current fence.
+		ThrowIfFailed(m_Fence->SetEventOnCompletion(m_iCurrentFence, eventHandle));
+
+		//Wait Until the GPU hits current fence event is fired.
+		WaitForSingleObject(eventHandle, INFINITE);
+		CloseHandle(eventHandle);
+	}
+}
+
+ID3D12Resource * CGraphicDev::Get_CurrentBackBuffer_Resource(void)
+{
+	return nullptr;
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE CGraphicDev::Get_CurrentBackBufferView_Handle(void) const
+{
+	return D3D12_CPU_DESCRIPTOR_HANDLE();
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE CGraphicDev::Get_DepthStencilView_Handle(void) const
+{
+	return m_DsvHeap->GetCPUDescriptorHandleForHeapStart();
 }

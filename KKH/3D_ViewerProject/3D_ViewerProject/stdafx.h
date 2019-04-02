@@ -20,6 +20,7 @@
 
 // 여기서 프로그램에 필요한 추가 헤더를 참조합니다.
 #include <D3D12.h>
+#include <D3DX12.h>
 //#include <dxgi.h>
 #include <dxgi1_4.h>
 #include <d3dcommon.h>

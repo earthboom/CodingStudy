@@ -31,6 +31,14 @@ protected:
 	void CreateSwapChain(void);
 	void CreateRtvAndDsvDescriptorHeaps(void);
 
+protected:
+	void OnResize(void);
+
+	void FlushCommandQueue(void);
+
+	ID3D12Resource* Get_CurrentBackBuffer_Resource(void);
+	D3D12_CPU_DESCRIPTOR_HANDLE Get_CurrentBackBufferView_Handle(void) const;
+	D3D12_CPU_DESCRIPTOR_HANDLE Get_DepthStencilView_Handle(void) const;
 private:
 	//ID3D11Device*				m_pDevice;
 	//ID3D11DeviceContext*		m_pContext;
