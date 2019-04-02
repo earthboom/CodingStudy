@@ -1,0 +1,10 @@
+#ignore
+
+#----KKH-----
+KKH/3D_ViewerProject/Debug/
+KKH/3D_ViewerProject/Release/
+KKH/3D_ViewerProject/3D_ViewerProject/Debug/
+KKH/3D_ViewerProject/3D_ViewerProject/Release/
+KKH/3D_ViewerProject/3D_ViewerProject/*.aps
+
+#----PGW----
