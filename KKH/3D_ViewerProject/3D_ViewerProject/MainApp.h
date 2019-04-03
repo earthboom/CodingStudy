@@ -7,9 +7,9 @@ public:
 	~CMainApp(void);
 
 public:
-	HRESULT	Ready_MainApp(void);
-	int		Update_MainApp(const float& fDeltaTime);
-	void	Render_MainApp(void);
+	bool	Ready_MainApp(void);
+	int		Update_MainApp(const float& dt);
+	void	Render_MainApp(const float& dt);
 
 private:
 	float	m_fTime;

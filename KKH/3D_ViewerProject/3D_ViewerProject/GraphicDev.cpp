@@ -443,7 +443,7 @@ void CGraphicDev::LogOutputDisplayModes(IDXGIOutput * output, DXGI_FORMAT format
 {
 	UINT count = 0, flags = 0;
 
-	//nullptr을 인수로 해서 호출하면 목록의 크기(모드 개수)를 얻음
+	//Call with nullptr to get list count.
 	output->GetDisplayModeList(format, flags, &count, nullptr);
 
 	std::vector<DXGI_MODE_DESC> modeList(count);
@@ -464,44 +464,44 @@ void CGraphicDev::LogOutputDisplayModes(IDXGIOutput * output, DXGI_FORMAT format
 	}
 }
 
-//버퍼를 빈값으로 초기화하고 렌더링이 이루어지도록 준비
-//매 프레임의 시작마다 3D 화면을 그리기 시작할때 호출
-void CGraphicDev::BeginScene(const float _r, const float _g, const float _b, const float _alpha)
-{
-	float color[4] = { 0.0f, };
-
-	//버퍼의 색상을 정의
-	color[0] = _r;
-	color[1] = _g;
-	color[2] = _b;
-	color[3] = _alpha;
-
-	//백버퍼 내용 삭제
-	m_pContext->ClearRenderTargetView(m_pRenderTargetView, color);
-
-	//깊이 버퍼 삭제
-	m_pContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-
-	return;
-}
-
-//매 프레임 마지막마다 스왑체인에게 백버퍼에 그린 3D화면을 표시하도록 하는 함수
-void CGraphicDev::EndScene(void)
-{
-	//렌더링이 완료되었으므로 백버퍼의 내용을 화면에 표시
-	if (m_vsync_enabled)
-	{
-		//새로고침 비율 고정
-		m_pSwapChain->Present(1, 0);
-	}
-	else
-	{
-		//가능한 빠르게 표시
-		m_pSwapChain->Present(0, 0);
-	}
-
-	return;
-}
+////버퍼를 빈값으로 초기화하고 렌더링이 이루어지도록 준비
+////매 프레임의 시작마다 3D 화면을 그리기 시작할때 호출
+//void CGraphicDev::BeginScene(const float _r, const float _g, const float _b, const float _alpha)
+//{
+//	float color[4] = { 0.0f, };
+//
+//	//버퍼의 색상을 정의
+//	color[0] = _r;
+//	color[1] = _g;
+//	color[2] = _b;
+//	color[3] = _alpha;
+//
+//	//백버퍼 내용 삭제
+//	m_pContext->ClearRenderTargetView(m_pRenderTargetView, color);
+//
+//	//깊이 버퍼 삭제
+//	m_pContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+//
+//	return;
+//}
+//
+////매 프레임 마지막마다 스왑체인에게 백버퍼에 그린 3D화면을 표시하도록 하는 함수
+//void CGraphicDev::EndScene(void)
+//{
+//	//렌더링이 완료되었으므로 백버퍼의 내용을 화면에 표시
+//	if (m_vsync_enabled)
+//	{
+//		//새로고침 비율 고정
+//		m_pSwapChain->Present(1, 0);
+//	}
+//	else
+//	{
+//		//가능한 빠르게 표시
+//		m_pSwapChain->Present(0, 0);
+//	}
+//
+//	return;
+//}
 
 //Create Command Queue, List
 void CGraphicDev::CreateCommandObjects(void)
@@ -624,7 +624,23 @@ void CGraphicDev::OnResize(void)
 	//Transition the resource from its initial state to be used as a depth buffer.
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_DepthStencilBuffer.Get(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE));
 
+	//Excute the resize commands.
+	ThrowIfFailed(m_CommandList->Close());
+	ID3D12CommandList* cmdsList[] = { m_CommandList.Get() };
+	m_CommandQueue->ExecuteCommandLists(_countof(cmdsList), cmdsList);
 
+	//Wait until resize is complete.
+	FlushCommandQueue();
+
+	//Update the viewport transform to cover the client area.
+	m_ScreenViewport.TopLeftX = 0.0f;
+	m_ScreenViewport.TopLeftY = 0.0f;
+	m_ScreenViewport.Width = static_cast<float>(WINSIZE_X);
+	m_ScreenViewport.Height = static_cast<float>(WINSIZE_Y);
+	m_ScreenViewport.MinDepth = 0.0f;
+	m_ScreenViewport.MaxDepth = 1.0f;
+
+	m_ScissorRect = { 0, 0, WINSIZE_X, WINSIZE_Y};
 }
 
 void CGraphicDev::FlushCommandQueue(void)
@@ -651,14 +667,14 @@ void CGraphicDev::FlushCommandQueue(void)
 	}
 }
 
-ID3D12Resource * CGraphicDev::Get_CurrentBackBuffer_Resource(void)
+ID3D12Resource * CGraphicDev::Get_CurrentBackBuffer_Resource(void) const
 {
-	return nullptr;
+	return m_SwapChainBuffer[m_iCurrBackBuffer].Get();
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE CGraphicDev::Get_CurrentBackBufferView_Handle(void) const
 {
-	return D3D12_CPU_DESCRIPTOR_HANDLE();
+	return CD3DX12_CPU_DESCRIPTOR_HANDLE(m_RtvHeap->GetCPUDescriptorHandleForHeapStart(), m_iCurrBackBuffer, m_iRtvDescriptiorSize);
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE CGraphicDev::Get_DepthStencilView_Handle(void) const

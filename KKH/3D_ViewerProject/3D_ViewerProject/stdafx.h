@@ -25,6 +25,7 @@
 #include <dxgi1_4.h>
 #include <d3dcommon.h>
 #include <DirectXMath.h>
+#include <DirectXColors.h>
 #include <xnamath.h>
 #include <wrl.h>
 

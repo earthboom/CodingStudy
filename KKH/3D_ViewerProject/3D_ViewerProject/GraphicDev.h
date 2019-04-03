@@ -17,14 +17,16 @@ public:
 	//void ShutDown(void);
 
 	bool Init_Graphic(void);
+	void OnResize(void);
+
 	void ShutDown(void);
 
 	void LogAdapters(void);	//시스템에 있는 모든 어댑터를 열거
 	void LogAdapterOutputs(IDXGIAdapter* adapter);	//주어진 한 어댑터에 연관된 모든 출력을 열거
 	void LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format);	//주어진 출력과 디스플레이 형식을 지원하는 모든 디스플레이 모드를 담은 목록을 얻음
 
-	void BeginScene(const float _r, const float _g, const float _b, const float _alpha);
-	void EndScene(void);
+	//void BeginScene(const float _r, const float _g, const float _b, const float _alpha);
+	//void EndScene(void);
 
 protected:
 	void CreateCommandObjects(void);
@@ -32,13 +34,8 @@ protected:
 	void CreateRtvAndDsvDescriptorHeaps(void);
 
 protected:
-	void OnResize(void);
-
 	void FlushCommandQueue(void);
-
-	ID3D12Resource* Get_CurrentBackBuffer_Resource(void);
-	D3D12_CPU_DESCRIPTOR_HANDLE Get_CurrentBackBufferView_Handle(void) const;
-	D3D12_CPU_DESCRIPTOR_HANDLE Get_DepthStencilView_Handle(void) const;
+	
 private:
 	//ID3D11Device*				m_pDevice;
 	//ID3D11DeviceContext*		m_pContext;
@@ -91,6 +88,18 @@ private:
 	D3D_DRIVER_TYPE m_DriverType = D3D_DRIVER_TYPE_HARDWARE;
 	DXGI_FORMAT m_BackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 	DXGI_FORMAT m_DepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+public:
+	ID3D12Resource* Get_CurrentBackBuffer_Resource(void) const;
+	D3D12_CPU_DESCRIPTOR_HANDLE Get_CurrentBackBufferView_Handle(void) const;
+	D3D12_CPU_DESCRIPTOR_HANDLE Get_DepthStencilView_Handle(void) const;
+
+	const Microsoft::WRL::ComPtr<ID3D12CommandQueue>&			Get_CommandQueue(void) const { return m_CommandQueue; }
+	const Microsoft::WRL::ComPtr<ID3D12CommandAllocator>&		Get_CommandAllocator(void) const { return m_CommandAllocator; }
+	const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>&	Get_CommandList(void) const { return m_CommandList; }
+
+	const D3D12_VIEWPORT& Get_ScreenViewport(void) const { return m_ScreenViewport; }
+	const D3D12_RECT& Get_ScissorRect(void) const { return m_ScissorRect; }
 };
 
 typedef std::shared_ptr<CGraphicDev>	PGRAPHIC;

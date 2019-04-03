@@ -14,8 +14,10 @@ public:
 	~CGraphic_Manager(void);
 
 public:
-	bool Init_Graphic(const WORD _width, const WORD _height, HWND _hwnd);
-	void ShutDown(void);
+	//bool Init_Graphic(const WORD _width, const WORD _height, HWND _hwnd);
+	//void ShutDown(void);
+
+	bool Init_Graphic(void);
 
 private:
 	PGRAPHIC	m_pGraphic;

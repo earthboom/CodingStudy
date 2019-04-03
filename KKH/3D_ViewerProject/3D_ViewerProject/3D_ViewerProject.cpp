@@ -62,7 +62,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		else
 		{
 			pMainApp->Update_MainApp(TIME_MGR.Get_TimeDelta(L"MainTimer"));
-			pMainApp->Render_MainApp();
+			pMainApp->Render_MainApp(TIME_MGR.Get_TimeDelta(L"MainTimer"));
 		}
 	}
 
