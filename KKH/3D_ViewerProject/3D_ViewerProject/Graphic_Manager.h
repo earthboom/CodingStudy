@@ -18,6 +18,7 @@ public:
 	//void ShutDown(void);
 
 	bool Init_Graphic(void);
+	void Draw(const float& dt);
 
 private:
 	PGRAPHIC	m_pGraphic;

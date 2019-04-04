@@ -33,7 +33,7 @@ protected:
 	void CreateSwapChain(void);
 	void CreateRtvAndDsvDescriptorHeaps(void);
 
-protected:
+public:
 	void FlushCommandQueue(void);
 	
 private:
@@ -90,6 +90,8 @@ private:
 	DXGI_FORMAT m_DepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 public:
+	const Microsoft::WRL::ComPtr<IDXGISwapChain>&	Get_SwapChain(void) const { return m_SwapChain; }
+
 	ID3D12Resource* Get_CurrentBackBuffer_Resource(void) const;
 	D3D12_CPU_DESCRIPTOR_HANDLE Get_CurrentBackBufferView_Handle(void) const;
 	D3D12_CPU_DESCRIPTOR_HANDLE Get_DepthStencilView_Handle(void) const;
@@ -100,6 +102,9 @@ public:
 
 	const D3D12_VIEWPORT& Get_ScreenViewport(void) const { return m_ScreenViewport; }
 	const D3D12_RECT& Get_ScissorRect(void) const { return m_ScissorRect; }
+
+	int& Get_Set_CurrBackBuffer(void) { return m_iCurrBackBuffer; }
+	static const int& Get_SwapChainBufferCount(void) { return m_iSwapChainBufferCount; }
 };
 
 typedef std::shared_ptr<CGraphicDev>	PGRAPHIC;
