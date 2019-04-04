@@ -13,20 +13,12 @@ public:
 	~CGraphicDev(void);
 
 public:
-	//bool Init_Graphic(const WINDOW_MODE _mode, const HWND _hwnd, const WORD& _sizeX, const WORD& _sizeY, const BOOL _bMSAA, const float _screedepth = SCREEN_DEPTH, const float _screennear = SCREEN_NEAR);
-	//void ShutDown(void);
-
 	bool Init_Graphic(void);
 	void OnResize(void);
 
-	void ShutDown(void);
-
-	void LogAdapters(void);	//시스템에 있는 모든 어댑터를 열거
-	void LogAdapterOutputs(IDXGIAdapter* adapter);	//주어진 한 어댑터에 연관된 모든 출력을 열거
-	void LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format);	//주어진 출력과 디스플레이 형식을 지원하는 모든 디스플레이 모드를 담은 목록을 얻음
-
-	//void BeginScene(const float _r, const float _g, const float _b, const float _alpha);
-	//void EndScene(void);
+	void LogAdapters(void);	//Enumerate all adapter in the system.
+	void LogAdapterOutputs(IDXGIAdapter* adapter);	//Enumerate all outputs associated with a given adapter.
+	void LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format);	//Obtain a list all display modes that support a given output and display format.
 
 protected:
 	void CreateCommandObjects(void);
@@ -37,23 +29,6 @@ public:
 	void FlushCommandQueue(void);
 	
 private:
-	//ID3D11Device*				m_pDevice;
-	//ID3D11DeviceContext*		m_pContext;
-	//IDXGISwapChain*				m_pSwapChain;
-
-	//ID3D11RenderTargetView*		m_pRenderTargetView;
-	//ID3D11DepthStencilState*	m_pDepthStencilState;
-	//ID3D11DepthStencilView*		m_pDepthStencilView;
-	//ID3D11Texture2D*			m_pDepthStencilBuffer;
-
-	//ID3D11RasterizerState*		m_pRasterState;
-
-	//D3D11_VIEWPORT				m_pViewport;
-
-	//bool	m_vsync_enabled;
-	//int		m_vidioCardMemory;
-	//char	m_vidioCardDescription[128];
-
 	//Set true to use 4X MSAA 
 	bool m_4xMsaaState = FALSE;	//4X MSAA enalbed
 	UINT m_4xMsaaQuality = 0;	//quality level of 4X MSAA
