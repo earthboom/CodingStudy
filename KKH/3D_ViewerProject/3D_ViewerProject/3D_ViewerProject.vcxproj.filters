@@ -34,6 +34,12 @@
     <Filter Include="00.Client\90.Camera">
       <UniqueIdentifier>{f89b274c-7bd6-404f-8b7d-835985f0fa13}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utiltiy">
+      <UniqueIdentifier>{e70ce597-0d3d-4dcc-954b-64d06c3f9bde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\00.d3dutil_Manager">
+      <UniqueIdentifier>{1e6f8f10-2f3f-4e69-8751-27850b41be75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -75,6 +81,12 @@
     <ClInclude Include="Function.h">
       <Filter>99.Headers</Filter>
     </ClInclude>
+    <ClInclude Include="d3dutil_Manager.h">
+      <Filter>02.Utiltiy\00.d3dutil_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Struct.h">
+      <Filter>99.Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -100,6 +112,9 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>00.Client\90.Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dutil_Manager.cpp">
+      <Filter>02.Utiltiy\00.d3dutil_Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

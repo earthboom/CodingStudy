@@ -153,12 +153,14 @@
     <ClInclude Include="3D_ViewerProject.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Const.h" />
+    <ClInclude Include="d3dutil_Manager.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="GraphicDev.h" />
     <ClInclude Include="Graphic_Manager.h" />
     <ClInclude Include="MainApp.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Struct.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Timer_Manager.h" />
@@ -167,6 +169,7 @@
   <ItemGroup>
     <ClCompile Include="3D_ViewerProject.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="d3dutil_Manager.cpp" />
     <ClCompile Include="GraphicDev.cpp" />
     <ClCompile Include="Graphic_Manager.cpp" />
     <ClCompile Include="MainApp.cpp" />
