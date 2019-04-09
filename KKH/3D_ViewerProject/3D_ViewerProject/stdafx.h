@@ -32,6 +32,7 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <array>
 #include <mutex>
 #include <algorithm>
 #include <unordered_map>

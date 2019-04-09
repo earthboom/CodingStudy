@@ -19,4 +19,8 @@ public:
 		const void* initData,
 		UINT64 byteSize,
 		Microsoft::WRL::ComPtr<ID3D12Resource>& uploadBuffer);
+
+	void BuildBoxGeometry(void);
+
+private:
 };

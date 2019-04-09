@@ -75,6 +75,8 @@ public:
 	const Microsoft::WRL::ComPtr<ID3D12CommandAllocator>&		Get_CommandAllocator(void) const { return m_CommandAllocator; }
 	const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>&	Get_CommandList(void) const { return m_CommandList; }
 
+	const Microsoft::WRL::ComPtr<ID3D12Device>& Get_Device(void) const { return m_Device; }
+
 	const D3D12_VIEWPORT& Get_ScreenViewport(void) const { return m_ScreenViewport; }
 	const D3D12_RECT& Get_ScissorRect(void) const { return m_ScissorRect; }
 
