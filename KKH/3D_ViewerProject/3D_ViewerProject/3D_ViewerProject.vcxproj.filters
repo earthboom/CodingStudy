@@ -40,6 +40,15 @@
     <Filter Include="02.Utiltiy\00.d3dutil_Manager">
       <UniqueIdentifier>{1e6f8f10-2f3f-4e69-8751-27850b41be75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utiltiy\01.Object">
+      <UniqueIdentifier>{7c3408bd-0127-4774-b9e0-880da52510e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\01.Object\00.Geometry">
+      <UniqueIdentifier>{bdf0fdda-17aa-4d08-8a2d-08cee1e84ab3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\01.Object\00.Geometry\00.Box">
+      <UniqueIdentifier>{2dbbd337-8b4b-41b6-b1bf-d1270f41024f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -87,6 +96,12 @@
     <ClInclude Include="Struct.h">
       <Filter>99.Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>02.Utiltiy\01.Object\00.Geometry\00.Box</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>02.Utiltiy\01.Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -115,6 +130,12 @@
     </ClCompile>
     <ClCompile Include="d3dutil_Manager.cpp">
       <Filter>02.Utiltiy\00.d3dutil_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>02.Utiltiy\01.Object\00.Geometry\00.Box</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>02.Utiltiy\01.Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

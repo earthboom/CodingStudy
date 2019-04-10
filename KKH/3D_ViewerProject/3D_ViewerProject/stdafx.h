@@ -19,15 +19,18 @@
 
 
 // 여기서 프로그램에 필요한 추가 헤더를 참조합니다.
+#include <wrl.h>
+#include <dxgi1_4.h>
 #include <D3D12.h>
 #include <D3DX12.h>
 //#include <dxgi.h>
-#include <dxgi1_4.h>
-#include <d3dcommon.h>
+#include <D3Dcompiler.h>
 #include <DirectXMath.h>
+#include <d3dcommon.h>
 #include <DirectXColors.h>
-#include <xnamath.h>
-#include <wrl.h>
+#include <DirectXCollision.h>
+//#include <xnamath.h>
+
 
 #include <memory>
 #include <vector>

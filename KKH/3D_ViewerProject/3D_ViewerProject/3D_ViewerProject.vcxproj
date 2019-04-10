@@ -151,6 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="3D_ViewerProject.h" />
+    <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Const.h" />
     <ClInclude Include="d3dutil_Manager.h" />
@@ -158,6 +159,7 @@
     <ClInclude Include="GraphicDev.h" />
     <ClInclude Include="Graphic_Manager.h" />
     <ClInclude Include="MainApp.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Struct.h" />
@@ -168,11 +170,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3D_ViewerProject.cpp" />
+    <ClCompile Include="Box.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="d3dutil_Manager.cpp" />
     <ClCompile Include="GraphicDev.cpp" />
     <ClCompile Include="Graphic_Manager.cpp" />
     <ClCompile Include="MainApp.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
