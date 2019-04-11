@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MainApp.h"
 #include "Graphic_Manager.h"
+#include "Function.h"
 
 CMainApp::CMainApp(void)
 	: m_fTime(0.0f)
@@ -16,6 +17,10 @@ bool CMainApp::Ready_MainApp(void)
 {
 	if (!GRAPHIC_MGR.Init_Graphic())
 		return FALSE;
+
+	//Reset the command list to prep for initialization commands.
+	ThrowIfFailed(GRAPHIC->Get_CommandList()->Reset(GRAPHIC->Get_CommandAllocator().Get(), nullptr));
+
 
 	return TRUE;
 }

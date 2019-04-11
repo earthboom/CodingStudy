@@ -4,6 +4,7 @@
 #include "GraphicDev.h"
 
 #define GRAPHIC_MGR CGraphic_Manager::GetInstnace()
+#define GRAPHIC CGraphic_Manager::GetInstnace().Get_Graphic()
 
 class CGraphic_Manager : public CSingleton<CGraphic_Manager>
 {

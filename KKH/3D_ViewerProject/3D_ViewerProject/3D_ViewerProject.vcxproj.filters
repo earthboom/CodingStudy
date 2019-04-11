@@ -49,6 +49,9 @@
     <Filter Include="02.Utiltiy\01.Object\00.Geometry\00.Box">
       <UniqueIdentifier>{2dbbd337-8b4b-41b6-b1bf-d1270f41024f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utiltiy\99.Etc">
+      <UniqueIdentifier>{7c917f9d-75fe-4997-9553-64095da0ab37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -101,6 +104,9 @@
     </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>02.Utiltiy\01.Object</Filter>
+    </ClInclude>
+    <ClInclude Include="UploadBuffer.h">
+      <Filter>02.Utiltiy\99.Etc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

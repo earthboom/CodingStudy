@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Box.h"
+#include "Graphic_Manager.h"
 #include "Function.h"
 
 Box::Box(void)
@@ -13,6 +14,8 @@ Box::~Box(void)
 
 bool Box::Ready(void)
 {
+	
+
 	return false;
 }
 
@@ -76,5 +79,70 @@ Microsoft::WRL::ComPtr<ID3D12Resource> Box::CreateDefaultBuffer(ID3D12Device * d
 	//The caller can Release the uploadBuffer after it knows the copy has been executed.
 
 	return defaultBuffer;
+}
+
+void Box::BuildDescriptorHeaps(void)
+{
+	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
+	cbvHeapDesc.NumDescriptors = 1;
+	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	cbvHeapDesc.NodeMask = 0;
+	ThrowIfFailed(GRAPHIC->Get_Device()->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&mCbvHeap)));
+}
+
+void Box::BuildConstantBuffers(void)
+{
+	mObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(GRAPHIC->Get_Device().Get(), 1, TRUE);
+	
+	UINT objCBByteSize = d3dutil_Mananger::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+
+	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = mObjectCB->Resource()->GetGPUVirtualAddress();
+
+	//Offset to the ith object constant buffer in the buffer
+	int boxCBufIndex = 0;
+	cbAddress += boxCBufIndex * objCBByteSize;
+
+	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
+	cbvDesc.BufferLocation = cbAddress;
+	cbvDesc.SizeInBytes = d3dutil_Mananger::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+
+	GRAPHIC->Get_Device()->CreateConstantBufferView(&cbvDesc, mCbvHeap->GetCPUDescriptorHandleForHeapStart());
+}
+
+void Box::BuildRootSignature(void)
+{
+	CD3DX12_ROOT_PARAMETER slotRootParameter[1];
+
+	CD3DX12_DESCRIPTOR_RANGE cbvTable;
+	cbvTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
+	slotRootParameter[0].InitAsDescriptorTable(1, &cbvTable);
+
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(1, slotRootParameter, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+	Microsoft::WRL::ComPtr<ID3DBlob> serializedRootSig = nullptr;
+	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+	HRESULT hr = D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1, serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());
+
+	if (errorBlob != nullptr)
+		::OutputDebugStringA((char*)errorBlob->GetBufferPointer());
+	ThrowIfFailed(hr);
+
+	ThrowIfFailed(GRAPHIC->Get_Device()->CreateRootSignature(0, serializedRootSig->GetBufferPointer(), serializedRootSig->GetBufferSize(), IID_PPV_ARGS(&mRootSignature)));
+}
+
+void Box::BuildShadersAndInputLayout(void)
+{
+	HRESULT hr = S_OK;
+
+
+}
+
+void Box::BuildBoxGeometry(void)
+{
+}
+
+void Box::BuildPSO(void)
+{
 }
 
