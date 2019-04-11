@@ -52,6 +52,9 @@
     <Filter Include="02.Utiltiy\99.Etc">
       <UniqueIdentifier>{7c917f9d-75fe-4997-9553-64095da0ab37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utiltiy\98.hlsl">
+      <UniqueIdentifier>{29f4b048-ed86-4107-a782-21a7c897afff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -156,5 +159,10 @@
     <ResourceCompile Include="3D_ViewerProject.rc">
       <Filter>00.Client\99.Default</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Shaders\color.hlsl">
+      <Filter>02.Utiltiy\98.hlsl</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

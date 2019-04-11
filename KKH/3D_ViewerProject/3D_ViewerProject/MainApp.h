@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Box.h";
+
 class CMainApp
 {
 public:
@@ -10,6 +12,9 @@ public:
 	bool	Ready_MainApp(void);
 	int		Update_MainApp(const float& dt);
 	void	Render_MainApp(const float& dt);
+
+private:
+	PBOX	m_Box;
 
 private:
 	float	m_fTime;

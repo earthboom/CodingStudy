@@ -27,8 +27,8 @@ struct MeshGeometry
 	Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferGPU = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> IndexBufferGPU = nullptr;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferUpload = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> IndexBufferUpload = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferUploader = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> IndexBufferUploader = nullptr;
 
 	//Data about the buffer.
 	UINT VertexByteStride = 0;
@@ -62,8 +62,8 @@ struct MeshGeometry
 
 	void DisposeUploaders(void)
 	{
-		VertexBufferUpload = nullptr;
-		IndexBufferUpload = nullptr;
+		VertexBufferUploader = nullptr;
+		IndexBufferUploader = nullptr;
 	}
 };
 
@@ -78,12 +78,16 @@ public:
 public:
 	static UINT CalcConstantBufferByteSize(UINT byteSize){	return (byteSize + 255) & ~255;	}
 	
+	static Microsoft::WRL::ComPtr<ID3D12Resource> CreateDefaultBuffer(
+		ID3D12Device* device,
+		ID3D12GraphicsCommandList* cmdList,
+		const void* initData,
+		UINT64 byteSize,
+		Microsoft::WRL::ComPtr<ID3D12Resource>& uploadBuffer);
+
 	static Microsoft::WRL::ComPtr<ID3DBlob> CompileShader(
 		const std::wstring& filename,
 		const D3D_SHADER_MACRO* defines,
 		const std::string& entrypoint,
 		const std::string& target);
-
-public:
-	void BuildBoxGeometry(void);
 };

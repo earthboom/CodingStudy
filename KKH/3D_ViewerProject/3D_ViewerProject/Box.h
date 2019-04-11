@@ -6,7 +6,7 @@
 
 class Box : public Object
 {
-protected:
+public:
 	explicit Box(void);
 	virtual ~Box(void);
 
@@ -25,22 +25,24 @@ private:
 	Microsoft::WRL::ComPtr<ID3DBlob> mvsByteCode = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> mpsByteCode = nullptr;
 
-	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayour;
+	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> mPSO = nullptr;
 
-private:
-	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDefaultBuffer(
-		ID3D12Device* device,
-		ID3D12GraphicsCommandList* cmdList,
-		const void* initData,
-		UINT64 byteSize,
-		Microsoft::WRL::ComPtr<ID3D12Resource>& uploadBuffer);
+	float mTheta = 1.5f * PI;
+	float mPhi = DirectX::XM_PIDIV4;
+	float mRadius = 5.0f;
 
+private:
 	void BuildDescriptorHeaps(void);
 	void BuildConstantBuffers(void);
 	void BuildRootSignature(void);
 	void BuildShadersAndInputLayout(void);
 	void BuildBoxGeometry(void);
 	void BuildPSO(void);
+
+public:
+	static std::shared_ptr<Box> Create(void);
 };
+
+typedef std::shared_ptr<Box> PBOX;

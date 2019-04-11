@@ -82,6 +82,12 @@ public:
 
 	int& Get_Set_CurrBackBuffer(void) { return m_iCurrBackBuffer; }
 	static const int& Get_SwapChainBufferCount(void) { return m_iSwapChainBufferCount; }
+
+	bool Get_4xMsaaState(void) { return m_4xMsaaState; }
+	const UINT& Get_4xMsaaQuality(void) { return m_4xMsaaQuality; }
+
+	const DXGI_FORMAT Get_BackBufferFormat(void) { return m_BackBufferFormat; }
+	const DXGI_FORMAT Get_DepthStencilFormat(void) { return m_DepthStencilFormat; }
 };
 
 typedef std::shared_ptr<CGraphicDev>	PGRAPHIC;
