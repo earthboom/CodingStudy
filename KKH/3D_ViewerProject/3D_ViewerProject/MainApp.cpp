@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MainApp.h"
 #include "Graphic_Manager.h"
+#include "Mouse_Manager.h"
 #include "Function.h"
 
 CMainApp::CMainApp(void)
@@ -23,6 +24,9 @@ bool CMainApp::Ready_MainApp(void)
 	ThrowIfFailed(GRAPHIC->Get_CommandList()->Reset(GRAPHIC->Get_CommandAllocator().Get(), nullptr));
 
 	m_Box = Box::Create();
+	m_Box->OnResize();
+
+	MOUSE.Set_Obj(m_Box);
 
 	//Execute the initialization commands.
 	ThrowIfFailed(GRAPHIC->Get_CommandList()->Close());

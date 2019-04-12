@@ -15,6 +15,8 @@ public:
 	virtual bool Update(const float& dt);
 	virtual bool Render(const float& dt);
 
+	void OnResize(void);
+
 private:
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
@@ -40,6 +42,11 @@ private:
 	void BuildShadersAndInputLayout(void);
 	void BuildBoxGeometry(void);
 	void BuildPSO(void);
+
+public:
+	float& Get_Theta(void) { return mTheta; }
+	float& Get_Phi(void) { return mPhi; }
+	float& Get_Radius(void) { return mRadius; }
 
 public:
 	static std::shared_ptr<Box> Create(void);

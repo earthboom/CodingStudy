@@ -97,11 +97,18 @@ bool Box::Render(const float & dt)
 
 	//swap the back and front buffer.
 	ThrowIfFailed(GRAPHIC->Get_SwapChain()->Present(0, 0));
+
 	GRAPHIC->Get_Set_CurrBackBuffer() = (GRAPHIC->Get_Set_CurrBackBuffer() + 1) % GRAPHIC->Get_SwapChainBufferCount();
 
 	GRAPHIC->FlushCommandQueue();
 
 	return TRUE;
+}
+
+void Box::OnResize(void)
+{
+	DirectX::XMMATRIX p = DirectX::XMMatrixPerspectiveFovLH(0.25f * PI, AspectRatio(), 1.0f, 1000.0f);
+	DirectX::XMStoreFloat4x4(&mProj, p);
 }
 
 void Box::BuildDescriptorHeaps(void)
@@ -191,13 +198,13 @@ void Box::BuildBoxGeometry(void)
 		4, 7, 6,
 
 		4, 5, 1,	//left face
-		4, 7, 6,
-
-		4, 5, 1,	//right face
 		4, 1, 0,
 
-		3, 2, 6,	//top face
+		3, 2, 6,	//right face
 		3, 6, 7,
+
+		1, 5, 6,	//top face
+		1, 6, 2,
 
 		4, 0, 3,	//bottom face
 		4, 3, 7,
@@ -205,9 +212,6 @@ void Box::BuildBoxGeometry(void)
 
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(uint16_t);
-
-	Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferGPU = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferUploader = nullptr;
 
 	mBoxGeo = std::make_unique<MeshGeometry>();
 	mBoxGeo->Name = "boxGeo";

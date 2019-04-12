@@ -55,6 +55,9 @@
     <Filter Include="02.Utiltiy\98.hlsl">
       <UniqueIdentifier>{29f4b048-ed86-4107-a782-21a7c897afff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utiltiy\97.Mouse_Manager">
+      <UniqueIdentifier>{bed4c857-b3b0-478f-aeb0-a4c715786c65}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -111,6 +114,9 @@
     <ClInclude Include="UploadBuffer.h">
       <Filter>02.Utiltiy\99.Etc</Filter>
     </ClInclude>
+    <ClInclude Include="Mouse_Manager.h">
+      <Filter>02.Utiltiy\97.Mouse_Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -145,6 +151,9 @@
     </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>02.Utiltiy\01.Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse_Manager.cpp">
+      <Filter>02.Utiltiy\97.Mouse_Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
