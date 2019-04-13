@@ -28,7 +28,7 @@ CGraphicDev::~CGraphicDev(void)
 bool CGraphicDev::Init_Graphic(void)
 {
 #if defined(DEBUG) || defined (_DEBUG)
-	//D3D12 Debug Layer 활성화
+	//Enable D3D12 Debug Layer
 	Microsoft::WRL::ComPtr<ID3D12Debug> debugController;
 	ThrowIfFailed(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)));
 	debugController->EnableDebugLayer();
@@ -36,10 +36,10 @@ bool CGraphicDev::Init_Graphic(void)
 
 	ThrowIfFailed(CreateDXGIFactory1(IID_PPV_ARGS(&m_Factory)));
 
-	//하드웨어 어댑터를 나타내는 장치 생성
+	//Try to create hardware device.
 	HRESULT hardwareResult = D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device));
 
-	//실패하면 WARP 어댑터를 나타내는 장치 생성
+	// Fallback to WARP device.
 	if (FAILED(hardwareResult))
 	{
 		Microsoft::WRL::ComPtr<IDXGIAdapter> pWarpAdapter;
@@ -182,7 +182,7 @@ void CGraphicDev::CreateSwapChain(void)
 	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	sd.SampleDesc.Count = m_4xMsaaState ? 4 : 1;
-	sd.SampleDesc.Quality = m_4xMsaaQuality ? (m_4xMsaaQuality - 1) : 0;
+	sd.SampleDesc.Quality = m_4xMsaaState ? (m_4xMsaaQuality - 1) : 0;
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sd.BufferCount = m_iSwapChainBufferCount;
 	sd.OutputWindow = g_hWnd;
@@ -255,7 +255,7 @@ void CGraphicDev::OnResize(void)
 	depthStencilDesc.MipLevels = 1;
 	depthStencilDesc.Format = m_DepthStencilFormat;
 	depthStencilDesc.SampleDesc.Count = m_4xMsaaState ? 4 : 1;
-	depthStencilDesc.SampleDesc.Quality = m_4xMsaaQuality ? (m_4xMsaaQuality - 1) : 0;
+	depthStencilDesc.SampleDesc.Quality = m_4xMsaaState ? (m_4xMsaaQuality - 1) : 0;
 	depthStencilDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 	depthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 

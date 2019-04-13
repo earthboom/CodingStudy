@@ -75,11 +75,19 @@ public:
 	const Microsoft::WRL::ComPtr<ID3D12CommandAllocator>&		Get_CommandAllocator(void) const { return m_CommandAllocator; }
 	const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>&	Get_CommandList(void) const { return m_CommandList; }
 
+	const Microsoft::WRL::ComPtr<ID3D12Device>& Get_Device(void) const { return m_Device; }
+
 	const D3D12_VIEWPORT& Get_ScreenViewport(void) const { return m_ScreenViewport; }
 	const D3D12_RECT& Get_ScissorRect(void) const { return m_ScissorRect; }
 
 	int& Get_Set_CurrBackBuffer(void) { return m_iCurrBackBuffer; }
 	static const int& Get_SwapChainBufferCount(void) { return m_iSwapChainBufferCount; }
+
+	bool Get_4xMsaaState(void) { return m_4xMsaaState; }
+	const UINT& Get_4xMsaaQuality(void) { return m_4xMsaaQuality; }
+
+	const DXGI_FORMAT Get_BackBufferFormat(void) { return m_BackBufferFormat; }
+	const DXGI_FORMAT Get_DepthStencilFormat(void) { return m_DepthStencilFormat; }
 };
 
 typedef std::shared_ptr<CGraphicDev>	PGRAPHIC;

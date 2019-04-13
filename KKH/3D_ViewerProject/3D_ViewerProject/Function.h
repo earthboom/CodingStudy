@@ -68,3 +68,6 @@ inline std::wstring AnsiToWString(const std::string& str)
 //		throw DxException(hr__, Lp, wfn, __LINE__);
 //	}
 //}
+
+
+inline const float AspectRatio(void) { return static_cast<float>(WINSIZE_X) / WINSIZE_Y; }
