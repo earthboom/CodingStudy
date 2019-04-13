@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="00.Client">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="01.System">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="99.Headers">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="00.Client\99.Default">
+      <UniqueIdentifier>{3228d0cb-2915-4552-9ed1-dc028b7a98a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Client\00.MainApp">
+      <UniqueIdentifier>{afede070-88f0-4378-bc1c-1848142132c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\00.Graphic">
+      <UniqueIdentifier>{da9014ab-783a-4294-bcbc-e3d04944d5fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\01.Time">
+      <UniqueIdentifier>{74f51482-17fc-47bb-ab1f-0771b9a1e570}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\01.Time\Manager">
+      <UniqueIdentifier>{72c281a7-9bdd-477d-aa77-558618b3aded}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\00.Graphic\Manager">
+      <UniqueIdentifier>{8800a7d4-3422-48ec-90ee-6a42269fb56c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Client\90.Camera">
+      <UniqueIdentifier>{f89b274c-7bd6-404f-8b7d-835985f0fa13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy">
+      <UniqueIdentifier>{e70ce597-0d3d-4dcc-954b-64d06c3f9bde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\00.d3dutil_Manager">
+      <UniqueIdentifier>{1e6f8f10-2f3f-4e69-8751-27850b41be75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\01.Object">
+      <UniqueIdentifier>{7c3408bd-0127-4774-b9e0-880da52510e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\01.Object\00.Geometry">
+      <UniqueIdentifier>{bdf0fdda-17aa-4d08-8a2d-08cee1e84ab3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\01.Object\00.Geometry\00.Box">
+      <UniqueIdentifier>{2dbbd337-8b4b-41b6-b1bf-d1270f41024f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\99.Etc">
+      <UniqueIdentifier>{7c917f9d-75fe-4997-9553-64095da0ab37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\98.hlsl">
+      <UniqueIdentifier>{29f4b048-ed86-4107-a782-21a7c897afff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\97.Mouse_Manager">
+      <UniqueIdentifier>{bed4c857-b3b0-478f-aeb0-a4c715786c65}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="3D_ViewerProject.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Const.h">
+      <Filter>99.Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Unique_Singleton.h">
+      <Filter>99.Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MainApp.h">
+      <Filter>00.Client\00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicDev.h">
+      <Filter>01.System\00.Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>01.System\01.Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer_Manager.h">
+      <Filter>01.System\01.Time\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic_Manager.h">
+      <Filter>01.System\00.Graphic\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>00.Client\90.Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Function.h">
+      <Filter>99.Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dutil_Manager.h">
+      <Filter>02.Utiltiy\00.d3dutil_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Struct.h">
+      <Filter>99.Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>02.Utiltiy\01.Object\00.Geometry\00.Box</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>02.Utiltiy\01.Object</Filter>
+    </ClInclude>
+    <ClInclude Include="UploadBuffer.h">
+      <Filter>02.Utiltiy\99.Etc</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse_Manager.h">
+      <Filter>02.Utiltiy\97.Mouse_Manager</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>00.Client\99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="3D_ViewerProject.cpp">
+      <Filter>00.Client\99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="MainApp.cpp">
+      <Filter>00.Client\00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicDev.cpp">
+      <Filter>01.System\00.Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>01.System\01.Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer_Manager.cpp">
+      <Filter>01.System\01.Time\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphic_Manager.cpp">
+      <Filter>01.System\00.Graphic\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>00.Client\90.Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dutil_Manager.cpp">
+      <Filter>02.Utiltiy\00.d3dutil_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>02.Utiltiy\01.Object\00.Geometry\00.Box</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>02.Utiltiy\01.Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse_Manager.cpp">
+      <Filter>02.Utiltiy\97.Mouse_Manager</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>00.Client\99.Default</Filter>
+    </Image>
+    <Image Include="3D_ViewerProject.ico">
+      <Filter>00.Client\99.Default</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="3D_ViewerProject.rc">
+      <Filter>00.Client\99.Default</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Shaders\color.hlsl">
+      <Filter>02.Utiltiy\98.hlsl</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
