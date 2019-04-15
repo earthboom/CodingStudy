@@ -66,7 +66,8 @@ private:
 
 public:
 	const Microsoft::WRL::ComPtr<IDXGISwapChain>&	Get_SwapChain(void) const { return m_SwapChain; }
-
+	const Microsoft::WRL::ComPtr<ID3D12Fence>& Get_Fence(void) const { return m_Fence; }
+	
 	ID3D12Resource* Get_CurrentBackBuffer_Resource(void) const;
 	D3D12_CPU_DESCRIPTOR_HANDLE Get_CurrentBackBufferView_Handle(void) const;
 	D3D12_CPU_DESCRIPTOR_HANDLE Get_DepthStencilView_Handle(void) const;
