@@ -2,6 +2,8 @@
 
 extern HWND g_hWnd;
 
+extern DirectX::XMFLOAT3 g_EyePos;
+
 const WORD WINSIZE_X = 1400;
 const WORD WINSIZE_Y = 1050;
 

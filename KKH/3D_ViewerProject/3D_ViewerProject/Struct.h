@@ -11,7 +11,8 @@ struct Vertex
 
 struct ObjectConstants
 {
-	DirectX::XMFLOAT4X4	WorldViewPorj = MathHelper::Indentity4x4();
+	//DirectX::XMFLOAT4X4	WorldViewPorj = MathHelper::Indentity4x4();
+	DirectX::XMFLOAT4X4	World = MathHelper::Indentity4x4();
 };
 
 struct PassConstants

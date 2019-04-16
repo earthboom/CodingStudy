@@ -45,7 +45,7 @@ bool Box::Update(const float & dt)
 
 	//Update the constant buffer with the lastest worldViewProj matrix.
 	ObjectConstants objConstants;
-	DirectX::XMStoreFloat4x4(&objConstants.WorldViewPorj, DirectX::XMMatrixTranspose(worldViewProj));
+	DirectX::XMStoreFloat4x4(&objConstants.World, DirectX::XMMatrixTranspose(worldViewProj));
 	mObjectCB->CopyData(0, objConstants);
 
 	return TRUE;

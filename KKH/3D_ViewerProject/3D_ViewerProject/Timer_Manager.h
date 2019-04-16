@@ -19,6 +19,7 @@ public:
 
 public:
 	float	Get_TimeDelta(const TCHAR* pTag);
+	float	Get_TotalTime(const TCHAR* pTag);
 
 private:
 	std::map<const TCHAR*, PTIMER> m_mapTimer;

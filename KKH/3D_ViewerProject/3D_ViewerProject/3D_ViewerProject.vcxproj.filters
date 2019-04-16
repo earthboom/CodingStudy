@@ -58,6 +58,12 @@
     <Filter Include="02.Utiltiy\97.Mouse_Manager">
       <UniqueIdentifier>{bed4c857-b3b0-478f-aeb0-a4c715786c65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utiltiy\01.Object\00.Geometry\01.Shape">
+      <UniqueIdentifier>{7a8e1a0d-fbb6-4f73-9656-ee0153a7a07f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\97.GeometryGenerator">
+      <UniqueIdentifier>{b1b9c45c-bc7f-44bd-ac5f-703da326cb36}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -117,6 +123,12 @@
     <ClInclude Include="Mouse_Manager.h">
       <Filter>02.Utiltiy\97.Mouse_Manager</Filter>
     </ClInclude>
+    <ClInclude Include="Shape.h">
+      <Filter>02.Utiltiy\01.Object\00.Geometry\01.Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryGenerator.h">
+      <Filter>02.Utiltiy\97.GeometryGenerator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -154,6 +166,12 @@
     </ClCompile>
     <ClCompile Include="Mouse_Manager.cpp">
       <Filter>02.Utiltiy\97.Mouse_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Shape.cpp">
+      <Filter>02.Utiltiy\01.Object\00.Geometry\01.Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>02.Utiltiy\97.GeometryGenerator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -15,6 +15,8 @@
 #define MAX_LOADSTRING 100
 
 // Global Variables:
+DirectX::XMFLOAT3 g_EyePos = { 0.0f, 0.0f, 0.0 };
+
 HWND g_hWnd;
 HINSTANCE g_hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text

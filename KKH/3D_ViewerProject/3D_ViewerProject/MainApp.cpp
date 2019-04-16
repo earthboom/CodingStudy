@@ -23,10 +23,10 @@ bool CMainApp::Ready_MainApp(void)
 	//Reset the command list to prep for initialization commands.
 	ThrowIfFailed(GRAPHIC->Get_CommandList()->Reset(GRAPHIC->Get_CommandAllocator().Get(), nullptr));
 
-	m_Box = Box::Create();
-	m_Box->OnResize();
+	//m_Box = Box::Create();
+	//m_Box->OnResize();
 
-	MOUSE.Set_Obj(m_Box);
+	//MOUSE.Set_Obj(m_Box);
 
 	//Execute the initialization commands.
 	ThrowIfFailed(GRAPHIC->Get_CommandList()->Close());
@@ -42,7 +42,7 @@ bool CMainApp::Ready_MainApp(void)
 
 int CMainApp::Update_MainApp(const float & dt)
 {
-	m_Box->Update(dt);
+	//m_Box->Update(dt);
 
 	return 0;
 }
@@ -50,7 +50,7 @@ int CMainApp::Update_MainApp(const float & dt)
 void CMainApp::Render_MainApp(const float& dt)
 {
 	//GRAPHIC_MGR.Draw(dt);
-	m_Box->Render(dt);
+	//m_Box->Render(dt);
 }
 
 void CMainApp::Free(void)

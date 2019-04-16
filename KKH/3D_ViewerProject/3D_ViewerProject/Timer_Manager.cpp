@@ -40,6 +40,15 @@ float CTimer_Manager::Get_TimeDelta(const TCHAR * pTag)
 	return pTimer->DeltaTime();
 }
 
+float CTimer_Manager::Get_TotalTime(const TCHAR * pTag)
+{
+	auto pTimer = Find_Timer(pTag);
+	if (pTimer == nullptr)
+		return 0.0f;
+
+	return pTimer->TotalTime();
+}
+
 PTIMER CTimer_Manager::Find_Timer(const TCHAR * pTag)
 {
 	//auto pFindTimer = [pTag](auto& itr)->bool { 	if (!_tcscmp(itr.first, pTag))	return TRUE;	else return FALSE;};
