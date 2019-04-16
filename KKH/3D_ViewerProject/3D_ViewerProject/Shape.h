@@ -16,15 +16,19 @@ public:
 	virtual bool Update(const float& dt);
 	virtual bool Render(const float& dt);
 
+	void OnResize(void);
+
 private:
 	void BuildDescriptorHeaps(void);
-	void BuildConstantBuffers(void);
+	void BuildConstantBufferViews(void);
 	void BuildRootSignature(void);
 	void BuildShadersAndInputLayout(void);
-	void BuildBoxGeometry(void);
+	void BuildShapeGeometry(void);
 	void BuildPSO(void);
-
 	void BuildFrameResources(void);
+	void BuildRenderItems(void);
+	
+	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems);
 
 	void UpdateObjectCBs(const float& dt);
 	void UpdateMainPassCB(const float& dt);
@@ -42,6 +46,8 @@ private:
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> mPSO = nullptr;
+
+	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> mGeometries;
 
 	float mTheta = 1.5f * PI;
 	float mPhi = DirectX::XM_PIDIV4;

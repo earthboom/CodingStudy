@@ -35,7 +35,7 @@ void Mouse_Manager::OnMouseMove(WPARAM btnState, int x, int y)
 		std::static_pointer_cast<Box>(mObj)->Get_Theta() += dx;
 		std::static_pointer_cast<Box>(mObj)->Get_Phi() += dy;
 
-		std::static_pointer_cast<Box>(mObj)->Get_Phi() = MathHelper::Clamp(std::static_pointer_cast<Box>(mObj)->Get_Phi(), 0.1f, (float)PI - 0.1f);
+		std::static_pointer_cast<Box>(mObj)->Get_Phi() = MathHelper::Clamp(std::static_pointer_cast<Box>(mObj)->Get_Phi(), 0.1f, PI - 0.1f);
 	}
 	else if ((btnState & MK_RBUTTON) != 0)
 	{

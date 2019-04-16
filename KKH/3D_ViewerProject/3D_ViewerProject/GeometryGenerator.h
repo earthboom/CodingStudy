@@ -33,7 +33,7 @@ public:
 		std::vector<Vertex> Vertices;
 		std::vector<uint32> Indices32;
 
-		std::vector<uint16>& GetIndices(void)
+		std::vector<uint16>& GetIndices16(void)
 		{
 			if (mIndices16.empty())
 			{
@@ -50,4 +50,9 @@ public:
 	};
 
 	MeshData CreateBox(float w, float h, float depth, uint32 numSubdivisions);
+	MeshData CreateCylinder(float bottomRadius, float topRadius, float height, uint32 sliceCount, uint32 stackCount);
+
+private:
+	void BuildCylinderTopCap(float bottomRadisu, float topRadius, float height, uint32 sliceCount, uint32 stackCount, MeshData& meshData);
+	void BuildCylinderBottomCap(float bottomRadisu, float topRadius, float height, uint32 sliceCount, uint32 stackCount, MeshData& meshData);
 };

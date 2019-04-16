@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Shape.h"
 #include "Const.h"
+#include "GeometryGenerator.h"
 #include "Graphic_Manager.h"
 #include "Timer_Manager.h"
 
@@ -14,11 +15,13 @@ Shape::~Shape(void)
 
 bool Shape::Ready(void)
 {
-	BuildDescriptorHeaps();
-	BuildConstantBuffers();
 	BuildRootSignature();
 	BuildShadersAndInputLayout();
-	BuildBoxGeometry();
+	BuildShapeGeometry();
+	BuildRenderItems();
+	BuildFrameResources();
+	BuildDescriptorHeaps();
+	BuildConstantBufferViews();
 	BuildPSO();
 
 	return TRUE;
@@ -47,6 +50,12 @@ bool Shape::Render(const float & dt)
 	return TRUE;
 }
 
+void Shape::OnResize(void)
+{
+	DirectX::XMMATRIX p = DirectX::XMMatrixPerspectiveFovLH(0.25f * PI, AspectRatio(), 1.0f, 1000.0f);
+	DirectX::XMStoreFloat4x4(&mProj, p);
+}
+
 void Shape::BuildDescriptorHeaps(void)
 {
 	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
@@ -57,7 +66,7 @@ void Shape::BuildDescriptorHeaps(void)
 	ThrowIfFailed(GRAPHIC->Get_Device()->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&mCbvHeap)));
 }
 
-void Shape::BuildConstantBuffers(void)
+void Shape::BuildConstantBufferViews(void)
 {
 	mObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(GRAPHIC->Get_Device().Get(), 1, TRUE);
 
@@ -116,8 +125,55 @@ void Shape::BuildShadersAndInputLayout(void)
 	};
 }
 
-void Shape::BuildBoxGeometry(void)
+void Shape::BuildShapeGeometry(void)
 {
+	GeometryGenerator geoGen;
+	GeometryGenerator::MeshData cylinder = geoGen.CreateCylinder(0.5f, 0.3f, 3.0f, 20, 20);
+
+	UINT cylinderVertexOffset = (UINT)cylinder.Vertices.size();
+
+	UINT cylinderIndexOffset = (UINT)cylinder.Indices32.size();
+
+	SubmeshGeometry cylinderSubmesh;
+	cylinderSubmesh.IndexCount = (UINT)cylinder.Indices32.size();
+	cylinderSubmesh.StartIndexLocaiton = cylinderIndexOffset;
+	cylinderSubmesh.BaseVertexLocation = cylinderVertexOffset;
+
+	auto totalVertexCount = cylinder.Vertices.size();
+
+	std::vector<Vertex> vertices(totalVertexCount);
+
+	UINT k = 0;
+	for (size_t i = 0; i < cylinder.Vertices.size(); ++i, ++k)
+	{
+		vertices[k].Pos = cylinder.Vertices[i].Position;
+		vertices[k].Color = DirectX::XMFLOAT4(DirectX::Colors::SteelBlue);
+	}
+
+
+	std::vector<std::uint16_t> indices;
+	indices.insert(indices.end(), std::begin(cylinder.GetIndices16()), std::end(cylinder.GetIndices16()));
+
+	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+
+	auto geo = std::make_unique<MeshGeometry>();
+	geo->Name = "shapeGeo";
+
+	ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
+	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+
+	ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
+	CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+	geo->VertexByteStride = sizeof(Vertex);
+	geo->VertexBufferByteSize = vbByteSize;
+	geo->IndexFormat = DXGI_FORMAT_R16_UINT;
+	geo->IndexBufferByteSize = ibByteSize;
+
+	geo->DrawArgs["cylinder"] = cylinderSubmesh;
+
+	mGeometries[geo->Name] = std::move(geo);
 }
 
 void Shape::BuildPSO(void)
@@ -148,6 +204,14 @@ void Shape::BuildFrameResources(void)
 {
 	for (int i = 0; i < NumFrameResources; ++i)
 		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC->Get_Device().Get(), 1, (UINT)mAllRitems.size()));
+}
+
+void Shape::BuildRenderItems(void)
+{
+}
+
+void Shape::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const std::vector<RenderItem*>& ritems)
+{
 }
 
 void Shape::UpdateObjectCBs(const float & dt)
