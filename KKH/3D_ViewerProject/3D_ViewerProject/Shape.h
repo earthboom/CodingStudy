@@ -60,7 +60,7 @@ private:
 
 	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
-	std::vector<RenderItem> mOpaqueRitems;
+	std::vector<RenderItem*> mOpaqueRitems;
 	std::vector<RenderItem> mTransparentRitems;
 
 	PassConstants mMainPassCB;
