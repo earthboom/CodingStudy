@@ -6,11 +6,9 @@
 #include "Timer_Manager.h"
 
 Shape::Shape(void)
-	: mCurrFrameResourceIndex(0)
+	: Object()
+	, mCurrFrameResourceIndex(0)
 	, mPassCbvOffset(0)
-	, mTheta(1.5f * PI)
-	, mPhi(DirectX::XM_PIDIV4)
-	, mRadius(5.0f)
 {
 }
 
@@ -58,15 +56,15 @@ bool Shape::Render(const float & dt)
 {
 	auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
 
-	ThrowIfFailed(GRAPHIC->Get_CommandAllocator()->Reset());
+	ThrowIfFailed(cmdListAlloc->Reset());
 
 	if (mIsWireframe)
 	{
-		ThrowIfFailed(GRAPHIC->Get_CommandList()->Reset(GRAPHIC->Get_CommandAllocator().Get(), mPSOs["opaque_wireframe"].Get()));
+		ThrowIfFailed(GRAPHIC->Get_CommandList()->Reset(cmdListAlloc.Get(), mPSOs["opaque_wireframe"].Get()));
 	}
 	else
 	{
-		ThrowIfFailed(GRAPHIC->Get_CommandList()->Reset(GRAPHIC->Get_CommandAllocator().Get(), mPSOs["opaque"].Get()));
+		ThrowIfFailed(GRAPHIC->Get_CommandList()->Reset(cmdListAlloc.Get(), mPSOs["opaque"].Get()));
 	}
 
 	GRAPHIC->Get_CommandList()->RSSetViewports(1, &GRAPHIC->Get_ScreenViewport());
@@ -85,7 +83,7 @@ bool Shape::Render(const float & dt)
 
 	GRAPHIC->Get_CommandList()->SetGraphicsRootSignature(mRootSignature.Get());
 
-	int passCbvIndex = mPassCbvOffset = mCurrFrameResourceIndex;
+	int passCbvIndex = mPassCbvOffset + mCurrFrameResourceIndex;
 	auto passCbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(mCbvHeap->GetGPUDescriptorHandleForHeapStart());
 	passCbvHandle.Offset(passCbvIndex, GRAPHIC->Get_CbvSrvUavDescriptorSize());
 	GRAPHIC->Get_CommandList()->SetGraphicsRootDescriptorTable(1, passCbvHandle);
@@ -208,8 +206,8 @@ void Shape::BuildShadersAndInputLayout(void)
 {
 	HRESULT hr = S_OK;
 
-	mvsByteCode = d3dutil_Mananger::CompileShader(L"..\\Shaders\\color.hlsl", nullptr, "VS", "vs_5_1");
-	mpsByteCode = d3dutil_Mananger::CompileShader(L"..\\Shaders\\color.hlsl", nullptr, "PS", "ps_5_1");
+	mShaders["standardVS"] = d3dutil_Mananger::CompileShader(L"..\\Shaders\\color.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["opaquePS"] = d3dutil_Mananger::CompileShader(L"..\\Shaders\\color.hlsl", nullptr, "PS", "ps_5_1");
 
 	mInputLayout =
 	{
@@ -303,6 +301,9 @@ void Shape::BuildShapeGeometry(void)
 
 	ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
 	CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), GRAPHIC->Get_CommandList().Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
+	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), GRAPHIC->Get_CommandList().Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
 
 	geo->VertexByteStride = sizeof(Vertex);
 	geo->VertexBufferByteSize = vbByteSize;
@@ -400,13 +401,13 @@ void Shape::BuildRenderItems(void)
 		leftCylRitem->StartIndexLocation = leftCylRitem->Geo->DrawArgs["cylinder"].StartIndexLocaiton;
 		leftCylRitem->BaseVertexLocation = leftCylRitem->Geo->DrawArgs["cylinder"].BaseVertexLocation;
 
-		DirectX::XMStoreFloat4x4(&rightSphereRitem->World, leftCylWorld);
-		rightSphereRitem->objCBIndex = objCBIndex++;
-		rightSphereRitem->Geo = mGeometries["shapeGeo"].get();
-		rightSphereRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		rightSphereRitem->IndexCount = rightSphereRitem->Geo->DrawArgs["cylinder"].IndexCount;
-		rightSphereRitem->StartIndexLocation = rightSphereRitem->Geo->DrawArgs["cylinder"].StartIndexLocaiton;
-		rightSphereRitem->BaseVertexLocation = rightSphereRitem->Geo->DrawArgs["cylinder"].BaseVertexLocation;
+		DirectX::XMStoreFloat4x4(&rightCylRitem->World, leftCylWorld);
+		rightCylRitem->objCBIndex = objCBIndex++;
+		rightCylRitem->Geo = mGeometries["shapeGeo"].get();
+		rightCylRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		rightCylRitem->IndexCount = rightCylRitem->Geo->DrawArgs["cylinder"].IndexCount;
+		rightCylRitem->StartIndexLocation = rightCylRitem->Geo->DrawArgs["cylinder"].StartIndexLocaiton;
+		rightCylRitem->BaseVertexLocation = rightCylRitem->Geo->DrawArgs["cylinder"].BaseVertexLocation;
 
 		DirectX::XMStoreFloat4x4(&leftSphereRitem->World, rightSphereWorld);
 		leftSphereRitem->objCBIndex = objCBIndex++;
@@ -425,7 +426,7 @@ void Shape::BuildRenderItems(void)
 		rightSphereRitem->BaseVertexLocation = rightSphereRitem->Geo->DrawArgs["sphere"].BaseVertexLocation;
 
 		mAllRitems.push_back(std::move(leftCylRitem));
-		mAllRitems.push_back(std::move(rightSphereRitem));
+		mAllRitems.push_back(std::move(rightCylRitem));
 		mAllRitems.push_back(std::move(leftSphereRitem));
 		mAllRitems.push_back(std::move(rightSphereRitem));
 	}
@@ -528,4 +529,13 @@ void Shape::UpdateMainPassCB(const float & dt)
 
 	auto currPassCB = mCurrFrameResource->PassCB.get();
 	currPassCB->CopyData(0, mMainPassCB);
+}
+
+std::shared_ptr<Shape> Shape::Create(void)
+{
+	SHAPE pShape = std::make_shared<Shape>();
+	if (!pShape)	return nullptr;
+
+	pShape->Ready();
+	return pShape;
 }

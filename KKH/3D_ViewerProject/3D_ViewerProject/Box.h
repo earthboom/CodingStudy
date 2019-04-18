@@ -31,9 +31,9 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> mPSO = nullptr;
 
-	float mTheta = 1.5f * PI;
-	float mPhi = DirectX::XM_PIDIV4;
-	float mRadius = 5.0f;
+	//float mTheta = 1.5f * PI;
+	//float mPhi = DirectX::XM_PIDIV4;
+	//float mRadius = 5.0f;
 
 private:
 	void BuildDescriptorHeaps(void);
@@ -43,10 +43,10 @@ private:
 	void BuildBoxGeometry(void);
 	void BuildPSO(void);
 
-public:
-	float& Get_Theta(void) { return mTheta; }
-	float& Get_Phi(void) { return mPhi; }
-	float& Get_Radius(void) { return mRadius; }
+//public:
+//	float& Get_Theta(void) { return mTheta; }
+//	float& Get_Phi(void) { return mPhi; }
+//	float& Get_Radius(void) { return mRadius; }
 
 public:
 	static std::shared_ptr<Box> Create(void);

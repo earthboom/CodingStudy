@@ -16,6 +16,7 @@
 
 // Global Variables:
 DirectX::XMFLOAT3 g_EyePos = { 0.0f, 0.0f, 0.0 };
+bool mIsWireframe = FALSE;
 
 HWND g_hWnd;
 HINSTANCE g_hInst;                                // current instance

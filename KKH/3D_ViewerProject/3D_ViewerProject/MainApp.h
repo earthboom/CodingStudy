@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Box.h";
+#include "Box.h"
+#include "Shape.h"
 
 class CMainApp
 {
@@ -14,7 +15,8 @@ public:
 	void	Render_MainApp(const float& dt);
 
 private:
-	PBOX	m_Box;
+	//PBOX	m_Box;
+	SHAPE m_Shape;
 
 private:
 	float	m_fTime;

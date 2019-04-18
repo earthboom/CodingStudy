@@ -2,7 +2,7 @@
 #include "Mouse_Manager.h"
 #include "MathHelper.h"
 #include "Const.h"
-#include "Box.h"
+#include "Object.h"
 
 Mouse_Manager::Mouse_Manager(void)
 {
@@ -32,19 +32,19 @@ void Mouse_Manager::OnMouseMove(WPARAM btnState, int x, int y)
 		float dx = DirectX::XMConvertToRadians(0.25f * static_cast<float>(x - mLastMousePos.x));
 		float dy = DirectX::XMConvertToRadians(0.25f * static_cast<float>(y - mLastMousePos.y));
 
-		std::static_pointer_cast<Box>(mObj)->Get_Theta() += dx;
-		std::static_pointer_cast<Box>(mObj)->Get_Phi() += dy;
+		mObj->Get_Theta() += dx;
+		mObj->Get_Phi() += dy;
 
-		std::static_pointer_cast<Box>(mObj)->Get_Phi() = MathHelper::Clamp(std::static_pointer_cast<Box>(mObj)->Get_Phi(), 0.1f, PI - 0.1f);
+		mObj->Get_Phi() = MathHelper::Clamp(mObj->Get_Phi(), 0.1f, PI - 0.1f);
 	}
 	else if ((btnState & MK_RBUTTON) != 0)
 	{
-		float dx = 0.005f * static_cast<float>(x - mLastMousePos.x);
-		float dy = 0.005f * static_cast<float>(y - mLastMousePos.y);
+		float dx = 0.05f * static_cast<float>(x - mLastMousePos.x);
+		float dy = 0.05f * static_cast<float>(y - mLastMousePos.y);
 
-		std::static_pointer_cast<Box>(mObj)->Get_Radius() += dx - dy;
+		mObj->Get_Radius() += dx - dy;
 
-		std::static_pointer_cast<Box>(mObj)->Get_Radius() = MathHelper::Clamp(std::static_pointer_cast<Box>(mObj)->Get_Radius(), 3.0f, 15.0f);
+		mObj->Get_Radius() = MathHelper::Clamp(mObj->Get_Radius(), 5.0f, 150.0f);
 	}
 
 	mLastMousePos.x = x;

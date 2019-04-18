@@ -5,7 +5,8 @@
 #include "Function.h"
 
 CMainApp::CMainApp(void)
-	: m_Box(nullptr)
+	: m_Shape(nullptr)
+	//,m_Box(nullptr)
 	, m_fTime(0.0f)
 {
 }
@@ -26,7 +27,11 @@ bool CMainApp::Ready_MainApp(void)
 	//m_Box = Box::Create();
 	//m_Box->OnResize();
 
+	m_Shape = Shape::Create();
+	m_Shape->OnResize();
+
 	//MOUSE.Set_Obj(m_Box);
+	MOUSE.Set_Obj(m_Shape);
 
 	//Execute the initialization commands.
 	ThrowIfFailed(GRAPHIC->Get_CommandList()->Close());
@@ -43,6 +48,7 @@ bool CMainApp::Ready_MainApp(void)
 int CMainApp::Update_MainApp(const float & dt)
 {
 	//m_Box->Update(dt);
+	m_Shape->Update(dt);
 
 	return 0;
 }
@@ -51,6 +57,7 @@ void CMainApp::Render_MainApp(const float& dt)
 {
 	//GRAPHIC_MGR.Draw(dt);
 	//m_Box->Render(dt);
+	m_Shape->Render(dt);
 }
 
 void CMainApp::Free(void)

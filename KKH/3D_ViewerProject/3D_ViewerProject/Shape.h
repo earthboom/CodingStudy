@@ -46,9 +46,9 @@ private:
 	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3DBlob>> mShaders;
 	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3D12PipelineState>> mPSOs;
 
-	float mTheta;	// = 1.5f * PI;
-	float mPhi;		// = DirectX::XM_PIDIV4;
-	float mRadius;	// = 5.0f;
+	//float mTheta;	// = 1.5f * PI;
+	//float mPhi;		// = DirectX::XM_PIDIV4;
+	//float mRadius;	// = 5.0f;
 
 
 	std::vector<std::unique_ptr<FrameResource>> mFrameResources;
@@ -62,4 +62,9 @@ private:
 
 	PassConstants mMainPassCB;
 	UINT mPassCbvOffset;
+
+public:
+	static std::shared_ptr<Shape> Create(void);
 };
+
+typedef std::shared_ptr<Shape> SHAPE;

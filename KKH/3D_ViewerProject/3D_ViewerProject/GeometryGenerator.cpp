@@ -260,12 +260,12 @@ GeometryGenerator::MeshData GeometryGenerator::CreateGrid(float w, float depth, 
 		{
 			float x = -halfDepth + j * dx;
 
-			meshData.Vertices[i * n + j].Position = DirectX::XMFLOAT3(x, 0.0f, z);
-			meshData.Vertices[i * n + j].Position = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
-			meshData.Vertices[i * n + j].Position = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+			meshData.Vertices[i * n + j].Position	= DirectX::XMFLOAT3(x, 0.0f, z);
+			meshData.Vertices[i * n + j].Normal		= DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+			meshData.Vertices[i * n + j].TangentU	= DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
 
-			meshData.Vertices[i*n + j].TexC.x = j * du;
-			meshData.Vertices[i*n + j].TexC.y = i * dv;
+			meshData.Vertices[i * n + j].TexC.x = j * du;
+			meshData.Vertices[i * n + j].TexC.y = i * dv;
 		}
 	}
 
@@ -275,7 +275,7 @@ GeometryGenerator::MeshData GeometryGenerator::CreateGrid(float w, float depth, 
 	uint32 k = 0;
 	for (uint32 i = 0; i < m - 1; ++i)
 	{
-		for (uint32 j = 0; j < n - 2; ++j)
+		for (uint32 j = 0; j < n - 1; ++j)
 		{
 			meshData.Indices32[k]		= i * n + j;
 			meshData.Indices32[k + 1]	= i * n + j + 1;
