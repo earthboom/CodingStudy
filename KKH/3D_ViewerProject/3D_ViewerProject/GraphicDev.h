@@ -81,6 +81,7 @@ public:
 	const D3D12_VIEWPORT& Get_ScreenViewport(void) const { return m_ScreenViewport; }
 	const D3D12_RECT& Get_ScissorRect(void) const { return m_ScissorRect; }
 
+	UINT64& Get_CurrentFence(void) { return m_iCurrentFence; }
 	int& Get_Set_CurrBackBuffer(void) { return m_iCurrBackBuffer; }
 	static const int& Get_SwapChainBufferCount(void) { return m_iSwapChainBufferCount; }
 
@@ -89,6 +90,12 @@ public:
 
 	const DXGI_FORMAT Get_BackBufferFormat(void) { return m_BackBufferFormat; }
 	const DXGI_FORMAT Get_DepthStencilFormat(void) { return m_DepthStencilFormat; }
+
+	const UINT Get_RtvDescriptiorSize(void) const { return m_iRtvDescriptiorSize; }
+	const UINT Get_DsvDescriptiorSize(void) const { return m_iDsvDescriptiorSize; }
+	const UINT Get_CbvSrvUavDescriptorSize(void) const { return m_CbvSrvUavDescriptorSize; }
+
+	
 };
 
 typedef std::shared_ptr<CGraphicDev>	PGRAPHIC;

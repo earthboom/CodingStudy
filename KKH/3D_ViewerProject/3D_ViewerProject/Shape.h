@@ -30,33 +30,30 @@ private:
 	
 	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems);
 
+	void OnKeyboardInput(const float& dt);
+	void UpdateCamera(const float& dt);
+
 	void UpdateObjectCBs(const float& dt);
 	void UpdateMainPassCB(const float& dt);
 
 private:
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
-
-	std::unique_ptr<UploadBuffer<ObjectConstants>> mObjectCB = nullptr;
-	std::unique_ptr<MeshGeometry> mBoxGeo = nullptr;
-
-	Microsoft::WRL::ComPtr<ID3DBlob> mvsByteCode = nullptr;
-	Microsoft::WRL::ComPtr<ID3DBlob> mpsByteCode = nullptr;
-
+	
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> mPSO = nullptr;
-
 	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> mGeometries;
+	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3DBlob>> mShaders;
+	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3D12PipelineState>> mPSOs;
 
-	float mTheta = 1.5f * PI;
-	float mPhi = DirectX::XM_PIDIV4;
-	float mRadius = 5.0f;
+	float mTheta;	// = 1.5f * PI;
+	float mPhi;		// = DirectX::XM_PIDIV4;
+	float mRadius;	// = 5.0f;
 
 
 	std::vector<std::unique_ptr<FrameResource>> mFrameResources;
 	FrameResource* mCurrFrameResource = nullptr;
-	int mCurrFrameResourceIndex = 0;
+	int mCurrFrameResourceIndex;	// = 0;
 
 	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
@@ -64,4 +61,5 @@ private:
 	std::vector<RenderItem> mTransparentRitems;
 
 	PassConstants mMainPassCB;
+	UINT mPassCbvOffset;
 };
