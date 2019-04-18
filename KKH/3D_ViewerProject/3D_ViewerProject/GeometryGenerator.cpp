@@ -82,8 +82,8 @@ GeometryGenerator::MeshData GeometryGenerator::CreateBox(float w, float h, float
 
 	numSubdivisions = std::min<uint32>(numSubdivisions, 6u);
 
-	for(uint32 i=0; i<numSubdivisions; ++i)
-		
+	for (uint32 i = 0; i < numSubdivisions; ++i)
+		Subdivide(meshData);
 
 	return meshData;
 }
@@ -258,7 +258,7 @@ GeometryGenerator::MeshData GeometryGenerator::CreateGrid(float w, float depth, 
 		float z = halfDepth - i * dz;
 		for (uint32 j = 0; j < n; ++j)
 		{
-			float x = -halfDepth + j * dx;
+			float x = -halfWidth + j * dx;
 
 			meshData.Vertices[i * n + j].Position	= DirectX::XMFLOAT3(x, 0.0f, z);
 			meshData.Vertices[i * n + j].Normal		= DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -281,9 +281,9 @@ GeometryGenerator::MeshData GeometryGenerator::CreateGrid(float w, float depth, 
 			meshData.Indices32[k + 1]	= i * n + j + 1;
 			meshData.Indices32[k + 2]	= (i + 1) * n + j;
 
-			meshData.Indices32[k + 3] = (i + 1) * n + j;
-			meshData.Indices32[k + 4] = i * n + j + 1;
-			meshData.Indices32[k + 5] = (i + 1) * n + j + 1;
+			meshData.Indices32[k + 3]	= (i + 1) * n + j;
+			meshData.Indices32[k + 4]	= i * n + j + 1;
+			meshData.Indices32[k + 5]	= (i + 1) * n + j + 1;
 
 			k += 6;
 		}
@@ -313,9 +313,9 @@ void GeometryGenerator::Subdivide(GeometryGenerator::MeshData & meshData)
 		meshData.Vertices.push_back(v0);	//0
 		meshData.Vertices.push_back(v1);	//1
 		meshData.Vertices.push_back(v2);	//2
-		meshData.Vertices.push_back(v0);	//3
-		meshData.Vertices.push_back(v1);	//4
-		meshData.Vertices.push_back(v2);	//5
+		meshData.Vertices.push_back(m0);	//3
+		meshData.Vertices.push_back(m1);	//4
+		meshData.Vertices.push_back(m2);	//5
 
 		meshData.Indices32.push_back(i * 6 + 0);
 		meshData.Indices32.push_back(i * 6 + 3);
