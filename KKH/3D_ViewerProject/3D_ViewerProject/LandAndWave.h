@@ -2,6 +2,8 @@
 
 #include "Object.h"
 #include "Struct.h"
+#include "Waves.h"
+#include "Timer.h"
 
 enum class RenderLayer : int 
 {
@@ -26,7 +28,7 @@ public:
 
 private:
 	void BuildRootSignature(void);
-	void BuildShaderAndInputLayer(void);
+	void BuildShadersAndInputLayer(void);
 	void BuildLAndGeometry(void);
 	void BuildWavesGeometryBuffers(void);
 	void BuildPSOs(void);
@@ -45,7 +47,7 @@ private:
 	DirectX::XMFLOAT3 GetHillsNormal(float x, float z) const;
 
 private:
-	std::vector<std::unique_ptr<FrameResource>> mFrameResource;
+	std::vector<std::unique_ptr<FrameResource>> mFrameResources;
 	FrameResource* mCurrFrameResource;
 	int mCurrFrameResourceIndex;
 
@@ -53,11 +55,11 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature;
 
-	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> mGeometris;
+	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> mGeometries;
 	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3DBlob>> mShaders;
 	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3D12PipelineState>> mPSOs;
 
-	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayerOut;
+	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
 	RenderItem* mWavesRtime;
 
@@ -67,8 +69,13 @@ private:
 
 	std::unique_ptr<Waves> mWave;
 
-	PassConstants mMainPAssCB;
-
+	PassConstants mMainPassCB;
+	
 	float mSunTheta;
 	float mSunPhi;
+
+public:
+	static std::shared_ptr<LandAndWave> Create(void);
 };
+
+typedef std::shared_ptr<LandAndWave> LAW;

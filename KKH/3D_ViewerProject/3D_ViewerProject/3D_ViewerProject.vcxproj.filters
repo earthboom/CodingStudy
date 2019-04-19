@@ -64,6 +64,12 @@
     <Filter Include="02.Utiltiy\97.GeometryGenerator">
       <UniqueIdentifier>{b1b9c45c-bc7f-44bd-ac5f-703da326cb36}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utiltiy\01.Object\00.Geometry\02.LandAndWaves">
+      <UniqueIdentifier>{6da61b8d-fa31-4bcd-81b3-51db6620735e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\96.Waves">
+      <UniqueIdentifier>{c42c9ee4-5f83-473f-b408-c29a1522bb0c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -129,6 +135,12 @@
     <ClInclude Include="GeometryGenerator.h">
       <Filter>02.Utiltiy\97.GeometryGenerator</Filter>
     </ClInclude>
+    <ClInclude Include="LandAndWave.h">
+      <Filter>02.Utiltiy\01.Object\00.Geometry\02.LandAndWaves</Filter>
+    </ClInclude>
+    <ClInclude Include="Waves.h">
+      <Filter>02.Utiltiy\96.Waves</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -172,6 +184,12 @@
     </ClCompile>
     <ClCompile Include="GeometryGenerator.cpp">
       <Filter>02.Utiltiy\97.GeometryGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="LandAndWave.cpp">
+      <Filter>02.Utiltiy\01.Object\00.Geometry\02.LandAndWaves</Filter>
+    </ClCompile>
+    <ClCompile Include="Waves.cpp">
+      <Filter>02.Utiltiy\96.Waves</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -49,6 +49,35 @@ float CTimer_Manager::Get_TotalTime(const TCHAR * pTag)
 	return pTimer->TotalTime();
 }
 
+bool CTimer_Manager::Get_Start(const TCHAR * pTag)
+{
+	auto pTimer = Find_Timer(pTag);
+	if (pTimer == nullptr)
+		return FALSE;
+
+	pTimer->Start();
+	return TRUE;
+}
+
+bool CTimer_Manager::Get_Stop(const TCHAR * pTag)
+{
+	auto pTimer = Find_Timer(pTag);
+	if (pTimer == nullptr)
+		return FALSE;
+
+	pTimer->Stop();
+	return TRUE;
+}
+
+void CTimer_Manager::Get_Tick(const TCHAR * pTag)
+{
+	auto pTimer = Find_Timer(pTag);
+	if (pTimer == nullptr)
+		return;
+
+	pTimer->Tick();
+}
+
 PTIMER CTimer_Manager::Find_Timer(const TCHAR * pTag)
 {
 	//auto pFindTimer = [pTag](auto& itr)->bool { 	if (!_tcscmp(itr.first, pTag))	return TRUE;	else return FALSE;};

@@ -65,7 +65,7 @@ void CTimer::Start(void)
 void CTimer::Stop(void)
 {
 	//이미 정지라면 무시
-	if (m_bStopped)
+	if (!m_bStopped)
 	{
 		__int64 currTime = 0;
 		QueryPerformanceCounter((LARGE_INTEGER*)&currTime);

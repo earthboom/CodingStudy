@@ -6,6 +6,10 @@
 class MathHelper
 {
 public:
+	static float	RandF(void) { return (float)(rand()) / (float)RAND_MAX; }
+	static float	RandF(float a, float b) { return a + RandF() * (b - a); }
+	static int		Rand(int a, int b) { return a + rand() % ((b - a) + 1); }
+
 	template<typename T>
 	static T Clamp(const T& x, const T& low, const T& high) { return x < low ? low : (x > high ? high : x); }
 

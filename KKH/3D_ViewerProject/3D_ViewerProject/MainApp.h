@@ -2,6 +2,7 @@
 
 #include "Box.h"
 #include "Shape.h"
+#include "LandAndWave.h"
 
 class CMainApp
 {
@@ -16,7 +17,8 @@ public:
 
 private:
 	//PBOX	m_Box;
-	SHAPE m_Shape;
+	//SHAPE m_Shape;
+	LAW m_LAW;
 
 private:
 	float	m_fTime;

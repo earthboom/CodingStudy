@@ -354,7 +354,7 @@ void Shape::BuildPSO(void)
 void Shape::BuildFrameResources(void)
 {
 	for (int i = 0; i < NumFrameResources; ++i)
-		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC->Get_Device().Get(), 1, (UINT)mAllRitems.size()));
+		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC->Get_Device().Get(), 1, (UINT)mAllRitems.size(), 0));
 }
 
 void Shape::BuildRenderItems(void)

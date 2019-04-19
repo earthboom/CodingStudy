@@ -164,6 +164,7 @@
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="GraphicDev.h" />
     <ClInclude Include="Graphic_Manager.h" />
+    <ClInclude Include="LandAndWave.h" />
     <ClInclude Include="MainApp.h" />
     <ClInclude Include="Mouse_Manager.h" />
     <ClInclude Include="Object.h" />
@@ -176,6 +177,7 @@
     <ClInclude Include="Timer_Manager.h" />
     <ClInclude Include="Unique_Singleton.h" />
     <ClInclude Include="UploadBuffer.h" />
+    <ClInclude Include="Waves.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3D_ViewerProject.cpp" />
@@ -185,6 +187,7 @@
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="GraphicDev.cpp" />
     <ClCompile Include="Graphic_Manager.cpp" />
+    <ClCompile Include="LandAndWave.cpp" />
     <ClCompile Include="MainApp.cpp" />
     <ClCompile Include="Mouse_Manager.cpp" />
     <ClCompile Include="Object.cpp" />
@@ -197,6 +200,7 @@
     </ClCompile>
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Timer_Manager.cpp" />
+    <ClCompile Include="Waves.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="3D_ViewerProject.rc" />

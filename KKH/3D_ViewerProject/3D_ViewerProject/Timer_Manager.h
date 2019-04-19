@@ -21,6 +21,11 @@ public:
 	float	Get_TimeDelta(const TCHAR* pTag);
 	float	Get_TotalTime(const TCHAR* pTag);
 
+	bool	Get_Start(const TCHAR* pTag);
+	bool	Get_Stop(const TCHAR* pTag);
+
+	void	Get_Tick(const TCHAR* pTag);
+
 private:
 	std::map<const TCHAR*, PTIMER> m_mapTimer;
 	typedef std::map<const TCHAR*, PTIMER>	MAP_TIMER;

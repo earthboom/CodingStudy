@@ -54,6 +54,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	MSG msg = { 0, };
 
 	TIME_MGR.Ready_Timer(L"MainTimer");
+	TIME_MGR.Get_Start(L"MainTimer");
 
 	std::shared_ptr<CMainApp> pMainApp = std::make_shared<CMainApp>();
 	pMainApp->Ready_MainApp();
@@ -67,6 +68,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 		else
 		{
+			TIME_MGR.Get_Tick(L"MainTimer");
 			pMainApp->Update_MainApp(TIME_MGR.Get_TimeDelta(L"MainTimer"));
 			pMainApp->Render_MainApp(TIME_MGR.Get_TimeDelta(L"MainTimer"));
 		}
