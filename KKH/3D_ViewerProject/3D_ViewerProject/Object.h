@@ -1,7 +1,12 @@
 #pragma once
 
-class Object
+#include "Component.h"
+
+class Object : public Component
 {
+public:
+	enum COM_TYPE { CT_STATIC, CT_DYNAMIC, DT_END };
+
 protected:
 	explicit Object(void);
 	Object(const Object&) = delete;
@@ -9,11 +14,13 @@ protected:
 	~Object(void);
 
 protected:
-	virtual bool Ready(void) PURE;
-	virtual bool Update(const float& dt) PURE;
+	virtual bool Ready(void);
+	virtual bool Update(const float& dt);
 	virtual bool Render(const float& dt) PURE;
 
 protected:
+	COM_TYPE m_Comtype;
+
 	DirectX::XMFLOAT4X4 mWorld; //= MathHelper::Indentity4x4();
 	DirectX::XMFLOAT4X4 mView; //= MathHelper::Indentity4x4();
 	DirectX::XMFLOAT4X4 mProj; //= MathHelper::Indentity4x4();
@@ -23,9 +30,15 @@ protected:
 	float mRadius;	// = 5.0f;
 
 public:
-	float& Get_Theta(void) { return mTheta; }
-	float& Get_Phi(void) { return mPhi; }
-	float& Get_Radius(void) { return mRadius; }
+	std::function<COM_TYPE&()> Get_Comtype = [&]()->COM_TYPE& {return m_Comtype; };
+
+	std::function<float&()> Get_Theta = [&]()->float& {return mTheta; };
+	std::function<float&()> Get_Phi = [&]()->float& {return mPhi; };
+	std::function<float&()> Get_Radius = [&]()->float& {return mRadius; };
+	
+	//float& Get_Theta(void) { return mTheta; }
+	//float& Get_Phi(void) { return mPhi; }
+	//float& Get_Radius(void) { return mRadius; }
 };
 
 typedef std::shared_ptr<Object> OBJECT;

@@ -78,3 +78,9 @@ Microsoft::WRL::ComPtr<ID3DBlob> d3dutil_Mananger::CompileShader(const std::wstr
 
 	return byteCode;
 }
+
+void d3dutil_Mananger::OnResize(void)
+{
+	DirectX::XMMATRIX p = DirectX::XMMatrixPerspectiveFovLH(0.25f * PI, AspectRatio(), 1.0f, 1000.0f);
+	DirectX::XMStoreFloat4x4(&g_Proj, p);
+}

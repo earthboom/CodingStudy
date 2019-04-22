@@ -27,7 +27,7 @@ protected:
 
 public:
 	void FlushCommandQueue(void);
-	
+
 private:
 	//Set true to use 4X MSAA 
 	bool m_4xMsaaState = FALSE;	//4X MSAA enalbed
@@ -65,16 +65,23 @@ private:
 	DXGI_FORMAT m_DepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 public:
-	const Microsoft::WRL::ComPtr<IDXGISwapChain>&	Get_SwapChain(void) const { return m_SwapChain; }
-	const Microsoft::WRL::ComPtr<ID3D12Fence>& Get_Fence(void) const { return m_Fence; }
-	
 	ID3D12Resource* Get_CurrentBackBuffer_Resource(void) const;
 	D3D12_CPU_DESCRIPTOR_HANDLE Get_CurrentBackBufferView_Handle(void) const;
 	D3D12_CPU_DESCRIPTOR_HANDLE Get_DepthStencilView_Handle(void) const;
 
-	const Microsoft::WRL::ComPtr<ID3D12CommandQueue>&			Get_CommandQueue(void) const { return m_CommandQueue; }
-	const Microsoft::WRL::ComPtr<ID3D12CommandAllocator>&		Get_CommandAllocator(void) const { return m_CommandAllocator; }
-	const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>&	Get_CommandList(void) const { return m_CommandList; }
+	std::function < const Microsoft::WRL::ComPtr<IDXGISwapChain>&()> Get_SwapChain = [&]()->const Microsoft::WRL::ComPtr<IDXGISwapChain>& { return m_SwapChain; };
+	std::function < const Microsoft::WRL::ComPtr<ID3D12Fence>&()> Get_Fence = [&]()->const Microsoft::WRL::ComPtr<ID3D12Fence>& { return m_Fence; };
+
+	std::function <const Microsoft::WRL::ComPtr<ID3D12CommandQueue>&()> get_CommandQueue = [&]()->const Microsoft::WRL::ComPtr<ID3D12CommandQueue>& {return m_CommandQueue; };
+	std::function <const Microsoft::WRL::ComPtr<ID3D12CommandAllocator>&()> Get_CommandAllocator = [&]()->const Microsoft::WRL::ComPtr<ID3D12CommandAllocator>& {return m_CommandAllocator; };
+	std::function <const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>&()> Get_CommandList = [&]()->const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& {return m_CommandList; };
+	
+	//const Microsoft::WRL::ComPtr<IDXGISwapChain>&	Get_SwapChain(void) const { return m_SwapChain; }
+	//const Microsoft::WRL::ComPtr<ID3D12Fence>& Get_Fence(void) const { return m_Fence; }
+	
+	//const Microsoft::WRL::ComPtr<ID3D12CommandQueue>&			Get_CommandQueue(void) const { return m_CommandQueue; }
+	//const Microsoft::WRL::ComPtr<ID3D12CommandAllocator>&		Get_CommandAllocator(void) const { return m_CommandAllocator; }
+	//const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>&	Get_CommandList(void) const { return m_CommandList; }
 
 	const Microsoft::WRL::ComPtr<ID3D12Device>& Get_Device(void) const { return m_Device; }
 

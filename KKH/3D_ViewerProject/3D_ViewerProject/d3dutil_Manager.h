@@ -90,4 +90,11 @@ public:
 		const D3D_SHADER_MACRO* defines,
 		const std::string& entrypoint,
 		const std::string& target);
+
+
+public:
+	void OnResize(void);
+
+private:
+	
 };

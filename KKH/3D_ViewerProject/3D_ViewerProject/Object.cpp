@@ -4,7 +4,9 @@
 #include "Const.h"
 
 Object::Object(void)
-	: mWorld(MathHelper::Indentity4x4())
+	: Component()
+	, m_Comtype(Object::COM_TYPE::CT_STATIC)
+	, mWorld(MathHelper::Indentity4x4())
 	, mView(MathHelper::Indentity4x4())
 	, mProj(MathHelper::Indentity4x4())
 	, mTheta(1.5f * PI)
@@ -15,4 +17,14 @@ Object::Object(void)
 
 Object::~Object(void)
 {
+}
+
+bool Object::Ready(void)
+{
+	return TRUE;
+}
+
+bool Object::Update(const float & dt)
+{
+	return TRUE;
 }

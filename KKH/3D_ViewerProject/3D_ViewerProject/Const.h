@@ -7,6 +7,7 @@ extern DirectX::XMFLOAT3 g_EyePos;
 
 extern bool mIsWireframe;
 
+extern DirectX::XMFLOAT4X4 g_Proj;
 
 const WORD WINSIZE_X = 1400;
 const WORD WINSIZE_Y = 1050;
