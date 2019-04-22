@@ -3,6 +3,8 @@
 #include <Windows.h>
 #include <DirectXMath.h>
 
+using namespace DirectX;
+
 class MathHelper
 {
 public:
@@ -13,9 +15,9 @@ public:
 	template<typename T>
 	static T Clamp(const T& x, const T& low, const T& high) { return x < low ? low : (x > high ? high : x); }
 
-	static DirectX::XMFLOAT4X4 Indentity4x4(void)
+	static XMFLOAT4X4 Indentity4x4(void)
 	{
-		static DirectX::XMFLOAT4X4 I
+		static XMFLOAT4X4 I
 		{
 			1.0f, 0.0f, 0.0f, 0.0f,
 			0.0f, 1.0f, 0.0f, 0.0f,
@@ -23,5 +25,22 @@ public:
 			0.0f, 0.0f, 0.0f, 1.0f
 		};
 		return I;
+	}
+
+	static DirectX::XMVECTOR ComputeNormal(DirectX::FXMVECTOR p0, DirectX::FXMVECTOR p1, DirectX::FXMVECTOR p2)
+	{		
+		XMVECTOR u = p1 - p0;
+		XMVECTOR v = p2 - p0;
+
+		return XMVector3Normalize(XMVector3Cross(u, v));
+	}
+
+	static XMMATRIX InverseTranspose(CXMMATRIX M)
+	{
+		XMMATRIX A = M;
+		A.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+
+		XMVECTOR det = XMMatrixDeterminant(A);
+		return XMMatrixTranspose(XMMatrixInverse(&det, A));
 	}
 };

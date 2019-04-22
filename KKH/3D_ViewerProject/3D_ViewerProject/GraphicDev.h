@@ -72,7 +72,7 @@ public:
 	std::function < const Microsoft::WRL::ComPtr<IDXGISwapChain>&()> Get_SwapChain = [&]()->const Microsoft::WRL::ComPtr<IDXGISwapChain>& { return m_SwapChain; };
 	std::function < const Microsoft::WRL::ComPtr<ID3D12Fence>&()> Get_Fence = [&]()->const Microsoft::WRL::ComPtr<ID3D12Fence>& { return m_Fence; };
 
-	std::function <const Microsoft::WRL::ComPtr<ID3D12CommandQueue>&()> get_CommandQueue = [&]()->const Microsoft::WRL::ComPtr<ID3D12CommandQueue>& {return m_CommandQueue; };
+	std::function <const Microsoft::WRL::ComPtr<ID3D12CommandQueue>&()> Get_CommandQueue = [&]()->const Microsoft::WRL::ComPtr<ID3D12CommandQueue>& {return m_CommandQueue; };
 	std::function <const Microsoft::WRL::ComPtr<ID3D12CommandAllocator>&()> Get_CommandAllocator = [&]()->const Microsoft::WRL::ComPtr<ID3D12CommandAllocator>& {return m_CommandAllocator; };
 	std::function <const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>&()> Get_CommandList = [&]()->const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& {return m_CommandList; };
 	
