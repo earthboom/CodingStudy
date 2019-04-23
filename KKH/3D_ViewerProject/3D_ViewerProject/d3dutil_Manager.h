@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Unique_Singleton.h"
+#include "Object.h"
 
 #define D3DUTIL d3dutil_Mananger::GetInstnace()
 
@@ -70,6 +71,9 @@ struct MeshGeometry
 class d3dutil_Mananger : public CSingleton<d3dutil_Mananger>
 {
 public:
+	enum ObjState{OS_READY, OS_UPDATE, OS_RENDER, OS_END};
+
+public:
 	explicit d3dutil_Mananger(void);
 	d3dutil_Mananger(const d3dutil_Mananger&) = delete;
 	d3dutil_Mananger& operator = (const d3dutil_Mananger&) = delete;
@@ -93,8 +97,37 @@ public:
 
 
 public:
+	void BuildRootSignature(void);
+	void BuildShadersAndInputLayer(void);
+	void BuildObject(void);
+	void BuildPSOs(void);
+	void BuildFrameResources(void);
+	void BuildRenderItems(void);
+
 	void OnResize(void);
 
 private:
-	
+	Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature;
+
+	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3DBlob>> mShaders;
+
+	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
+
+private:
+	std::map<std::string, OBJECT>* Obj_static_map;
+	std::map<std::string, OBJECT>* Obj_dynamic_map;
+	typedef std::map<std::string, OBJECT> OBJMAP;
+
+	std::vector<OBJMAP*> allObj_Update_vec;
+	typedef std::vector<OBJMAP*> ALLOBJVEC;
+
+public:
+	bool Object_Create(OBJECT obj);
+	bool Object_Cycle(const float& dt, ObjState _state);
+
+
+
+	//bool Object_Ready(void);
+	//bool Object_Update(const float& dt);
+	//bool Object_Render(const float& dt);
 };

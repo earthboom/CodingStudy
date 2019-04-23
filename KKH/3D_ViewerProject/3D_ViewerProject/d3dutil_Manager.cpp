@@ -5,7 +5,12 @@
 #include "Struct.h"
 
 d3dutil_Mananger::d3dutil_Mananger(void)
+	: mRootSignature(nullptr)
+	, Obj_static_map(new OBJMAP)
+	, Obj_dynamic_map(new OBJMAP)
 {
+	allObj_Update_vec.push_back(Obj_static_map);
+	allObj_Update_vec.push_back(Obj_dynamic_map);
 }
 
 d3dutil_Mananger::~d3dutil_Mananger(void)
@@ -79,8 +84,143 @@ Microsoft::WRL::ComPtr<ID3DBlob> d3dutil_Mananger::CompileShader(const std::wstr
 	return byteCode;
 }
 
+void d3dutil_Mananger::BuildRootSignature(void)
+{
+	CD3DX12_ROOT_PARAMETER slotRootParameter[2];
+
+	slotRootParameter[0].InitAsConstantBufferView(0);
+	slotRootParameter[1].InitAsConstantBufferView(1);
+
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(2, slotRootParameter, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+	Microsoft::WRL::ComPtr<ID3DBlob> serializedRootSig = nullptr;
+	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+
+	HRESULT hr = D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1, serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());
+
+	if (errorBlob != nullptr)
+		::OutputDebugStringA((char*)errorBlob->GetBufferPointer());
+
+	ThrowIfFailed(hr);
+
+	ThrowIfFailed(GRAPHIC->Get_Device()->CreateRootSignature(0, serializedRootSig->GetBufferPointer(), serializedRootSig->GetBufferSize(), IID_PPV_ARGS(mRootSignature.GetAddressOf())));
+}
+
+void d3dutil_Mananger::BuildShadersAndInputLayer(void)
+{
+	HRESULT hr = S_OK;
+
+	mShaders["standardVS"] = CompileShader(L"..\\Shaders\\color.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["opaquePS"] = CompileShader(L"..\\Shaders\\color.hlsl", nullptr, "PS", "ps_5_1");
+
+	mInputLayout = 
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	};
+}
+
+void d3dutil_Mananger::BuildObject(void)
+{
+}
+
+void d3dutil_Mananger::BuildPSOs(void)
+{
+}
+
+void d3dutil_Mananger::BuildFrameResources(void)
+{
+}
+
+void d3dutil_Mananger::BuildRenderItems(void)
+{
+}
+
 void d3dutil_Mananger::OnResize(void)
 {
 	DirectX::XMMATRIX p = DirectX::XMMatrixPerspectiveFovLH(0.25f * PI, AspectRatio(), 1.0f, 1000.0f);
 	DirectX::XMStoreFloat4x4(&g_Proj, p);
 }
+
+bool d3dutil_Mananger::Object_Create(OBJECT obj)
+{
+	if (obj == nullptr) return FALSE;
+
+	if (obj->Get_Comtype() == Object::COM_TYPE::CT_STATIC)
+		Obj_static_map->insert(OBJMAP::value_type(obj->Get_Objname(), obj));
+	else if (obj->Get_Comtype() == Object::COM_TYPE::CT_STATIC)
+		Obj_dynamic_map->insert(OBJMAP::value_type(obj->Get_Objname(), obj));
+
+	return TRUE;
+}
+
+bool d3dutil_Mananger::Object_Cycle(const float & dt, ObjState _state)
+{
+	for (auto& objmap : allObj_Update_vec)
+	{
+		for (auto& obj : *objmap)
+		{
+			switch (_state)
+			{
+			case ObjState::OS_READY:
+				if (!obj.second->Ready())
+					return FALSE;
+				break;
+
+			case ObjState::OS_UPDATE:
+				if (!obj.second->Update(dt))
+					return FALSE;
+				break;
+
+			case ObjState::OS_RENDER:
+				if (!obj.second->Render(dt))
+					return FALSE;
+				break;
+			}			
+		}
+	}
+
+	return TRUE;
+}
+
+//bool d3dutil_Mananger::Object_Ready(void)
+//{
+//	for (auto& objmap : allObj_Update_vec)
+//	{
+//		for (auto& obj : *objmap)
+//		{
+//			if (!obj.second->Ready())
+//				return FALSE;
+//		}
+//	}
+//
+//	return TRUE;
+//}
+//
+//bool d3dutil_Mananger::Object_Update(const float& dt)
+//{
+//	for (auto& objmap : allObj_Update_vec)
+//	{
+//		for (auto& obj : *objmap)
+//		{
+//			if (!obj.second->Update(dt))
+//				return FALSE;
+//		}
+//	}
+//
+//	return TRUE;
+//}
+//
+//bool d3dutil_Mananger::Object_Render(const float& dt)
+//{
+//	for (auto& objmap : allObj_Update_vec)
+//	{
+//		for (auto& obj : *objmap)
+//		{
+//			if (!obj.second->Render(dt))
+//				return FALSE;
+//		}
+//	}
+//
+//	return TRUE;
+//}

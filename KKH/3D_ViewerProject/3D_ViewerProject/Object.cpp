@@ -6,6 +6,7 @@
 Object::Object(void)
 	: Component()
 	, m_Comtype(Object::COM_TYPE::CT_STATIC)
+	, m_Name("")
 	, mWorld(MathHelper::Indentity4x4())
 	, mView(MathHelper::Indentity4x4())
 	, mProj(MathHelper::Indentity4x4())

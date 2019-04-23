@@ -76,6 +76,26 @@ public:
 	std::function <const Microsoft::WRL::ComPtr<ID3D12CommandAllocator>&()> Get_CommandAllocator = [&]()->const Microsoft::WRL::ComPtr<ID3D12CommandAllocator>& {return m_CommandAllocator; };
 	std::function <const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>&()> Get_CommandList = [&]()->const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& {return m_CommandList; };
 	
+	std::function <const Microsoft::WRL::ComPtr<ID3D12Device>&()> Get_Device = [&]()->const Microsoft::WRL::ComPtr<ID3D12Device>&{ return m_Device; };
+
+	std::function <const D3D12_VIEWPORT&()> Get_ScreenViewport = [&]()->const D3D12_VIEWPORT&{ return m_ScreenViewport; };
+	std::function <const D3D12_RECT&()> Get_ScissorRect = [&]()->const D3D12_RECT&{ return m_ScissorRect; };
+	
+	std::function <const DXGI_FORMAT()> Get_BackBufferFormat = [=]()->const DXGI_FORMAT{ return m_BackBufferFormat; };
+	std::function <const DXGI_FORMAT()> Get_DepthStencilFormat = [=]()->const DXGI_FORMAT{ return m_DepthStencilFormat; };
+
+	std::function <UINT64&()> Get_CurrentFence = [&]()->UINT64& {return m_iCurrentFence; };
+	std::function <int&()> Get_Set_CurrBackBuffer = [&]()->int& {return m_iCurrBackBuffer; };
+	
+	std::function <bool()> Get_4xMsaaState = [=]()->bool {return m_4xMsaaState; };
+	std::function <const UINT&()> Get_4xMsaaQuality = [&]()->const UINT&{ return m_4xMsaaQuality; };
+
+	std::function <const UINT()> Get_RtvDescriptiorSize = [=]()->const UINT{ return -m_iRtvDescriptiorSize; };
+	std::function <const UINT()> Get_DsvDescriptiorSize = [=]()->const UINT{ return -m_iDsvDescriptiorSize; };
+	std::function <const UINT()> Get_CbvSrvUavDescriptorSize = [=]()->const UINT{ return -m_CbvSrvUavDescriptorSize; };
+
+	static const int& Get_SwapChainBufferCount(void) { return m_iSwapChainBufferCount; }
+
 	//const Microsoft::WRL::ComPtr<IDXGISwapChain>&	Get_SwapChain(void) const { return m_SwapChain; }
 	//const Microsoft::WRL::ComPtr<ID3D12Fence>& Get_Fence(void) const { return m_Fence; }
 	
@@ -83,26 +103,23 @@ public:
 	//const Microsoft::WRL::ComPtr<ID3D12CommandAllocator>&		Get_CommandAllocator(void) const { return m_CommandAllocator; }
 	//const Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>&	Get_CommandList(void) const { return m_CommandList; }
 
-	const Microsoft::WRL::ComPtr<ID3D12Device>& Get_Device(void) const { return m_Device; }
+	//const Microsoft::WRL::ComPtr<ID3D12Device>& Get_Device(void) const { return m_Device; }
 
-	const D3D12_VIEWPORT& Get_ScreenViewport(void) const { return m_ScreenViewport; }
-	const D3D12_RECT& Get_ScissorRect(void) const { return m_ScissorRect; }
+	//const D3D12_VIEWPORT& Get_ScreenViewport(void) const { return m_ScreenViewport; }
+	//const D3D12_RECT& Get_ScissorRect(void) const { return m_ScissorRect; }
 
-	UINT64& Get_CurrentFence(void) { return m_iCurrentFence; }
-	int& Get_Set_CurrBackBuffer(void) { return m_iCurrBackBuffer; }
-	static const int& Get_SwapChainBufferCount(void) { return m_iSwapChainBufferCount; }
+	//UINT64& Get_CurrentFence(void) { return m_iCurrentFence; }
+	//int& Get_Set_CurrBackBuffer(void) { return m_iCurrBackBuffer; }
 
-	bool Get_4xMsaaState(void) { return m_4xMsaaState; }
-	const UINT& Get_4xMsaaQuality(void) { return m_4xMsaaQuality; }
+	//bool Get_4xMsaaState(void) { return m_4xMsaaState; }
+	//const UINT& Get_4xMsaaQuality(void) { return m_4xMsaaQuality; }
 
-	const DXGI_FORMAT Get_BackBufferFormat(void) { return m_BackBufferFormat; }
-	const DXGI_FORMAT Get_DepthStencilFormat(void) { return m_DepthStencilFormat; }
+	//const DXGI_FORMAT Get_BackBufferFormat(void) { return m_BackBufferFormat; }
+	//const DXGI_FORMAT Get_DepthStencilFormat(void) { return m_DepthStencilFormat; }
 
-	const UINT Get_RtvDescriptiorSize(void) const { return m_iRtvDescriptiorSize; }
-	const UINT Get_DsvDescriptiorSize(void) const { return m_iDsvDescriptiorSize; }
-	const UINT Get_CbvSrvUavDescriptorSize(void) const { return m_CbvSrvUavDescriptorSize; }
-
-	
+	//const UINT Get_RtvDescriptiorSize(void) const { return m_iRtvDescriptiorSize; }
+	//const UINT Get_DsvDescriptiorSize(void) const { return m_iDsvDescriptiorSize; }
+	//const UINT Get_CbvSrvUavDescriptorSize(void) const { return m_CbvSrvUavDescriptorSize; }	
 };
 
 typedef std::shared_ptr<CGraphicDev>	PGRAPHIC;
