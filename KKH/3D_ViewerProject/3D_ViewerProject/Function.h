@@ -2,6 +2,7 @@
 
 #include <comdef.h>
 #include <fstream>
+#include "Const.h"
 
 class DxException
 {

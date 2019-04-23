@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Box.h"
-#include "Shape.h"
+#include "BoxScene.h"
+#include "ShapeScene.h"
 #include "LandAndWave.h"
 
 class CMainApp

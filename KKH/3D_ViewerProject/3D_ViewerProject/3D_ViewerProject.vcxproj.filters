@@ -46,29 +46,11 @@
     <Filter Include="02.Utiltiy\98.hlsl">
       <UniqueIdentifier>{29f4b048-ed86-4107-a782-21a7c897afff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utiltiy\97.Mouse_Manager">
-      <UniqueIdentifier>{bed4c857-b3b0-478f-aeb0-a4c715786c65}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utiltiy\97.GeometryGenerator">
-      <UniqueIdentifier>{b1b9c45c-bc7f-44bd-ac5f-703da326cb36}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utiltiy\96.Waves">
-      <UniqueIdentifier>{c42c9ee4-5f83-473f-b408-c29a1522bb0c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Utiltiy\02.Object">
       <UniqueIdentifier>{7c3408bd-0127-4774-b9e0-880da52510e1}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.Utiltiy\02.Object\00.Geometry">
       <UniqueIdentifier>{bdf0fdda-17aa-4d08-8a2d-08cee1e84ab3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utiltiy\02.Object\00.Geometry\00.Box">
-      <UniqueIdentifier>{2dbbd337-8b4b-41b6-b1bf-d1270f41024f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utiltiy\02.Object\00.Geometry\01.Shape">
-      <UniqueIdentifier>{7a8e1a0d-fbb6-4f73-9656-ee0153a7a07f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utiltiy\02.Object\00.Geometry\02.LandAndWaves">
-      <UniqueIdentifier>{6da61b8d-fa31-4bcd-81b3-51db6620735e}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.Utiltiy\01.Component">
       <UniqueIdentifier>{1dfa3d2a-bcff-4a2a-b63e-a4b8e9381ce9}</UniqueIdentifier>
@@ -76,7 +58,28 @@
     <Filter Include="98.Help">
       <UniqueIdentifier>{d099c926-6dc2-4e1f-a523-071fd8c41dde}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utiltiy\02.Object\00.Geometry\03.Colomn">
+    <Filter Include="02.Utiltiy\96.Mouse_Manager">
+      <UniqueIdentifier>{bed4c857-b3b0-478f-aeb0-a4c715786c65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\95.GeometryGenerator">
+      <UniqueIdentifier>{b1b9c45c-bc7f-44bd-ac5f-703da326cb36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\94.Waves">
+      <UniqueIdentifier>{c42c9ee4-5f83-473f-b408-c29a1522bb0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\97.FrameResource">
+      <UniqueIdentifier>{02fe288a-b478-4616-9738-998ff4006732}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\02.Object\00.Geometry\99.BoxScene">
+      <UniqueIdentifier>{2dbbd337-8b4b-41b6-b1bf-d1270f41024f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\02.Object\00.Geometry\98.Shape">
+      <UniqueIdentifier>{7a8e1a0d-fbb6-4f73-9656-ee0153a7a07f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\02.Object\00.Geometry\01.LandAndWaves">
+      <UniqueIdentifier>{6da61b8d-fa31-4bcd-81b3-51db6620735e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\02.Object\00.Geometry\02.Box">
       <UniqueIdentifier>{f523676e-72ed-4dfd-a5c3-f3e19e44c92c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -126,9 +129,6 @@
     <ClInclude Include="Struct.h">
       <Filter>99.Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Box.h">
-      <Filter>02.Utiltiy\02.Object\00.Geometry\00.Box</Filter>
-    </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>02.Utiltiy\02.Object</Filter>
     </ClInclude>
@@ -136,25 +136,34 @@
       <Filter>02.Utiltiy\99.Etc</Filter>
     </ClInclude>
     <ClInclude Include="Mouse_Manager.h">
-      <Filter>02.Utiltiy\97.Mouse_Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Shape.h">
-      <Filter>02.Utiltiy\02.Object\00.Geometry\01.Shape</Filter>
+      <Filter>02.Utiltiy\96.Mouse_Manager</Filter>
     </ClInclude>
     <ClInclude Include="GeometryGenerator.h">
-      <Filter>02.Utiltiy\97.GeometryGenerator</Filter>
+      <Filter>02.Utiltiy\95.GeometryGenerator</Filter>
     </ClInclude>
     <ClInclude Include="LandAndWave.h">
-      <Filter>02.Utiltiy\02.Object\00.Geometry\02.LandAndWaves</Filter>
+      <Filter>02.Utiltiy\02.Object\00.Geometry\01.LandAndWaves</Filter>
     </ClInclude>
     <ClInclude Include="Waves.h">
-      <Filter>02.Utiltiy\96.Waves</Filter>
+      <Filter>02.Utiltiy\94.Waves</Filter>
     </ClInclude>
     <ClInclude Include="Component.h">
       <Filter>02.Utiltiy\01.Component</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\MathHelper.h">
       <Filter>98.Help</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameResource.h">
+      <Filter>02.Utiltiy\97.FrameResource</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxScene.h">
+      <Filter>02.Utiltiy\02.Object\00.Geometry\99.BoxScene</Filter>
+    </ClInclude>
+    <ClInclude Include="ShapeScene.h">
+      <Filter>02.Utiltiy\02.Object\00.Geometry\98.Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>02.Utiltiy\02.Object\00.Geometry\02.Box</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -185,29 +194,35 @@
     <ClCompile Include="d3dutil_Manager.cpp">
       <Filter>02.Utiltiy\00.d3dutil_Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Box.cpp">
-      <Filter>02.Utiltiy\02.Object\00.Geometry\00.Box</Filter>
-    </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>02.Utiltiy\02.Object</Filter>
     </ClCompile>
     <ClCompile Include="Mouse_Manager.cpp">
-      <Filter>02.Utiltiy\97.Mouse_Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Shape.cpp">
-      <Filter>02.Utiltiy\02.Object\00.Geometry\01.Shape</Filter>
+      <Filter>02.Utiltiy\96.Mouse_Manager</Filter>
     </ClCompile>
     <ClCompile Include="GeometryGenerator.cpp">
-      <Filter>02.Utiltiy\97.GeometryGenerator</Filter>
+      <Filter>02.Utiltiy\95.GeometryGenerator</Filter>
     </ClCompile>
     <ClCompile Include="LandAndWave.cpp">
-      <Filter>02.Utiltiy\02.Object\00.Geometry\02.LandAndWaves</Filter>
+      <Filter>02.Utiltiy\02.Object\00.Geometry\01.LandAndWaves</Filter>
     </ClCompile>
     <ClCompile Include="Waves.cpp">
-      <Filter>02.Utiltiy\96.Waves</Filter>
+      <Filter>02.Utiltiy\94.Waves</Filter>
     </ClCompile>
     <ClCompile Include="Component.cpp">
       <Filter>02.Utiltiy\01.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameResource.cpp">
+      <Filter>02.Utiltiy\97.FrameResource</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxScene.cpp">
+      <Filter>02.Utiltiy\02.Object\00.Geometry\99.BoxScene</Filter>
+    </ClCompile>
+    <ClCompile Include="ShapeScene.cpp">
+      <Filter>02.Utiltiy\02.Object\00.Geometry\98.Shape</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>02.Utiltiy\02.Object\00.Geometry\02.Box</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

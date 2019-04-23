@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Unique_Singleton.h"
+#include "FrameResource.h"
 #include "Object.h"
+#include "Struct.h"
 
 #define D3DUTIL d3dutil_Mananger::GetInstnace()
 
@@ -113,6 +115,15 @@ private:
 
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
+	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>>	mGeometries;
+	typedef std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> GEOMESH;
+
+	std::vector<std::unique_ptr<RenderItem>> mAllRitem;
+	typedef std::vector<std::unique_ptr<RenderItem>> RITEMVEC;
+
+	std::vector<std::unique_ptr<FrameResource>> mFrameResources;
+	typedef std::vector<std::unique_ptr<FrameResource>> FRAMERES;
+
 private:
 	std::map<std::string, OBJECT>* Obj_static_map;
 	std::map<std::string, OBJECT>* Obj_dynamic_map;
@@ -130,4 +141,9 @@ public:
 	//bool Object_Ready(void);
 	//bool Object_Update(const float& dt);
 	//bool Object_Render(const float& dt);
+
+public:
+	std::function<GEOMESH&()> Get_Geomesh = [&]()->GEOMESH& {return mGeometries; };
+	std::function<RITEMVEC&()> Get_Ritemvec = [&]()->RITEMVEC& {return mAllRitem; };
+	std::function<FRAMERES&()> Get_Frameres = [&]()->FRAMERES& {return mFrameResources; };
 };

@@ -1,9 +1,8 @@
 #pragma once
 
-#include "stdafx.h"
+#include "Function.h"
 #include "d3dutil_Manager.h"
 #include "Graphic_Manager.h"
-#include "Function.h"
 
 template<typename T>
 class UploadBuffer

@@ -90,9 +90,9 @@ public:
 	std::function <bool()> Get_4xMsaaState = [=]()->bool {return m_4xMsaaState; };
 	std::function <const UINT&()> Get_4xMsaaQuality = [&]()->const UINT&{ return m_4xMsaaQuality; };
 
-	std::function <const UINT()> Get_RtvDescriptiorSize = [=]()->const UINT{ return -m_iRtvDescriptiorSize; };
-	std::function <const UINT()> Get_DsvDescriptiorSize = [=]()->const UINT{ return -m_iDsvDescriptiorSize; };
-	std::function <const UINT()> Get_CbvSrvUavDescriptorSize = [=]()->const UINT{ return -m_CbvSrvUavDescriptorSize; };
+	std::function <const UINT()> Get_RtvDescriptiorSize = [=]()->const UINT{ return m_iRtvDescriptiorSize; };
+	std::function <const UINT()> Get_DsvDescriptiorSize = [=]()->const UINT{ return m_iDsvDescriptiorSize; };
+	std::function <const UINT()> Get_CbvSrvUavDescriptorSize = [=]()->const UINT{ return m_CbvSrvUavDescriptorSize; };
 
 	static const int& Get_SwapChainBufferCount(void) { return m_iSwapChainBufferCount; }
 

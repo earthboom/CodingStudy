@@ -92,7 +92,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -158,10 +158,12 @@
     <ClInclude Include="..\Common\MathHelper.h" />
     <ClInclude Include="3D_ViewerProject.h" />
     <ClInclude Include="Box.h" />
+    <ClInclude Include="BoxScene.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Const.h" />
     <ClInclude Include="d3dutil_Manager.h" />
+    <ClInclude Include="FrameResource.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="GraphicDev.h" />
@@ -171,7 +173,7 @@
     <ClInclude Include="Mouse_Manager.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="Shape.h" />
+    <ClInclude Include="ShapeScene.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Struct.h" />
     <ClInclude Include="targetver.h" />
@@ -184,9 +186,11 @@
   <ItemGroup>
     <ClCompile Include="3D_ViewerProject.cpp" />
     <ClCompile Include="Box.cpp" />
+    <ClCompile Include="BoxScene.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="d3dutil_Manager.cpp" />
+    <ClCompile Include="FrameResource.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="GraphicDev.cpp" />
     <ClCompile Include="Graphic_Manager.cpp" />
@@ -194,7 +198,7 @@
     <ClCompile Include="MainApp.cpp" />
     <ClCompile Include="Mouse_Manager.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="ShapeScene.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

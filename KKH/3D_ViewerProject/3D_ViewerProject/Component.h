@@ -1,5 +1,7 @@
 #pragma once
 
+#include "combaseapi.h"
+
 class Component
 {
 protected:

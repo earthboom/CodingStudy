@@ -4,6 +4,7 @@
 #include "Struct.h"
 #include "Waves.h"
 #include "Timer.h"
+#include "FrameResource.h"
 
 enum class RenderLayer : int 
 {

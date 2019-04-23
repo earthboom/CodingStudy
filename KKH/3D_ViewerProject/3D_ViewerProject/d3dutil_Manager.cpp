@@ -2,7 +2,6 @@
 #include "d3dutil_Manager.h"
 #include "Graphic_Manager.h"
 #include "Function.h"
-#include "Struct.h"
 
 d3dutil_Mananger::d3dutil_Mananger(void)
 	: mRootSignature(nullptr)
@@ -130,6 +129,8 @@ void d3dutil_Mananger::BuildPSOs(void)
 
 void d3dutil_Mananger::BuildFrameResources(void)
 {
+//	for(int i=0; i<NumFrameResources; ++i)
+		
 }
 
 void d3dutil_Mananger::BuildRenderItems(void)
@@ -148,7 +149,7 @@ bool d3dutil_Mananger::Object_Create(OBJECT obj)
 
 	if (obj->Get_Comtype() == Object::COM_TYPE::CT_STATIC)
 		Obj_static_map->insert(OBJMAP::value_type(obj->Get_Objname(), obj));
-	else if (obj->Get_Comtype() == Object::COM_TYPE::CT_STATIC)
+	else if (obj->Get_Comtype() == Object::COM_TYPE::CT_DYNAMIC)
 		Obj_dynamic_map->insert(OBJMAP::value_type(obj->Get_Objname(), obj));
 
 	return TRUE;
