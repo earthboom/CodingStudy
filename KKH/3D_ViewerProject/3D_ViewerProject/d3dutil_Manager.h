@@ -70,6 +70,12 @@ struct MeshGeometry
 	}
 };
 
+enum class DrawLayer : int
+{
+	DL_OPAUQE = 0,
+	DL_END
+};
+
 class d3dutil_Mananger : public CSingleton<d3dutil_Mananger>
 {
 public:
@@ -101,10 +107,10 @@ public:
 public:
 	void BuildRootSignature(void);
 	void BuildShadersAndInputLayer(void);
-	void BuildObject(void);
-	void BuildPSOs(void);
+
 	void BuildFrameResources(void);
-	void BuildRenderItems(void);
+	void BuildPSOs(void);
+	
 
 	void OnResize(void);
 
@@ -112,6 +118,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature;
 
 	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3DBlob>> mShaders;
+	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3D12PipelineState>> mPSOs;
 
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
@@ -120,6 +127,8 @@ private:
 
 	std::vector<std::unique_ptr<RenderItem>> mAllRitem;
 	typedef std::vector<std::unique_ptr<RenderItem>> RITEMVEC;
+
+	std::vector<RenderItem*> mDrawLayer[(int)DrawLayer::DL_END];
 
 	std::vector<std::unique_ptr<FrameResource>> mFrameResources;
 	typedef std::vector<std::unique_ptr<FrameResource>> FRAMERES;
@@ -146,4 +155,5 @@ public:
 	std::function<GEOMESH&()> Get_Geomesh = [&]()->GEOMESH& {return mGeometries; };
 	std::function<RITEMVEC&()> Get_Ritemvec = [&]()->RITEMVEC& {return mAllRitem; };
 	std::function<FRAMERES&()> Get_Frameres = [&]()->FRAMERES& {return mFrameResources; };
+	std::function<std::vector<RenderItem*>&(int&)> Get_Drawlayer = [&](int& _type)->std::vector<RenderItem*>& {return mDrawLayer[_type]; };
 };

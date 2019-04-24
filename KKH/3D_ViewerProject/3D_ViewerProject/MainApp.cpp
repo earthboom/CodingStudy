@@ -3,6 +3,7 @@
 #include "Graphic_Manager.h"
 #include "Mouse_Manager.h"
 #include "Function.h"
+#include "Box.h"
 
 CMainApp::CMainApp(void)
 	: m_LAW(nullptr)
@@ -25,18 +26,23 @@ bool CMainApp::Ready_MainApp(void)
 	//Reset the command list to prep for initialization commands.
 	ThrowIfFailed(GRAPHIC->Get_CommandList()->Reset(GRAPHIC->Get_CommandAllocator().Get(), nullptr));
 
-	//m_Box = Box::Create();
-	//m_Box->OnResize();
+	D3DUTIL.BuildRootSignature();
+	D3DUTIL.BuildShadersAndInputLayer();
 
-	//m_Shape = Shape::Create();
-	//m_Shape->OnResize();
+	CreateObject();
+	if (!D3DUTIL.Object_Cycle(0.0f, d3dutil_Mananger::OS_READY)) return FALSE;
 
-	m_LAW = LandAndWave::Create();
-	m_LAW->OnResize();
+	D3DUTIL.BuildFrameResources();
+	D3DUTIL.BuildPSOs();
+
+	D3DUTIL.OnResize();
+
+	//m_LAW = LandAndWave::Create();
+	//m_LAW->OnResize();
 
 	//MOUSE.Set_Obj(m_Box);
 	//MOUSE.Set_Obj(m_Shape);
-	MOUSE.Set_Obj(m_LAW);
+	//MOUSE.Set_Obj(m_LAW);
 
 	//Execute the initialization commands.
 	ThrowIfFailed(GRAPHIC->Get_CommandList()->Close());
@@ -54,9 +60,11 @@ int CMainApp::Update_MainApp(const float & dt)
 {
 	//m_Box->Update(dt);
 	//m_Shape->Update(dt);
-	m_LAW->Update(dt);
+	//m_LAW->Update(dt);
 
-	return 0;
+	if (D3DUTIL.Object_Cycle(dt, d3dutil_Mananger::OS_UPDATE)) return 0;
+
+	return 1;
 }
 
 void CMainApp::Render_MainApp(const float& dt)
@@ -64,7 +72,16 @@ void CMainApp::Render_MainApp(const float& dt)
 	//GRAPHIC_MGR.Draw(dt);
 	//m_Box->Render(dt);
 	//m_Shape->Render(dt);
-	m_LAW->Render(dt);
+	//m_LAW->Render(dt);
+
+	if (D3DUTIL.Object_Cycle(dt, d3dutil_Mananger::OS_RENDER)) return;
+}
+
+bool CMainApp::CreateObject(void)
+{
+	if (!D3DUTIL.Object_Create(Box::Create("box", Object::COM_TYPE::CT_STATIC, "Boxgeo", 1.5f, 0.5f, 1.5f, 3))) return FALSE;
+
+	return TRUE;
 }
 
 void CMainApp::Free(void)

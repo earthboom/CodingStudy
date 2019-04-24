@@ -6,6 +6,7 @@
 #include "Struct.h"
 
 Box::Box(void)
+	: mGeoName(""), mWidth(0.0f), mHeight(0.0f), mDepth(0.0f), mSubdiv(0U)
 {
 }
 
@@ -16,6 +17,7 @@ Box::~Box(void)
 bool Box::Ready(void)
 {
 	BuildBox();
+	BuildRenderItem();
 
 	return TRUE;
 }
@@ -60,7 +62,7 @@ void Box::BuildBox(void)
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
 	auto geo = std::make_unique<MeshGeometry>();
-	geo->Name = "BoxGeo";
+	geo->Name = mGeoName;
 
 	ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
 	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
@@ -91,17 +93,29 @@ void Box::BuildRenderItem(void)
 	boxRitem->IndexCount = boxRitem->Geo->DrawArgs["Box"].IndexCount;
 	boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["Box"].StartIndexLocaiton;
 	boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["Box"].BaseVertexLocation;
+
+	D3DUTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(boxRitem.get());
+
 	D3DUTIL.Get_Ritemvec().push_back(std::move(boxRitem));
 }
 
-std::shared_ptr<Box> Box::Create(std::string _name, Object::COM_TYPE _type)
+void Box::Set_BoxAtt(const std::string& _name, const float & w, const float & h, const float & d, const uint32_t & s)
+{
+	mGeoName	= _name;
+	mWidth		= w;
+	mHeight		= h;
+	mDepth		= d;
+	mSubdiv		= s;
+}
+
+std::shared_ptr<Box> Box::Create(std::string _name, Object::COM_TYPE _type, std::string _geoname, float _w, float _h, float _d, float _subdiv)
 {
 	BOX pBox = std::make_shared<Box>();
 	if (!pBox)	return nullptr;
 
 	pBox->Get_Objname() = _name;
 	pBox->Get_Comtype() = _type;
-	pBox->Ready();
+	pBox->Set_BoxAtt(_geoname, _w, _h, _d, _subdiv);
 
 	return pBox;
 }

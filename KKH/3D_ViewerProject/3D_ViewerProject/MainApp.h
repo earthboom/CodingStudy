@@ -16,6 +16,9 @@ public:
 	void	Render_MainApp(const float& dt);
 
 private:
+	bool	CreateObject(void);
+
+private:
 	//PBOX	m_Box;
 	//SHAPE m_Shape;
 	LAW m_LAW;

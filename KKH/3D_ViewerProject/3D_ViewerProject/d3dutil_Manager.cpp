@@ -119,22 +119,46 @@ void d3dutil_Mananger::BuildShadersAndInputLayer(void)
 	};
 }
 
-void d3dutil_Mananger::BuildObject(void)
+void d3dutil_Mananger::BuildFrameResources(void)
 {
+	for (int i = 0; i < NumFrameResources; ++i)
+	{
+		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC->Get_Device().Get()));//, 1, (UINT)mAllRitem.size(), ))		
+		mFrameResources[i]->Set_Pass(GRAPHIC->Get_Device().Get(), 1);
+		mFrameResources[i]->Set_Object(GRAPHIC->Get_Device().Get(), (UINT)mAllRitem.size());
+	}
 }
 
 void d3dutil_Mananger::BuildPSOs(void)
 {
-}
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
+	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 
-void d3dutil_Mananger::BuildFrameResources(void)
-{
-//	for(int i=0; i<NumFrameResources; ++i)
-		
-}
+	psoDesc.InputLayout = { mInputLayout.data(), (UINT)mInputLayout.size() };
+	psoDesc.pRootSignature = mRootSignature.Get();
 
-void d3dutil_Mananger::BuildRenderItems(void)
-{
+	psoDesc.VS =
+	{ reinterpret_cast<BYTE*>(mShaders["standardVS"]->GetBufferPointer(), mShaders["standardVS"]->GetBufferSize()) };
+
+	psoDesc.PS =
+	{ reinterpret_cast<BYTE*>(mShaders["opaquePS"]->GetBufferPointer(), mShaders["opaquePS"]->GetBufferSize()) };
+
+	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+	psoDesc.SampleMask = UINT_MAX;
+	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	psoDesc.NumRenderTargets = 1;
+	psoDesc.RTVFormats[0] = GRAPHIC->Get_BackBufferFormat();
+	psoDesc.SampleDesc.Count = GRAPHIC->Get_4xMsaaState() ? 4 : 1;
+	psoDesc.SampleDesc.Quality = GRAPHIC->Get_4xMsaaState() ? (GRAPHIC->Get_4xMsaaQuality() - 1) : 0;
+	psoDesc.DSVFormat = GRAPHIC->Get_DepthStencilFormat();
+
+	ThrowIfFailed(GRAPHIC->Get_Device()->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC opaqueWireframePsoDesc = psoDesc;
+	opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	ThrowIfFailed(GRAPHIC->Get_Device()->CreateGraphicsPipelineState(&opaqueWireframePsoDesc, IID_PPV_ARGS(&mPSOs["opaque_wireframe"])));
 }
 
 void d3dutil_Mananger::OnResize(void)

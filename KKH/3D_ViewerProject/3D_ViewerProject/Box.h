@@ -19,8 +19,18 @@ private:
 	void BuildBox(void);
 	void BuildRenderItem(void);
 
+private:
+	std::string mGeoName;
+	float mWidth;
+	float mHeight;
+	float mDepth;
+	uint32_t mSubdiv;
+
 public:
-	static std::shared_ptr<Box> Create(std::string _name, Object::COM_TYPE _type);
+	void Set_BoxAtt(const std::string& _name, const float& w, const float& h, const float& d, const uint32_t& s);
+
+public:
+	static std::shared_ptr<Box> Create(std::string _name, Object::COM_TYPE _type, std::string _geoname, float _w = 0.0f, float _h = 0.0f, float _d = 0.0f, float _subdiv = 3);
 };
 
 typedef std::shared_ptr<Box> BOX;
