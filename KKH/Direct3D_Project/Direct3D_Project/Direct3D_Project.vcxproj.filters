@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="99.Header">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="00.Client">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="01.System">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="02.Utiltiy">
+      <UniqueIdentifier>{a97a94b1-7fec-4fbc-bcc3-8226c7663a53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Help">
+      <UniqueIdentifier>{fb4f475e-0895-421b-a2ef-3c72aeb6f2a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Client\00.MainApp">
+      <UniqueIdentifier>{5781ac10-345c-49b7-82b6-1020541bd40e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Client\99.Default">
+      <UniqueIdentifier>{a765571e-7681-4308-83b0-1412586a4a5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\00.Graphic">
+      <UniqueIdentifier>{b8b9b768-f010-48cd-bde3-b5dbec6ed18b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\00.Graphic\Manager">
+      <UniqueIdentifier>{aaba5004-bf50-45be-aaff-59f9bb6e1cd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\01.Time">
+      <UniqueIdentifier>{af2ff07b-beee-4b52-865f-a2df35ed37d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\01.Time\Manager">
+      <UniqueIdentifier>{4d164844-d286-4eef-ae93-b54006407eb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\00.d3dutil_Manager">
+      <UniqueIdentifier>{efbbf3c1-ad7a-426a-8c09-2726d49315af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\96.Mouse_Manager">
+      <UniqueIdentifier>{1e4786f2-6625-45ec-871b-a6d1311d9825}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\97.FrameResource">
+      <UniqueIdentifier>{aa76852f-9a1a-438a-a92a-37344b0dc6ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\99.hlsl">
+      <UniqueIdentifier>{8af8150b-a654-4eb4-a3e6-a8f11a7d2f31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\98.UploadBuffer">
+      <UniqueIdentifier>{dd740f9a-b90c-4df1-ad60-885a0f21e799}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\95.GeometryGenerator">
+      <UniqueIdentifier>{dfcae744-68a2-43be-840d-53c003d07177}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\02.Component">
+      <UniqueIdentifier>{0f7c5c85-5f0c-4fb6-b26a-2123bd144f23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\03.Object">
+      <UniqueIdentifier>{ddaff905-137d-40d1-8bef-05d54f529517}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\01.Utiltiy_Manager">
+      <UniqueIdentifier>{6324b508-74f1-47e0-9a83-abdcca513de5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\03.Object\Box">
+      <UniqueIdentifier>{6b6ca162-b634-4460-bc9e-7b11c8a2d00a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Direct3D_Project.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Const.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Function.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Struct.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Unique_Singleton.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\MathHelper.h">
+      <Filter>98.Help</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicDev.h">
+      <Filter>01.System\00.Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic_Manager.h">
+      <Filter>01.System\00.Graphic\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>01.System\01.Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer_Manager.h">
+      <Filter>01.System\01.Time\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="UploadBuffer.h">
+      <Filter>02.Utiltiy\98.UploadBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameResource.h">
+      <Filter>02.Utiltiy\97.FrameResource</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse_Manager.h">
+      <Filter>02.Utiltiy\96.Mouse_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryGenerator.h">
+      <Filter>02.Utiltiy\95.GeometryGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dutil_Manager.h">
+      <Filter>02.Utiltiy\00.d3dutil_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>02.Utiltiy\02.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>02.Utiltiy\03.Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility_Manager.h">
+      <Filter>02.Utiltiy\01.Utiltiy_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="MainApp.h">
+      <Filter>00.Client\00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>02.Utiltiy\03.Object\Box</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Direct3D_Project.cpp">
+      <Filter>00.Client\99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>00.Client\99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicDev.cpp">
+      <Filter>01.System\00.Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphic_Manager.cpp">
+      <Filter>01.System\00.Graphic\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>01.System\01.Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer_Manager.cpp">
+      <Filter>01.System\01.Time\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameResource.cpp">
+      <Filter>02.Utiltiy\97.FrameResource</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse_Manager.cpp">
+      <Filter>02.Utiltiy\96.Mouse_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>02.Utiltiy\95.GeometryGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dutil_Manager.cpp">
+      <Filter>02.Utiltiy\00.d3dutil_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>02.Utiltiy\02.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>02.Utiltiy\03.Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility_Manager.cpp">
+      <Filter>02.Utiltiy\01.Utiltiy_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="MainApp.cpp">
+      <Filter>00.Client\00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>02.Utiltiy\03.Object\Box</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>00.Client\99.Default</Filter>
+    </Image>
+    <Image Include="Direct3D_Project.ico">
+      <Filter>00.Client\99.Default</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Direct3D_Project.rc">
+      <Filter>00.Client\99.Default</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Shaders\color.hlsl">
+      <Filter>02.Utiltiy\99.hlsl</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
