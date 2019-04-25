@@ -7,5 +7,7 @@ KKH/3D_ViewerProject/3D_ViewerProject/Debug/
 KKH/3D_ViewerProject/3D_ViewerProject/Release/
 *.aps
 *.log
+*.db
+*.ipch
 
 #----PGW----
