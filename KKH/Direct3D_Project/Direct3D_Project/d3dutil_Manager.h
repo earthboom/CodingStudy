@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Unique_Singleton.h"
-
+#include "MathHelper.h"
 #include "Object.h"
+#include "Const.h"
 
 #define D3DUTIL d3dutil_Mananger::GetInstnace()
 
@@ -67,6 +68,28 @@ struct MeshGeometry
 		VertexBufferUploader = nullptr;
 		IndexBufferUploader = nullptr;
 	}
+};
+
+struct MaterialConstants
+{
+	DirectX::XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
+	DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
+	float Roughness = 0.25f;
+	DirectX::XMFLOAT4X4 MatTransform = MathHelper::Indentity4x4();
+};
+
+struct Material
+{
+	std::string Name;
+
+	int MatCBIndex = -1;
+	int DiffuseSrvHeapIndex = -1;
+	int NumFrameDirty = NumFrameResources;
+
+	DirectX::XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
+	DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
+	float Roughness = 0.25f;
+	DirectX::XMFLOAT4X4 MatTransform = MathHelper::Indentity4x4();
 };
 
 enum class DrawLayer : int

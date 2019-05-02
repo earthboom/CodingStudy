@@ -299,7 +299,11 @@ void LandAndWave::BuildPSOs(void)
 void LandAndWave::BuildFrameResources(void)
 {
 	for (int i = 0; i < NumFrameResources; ++i)
-		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC->Get_Device().Get(), 1, (UINT)mAllRitems.size(), mWave->VertexCount()));
+	{
+		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC->Get_Device().Get()));//, 1, (UINT)mAllRitems.size(), mWave->VertexCount()));
+		mFrameResources[i]->Set_Pass(GRAPHIC->Get_Device().Get(), 1);
+		mFrameResources[i]->Set_Object(GRAPHIC->Get_Device().Get(), (UINT)mAllRitems.size());
+	}
 }
 
 void LandAndWave::BuildRenderItems(void)

@@ -41,6 +41,9 @@ private:
 	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>>	mGeometries;
 	typedef std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> GEOMESH;
 
+	std::unordered_map<std::string, std::unique_ptr<Material>>	mMaterials;
+	typedef std::unordered_map<std::string, std::unique_ptr<Material>> MATERIAL;
+
 	std::vector<std::unique_ptr<RenderItem>> mAllRitem;
 	typedef std::vector<std::unique_ptr<RenderItem>> RITEMVEC;
 

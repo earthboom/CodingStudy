@@ -203,5 +203,11 @@
     <FxCompile Include="..\Shaders\color.hlsl">
       <Filter>02.Utiltiy\99.hlsl</Filter>
     </FxCompile>
+    <FxCompile Include="..\Shaders\Default.hlsl">
+      <Filter>02.Utiltiy\99.hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\LightingUtil.hlsl">
+      <Filter>02.Utiltiy\99.hlsl</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
