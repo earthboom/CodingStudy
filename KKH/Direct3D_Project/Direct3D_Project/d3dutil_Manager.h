@@ -10,7 +10,7 @@
 struct SubmeshGeometry
 {
 	UINT IndexCount = 0;
-	UINT StartIndexLocaiton = 0;
+	UINT StartIndexLocation = 0;
 	INT	 BaseVertexLocation = 0;
 
 	//Bounding box of the geometry deinfed by this submesh.
@@ -70,12 +70,24 @@ struct MeshGeometry
 	}
 };
 
+struct Light
+{
+	DirectX::XMFLOAT3 Strength = { 0.5f, 0.5f, 0.5f };
+	float FalloffStart = 1.0f;
+	DirectX::XMFLOAT3 Direction = { 0.0f, -1.0f, 0.0f };
+	float FalloffEnd = 10.0f;
+	DirectX::XMFLOAT3 Position = { 0.0f, 0.0f, 0.0f };
+	float SpotPower = 64.0f;
+};
+
+#define MaxLights 16
+
 struct MaterialConstants
 {
 	DirectX::XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
 	DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
 	float Roughness = 0.25f;
-	DirectX::XMFLOAT4X4 MatTransform = MathHelper::Indentity4x4();
+	DirectX::XMFLOAT4X4 MatTransform = MathHelper::Identity4x4();
 };
 
 struct Material
@@ -89,7 +101,16 @@ struct Material
 	DirectX::XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
 	DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
 	float Roughness = 0.25f;
-	DirectX::XMFLOAT4X4 MatTransform = MathHelper::Indentity4x4();
+	DirectX::XMFLOAT4X4 MatTransform = MathHelper::Identity4x4();
+};
+
+struct Texture
+{
+	std::string Name;
+	std::wstring Filename;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> Resource = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> UploadHeap = nullptr;
 };
 
 enum class DrawLayer : int

@@ -43,7 +43,7 @@ void Box::BuildBox(void)
 
 	SubmeshGeometry submesh;
 	submesh.IndexCount = (UINT)box.Indices32.size();
-	submesh.StartIndexLocaiton = VertexOffset;
+	submesh.StartIndexLocation = VertexOffset;
 	submesh.BaseVertexLocation = IndexOffset;
 
 	auto vertexCount = box.Vertices.size();
@@ -53,7 +53,7 @@ void Box::BuildBox(void)
 	for (size_t i=0; i<box.Vertices.size(); ++i)
 	{
 		vertices[i].Pos = box.Vertices[i].Position;
-		vertices[i].Color = DirectX::XMFLOAT4(DirectX::Colors::DarkGreen);
+		//vertices[i].Color = DirectX::XMFLOAT4(DirectX::Colors::DarkGreen);
 	}
 
 	std::vector<std::uint16_t> indices;
@@ -92,7 +92,7 @@ void Box::BuildRenderItem(void)
 	boxRitem->Geo = UTIL.Get_Geomesh()[mGeoName].get();
 	boxRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	boxRitem->IndexCount = boxRitem->Geo->DrawArgs["Box"].IndexCount;
-	boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["Box"].StartIndexLocaiton;
+	boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["Box"].BaseVertexLocation;
 	boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["Box"].BaseVertexLocation;
 
 	UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(boxRitem.get());

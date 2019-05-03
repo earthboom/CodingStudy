@@ -130,6 +130,7 @@
     </FxCompile>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
+      <EntryPointName>main</EntryPointName>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -180,6 +181,7 @@
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="GraphicDev.h" />
     <ClInclude Include="Graphic_Manager.h" />
+    <ClInclude Include="LitColumn.h" />
     <ClInclude Include="MainApp.h" />
     <ClInclude Include="Mouse_Manager.h" />
     <ClInclude Include="Object.h" />
@@ -202,6 +204,7 @@
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="GraphicDev.cpp" />
     <ClCompile Include="Graphic_Manager.cpp" />
+    <ClCompile Include="LitColumn.cpp" />
     <ClCompile Include="MainApp.cpp" />
     <ClCompile Include="Mouse_Manager.cpp" />
     <ClCompile Include="Object.cpp" />
@@ -224,26 +227,8 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Shaders\color.hlsl" />
-    <FxCompile Include="..\Shaders\Default.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="..\Shaders\LightingUtil.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
-    </FxCompile>
+    <FxCompile Include="..\Shaders\Default.hlsl" />
+    <FxCompile Include="..\Shaders\LightingUtil.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

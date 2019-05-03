@@ -50,7 +50,7 @@ public:
 	};
 
 	MeshData CreateBox(float w, float h, float depth, uint32 numSubdivisions);
-	MeshData CreateShpere(float radius, uint32 sliceCount, uint32 stackCount);
+	MeshData CreateSphere(float radius, uint32 sliceCount, uint32 stackCount);
 	MeshData CreateCylinder(float bottomRadius, float topRadius, float height, uint32 sliceCount, uint32 stackCount);
 	MeshData CreateGrid(float w, float depth, uint32 m, uint32 n);
 

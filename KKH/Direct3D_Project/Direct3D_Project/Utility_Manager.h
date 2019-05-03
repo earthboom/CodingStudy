@@ -30,27 +30,39 @@ public:
 
 	void OnResize(void);
 
+	void OnKeyboardInput(const float& dt);
+	void UpdateCamera(const float& dt);
+
 private:
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature;
 
 	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3DBlob>> mShaders;
-	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3D12PipelineState>> mPSOs;
+
+	typedef std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3D12PipelineState>> MAP_PSO;
+	MAP_PSO mPSOs;
 
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
-	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>>	mGeometries;
 	typedef std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> GEOMESH;
+	GEOMESH	mGeometries;
 
-	std::unordered_map<std::string, std::unique_ptr<Material>>	mMaterials;
 	typedef std::unordered_map<std::string, std::unique_ptr<Material>> MATERIAL;
+	MATERIAL mMaterials;
 
-	std::vector<std::unique_ptr<RenderItem>> mAllRitem;
+	typedef std::unordered_map<std::string, std::unique_ptr<Texture>> TEXTURE;
+	TEXTURE mTextures;
+
 	typedef std::vector<std::unique_ptr<RenderItem>> RITEMVEC;
+	RITEMVEC mAllRitem;
+
+	typedef std::vector<std::unique_ptr<FrameResource>> FRAMERES;
+	FRAMERES mFrameResources;
+	FrameResource* mCurrFrameResource;
+	int mCurrFrameResourceIndex;
+
+	PassConstants mMainPassCB;
 
 	std::vector<RenderItem*> mDrawLayer[(int)DrawLayer::DL_END];
-
-	std::vector<std::unique_ptr<FrameResource>> mFrameResources;
-	typedef std::vector<std::unique_ptr<FrameResource>> FRAMERES;
 
 private:
 	std::map<std::string, OBJECT>* Obj_static_map;
@@ -59,6 +71,16 @@ private:
 
 	std::vector<OBJMAP*> allObj_Update_vec;
 	typedef std::vector<OBJMAP*> ALLOBJVEC;
+
+private:
+	DirectX::XMFLOAT4X4 mView;
+	DirectX::XMFLOAT4X4 mProj;
+
+	float mTheta;
+	float mPhi;
+	float mRadius;
+
+	POINT mLastMousePos;
 
 public:
 	bool Object_Create(OBJECT obj);
@@ -71,8 +93,22 @@ public:
 	//bool Object_Render(const float& dt);
 
 public:
+	std::function<Microsoft::WRL::ComPtr<ID3D12PipelineState>&(std::string)> Get_PSOs = [&](std::string str)->Microsoft::WRL::ComPtr<ID3D12PipelineState>& {return mPSOs[str]; };
+	std::function<Microsoft::WRL::ComPtr<ID3D12RootSignature>&()> Get_RootSignature = [&]()->Microsoft::WRL::ComPtr<ID3D12RootSignature>& {return mRootSignature; };
+
 	std::function<GEOMESH&()> Get_Geomesh = [&]()->GEOMESH& {return mGeometries; };
 	std::function<RITEMVEC&()> Get_Ritemvec = [&]()->RITEMVEC& {return mAllRitem; };
 	std::function<FRAMERES&()> Get_Frameres = [&]()->FRAMERES& {return mFrameResources; };
+	std::function<MATERIAL&()> Get_Materials = [&]()->MATERIAL& {return mMaterials; };
+	std::function<TEXTURE&()> Get_Textures = [&]()->TEXTURE& {return mTextures; };
 	std::function<std::vector<RenderItem*>&(int)> Get_Drawlayer = [&](int _type)->std::vector<RenderItem*>& {return mDrawLayer[_type]; };
+
+	std::function<PassConstants&()> Get_MainPassCB = [&]()->PassConstants& {return mMainPassCB; };
+
+	std::function<FrameResource*&()> Get_CurrFrameResource = [&]()->FrameResource*& {return mCurrFrameResource; };
+	std::function<int&()> Get_CurrFrameResourceIndex = [&]()->int& {return mCurrFrameResourceIndex; };
+
+	std::function<float&()> Get_Theta = [&]()->float& {return mTheta; };
+	std::function<float&()> Get_Phi = [&]()->float& {return mPhi; };
+	std::function<float&()> Get_Radius = [&]()->float& {return mRadius; };
 };

@@ -88,7 +88,7 @@ GeometryGenerator::MeshData GeometryGenerator::CreateBox(float w, float h, float
 	return meshData;
 }
 
-GeometryGenerator::MeshData GeometryGenerator::CreateShpere(float radius, uint32 sliceCount, uint32 stackCount)
+GeometryGenerator::MeshData GeometryGenerator::CreateSphere(float radius, uint32 sliceCount, uint32 stackCount)
 {
 	GeometryGenerator::MeshData meshData;
 

@@ -7,6 +7,10 @@ Utility_Manager::Utility_Manager(void)
 	: mRootSignature(nullptr)
 	, Obj_static_map(new OBJMAP)
 	, Obj_dynamic_map(new OBJMAP)
+	, mTheta(1.5f * PI), mPhi(0.2f * PI), mRadius(15.0f)
+	, mView(MathHelper::Identity4x4())
+	, mProj(MathHelper::Identity4x4())
+	, mCurrFrameResource(nullptr), mCurrFrameResourceIndex(0)
 {
 	allObj_Update_vec.push_back(Obj_static_map);
 	allObj_Update_vec.push_back(Obj_dynamic_map);
@@ -43,8 +47,8 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 {
 	const D3D_SHADER_MACRO alphaTestDefines[] = { "ALPHA_TEST", "1", NULL, NULL };
 
-	mShaders["standardVS"] = d3dutil_Mananger::CompileShader(L"..\\Shaders\\default.hlsl", nullptr, "VS", "vs_5_1");
-	mShaders["opaquePS"] = d3dutil_Mananger::CompileShader(L"..\\Shaders\\default.hlsl", nullptr, "PS", "ps_5_1");
+	mShaders["standardVS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["opaquePS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", nullptr, "PS", "ps_5_1");
 
 	mInputLayout =
 	{
@@ -71,10 +75,10 @@ void Utility_Manager::BuildPSOs(void)
 	psoDesc.pRootSignature = mRootSignature.Get();
 
 	psoDesc.VS =
-	{ reinterpret_cast<BYTE*>(mShaders["standardVS"]->GetBufferPointer(), mShaders["standardVS"]->GetBufferSize()) };
+	{ reinterpret_cast<BYTE*>(mShaders["standardVS"]->GetBufferPointer()), mShaders["standardVS"]->GetBufferSize() };
 
 	psoDesc.PS =
-	{ reinterpret_cast<BYTE*>(mShaders["opaquePS"]->GetBufferPointer(), mShaders["opaquePS"]->GetBufferSize()) };
+	{ reinterpret_cast<BYTE*>(mShaders["opaquePS"]->GetBufferPointer()), mShaders["opaquePS"]->GetBufferSize() };
 
 	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
@@ -98,6 +102,24 @@ void Utility_Manager::OnResize(void)
 {
 	DirectX::XMMATRIX p = DirectX::XMMatrixPerspectiveFovLH(0.25f * PI, AspectRatio(), 1.0f, 1000.0f);
 	DirectX::XMStoreFloat4x4(&g_Proj, p);
+}
+
+void Utility_Manager::OnKeyboardInput(const float & dt)
+{
+}
+
+void Utility_Manager::UpdateCamera(const float & dt)
+{
+	g_EyePos.x = mRadius * sinf(mPhi) * cosf(mTheta);
+	g_EyePos.y = mRadius * sinf(mPhi) * sinf(mTheta);
+	g_EyePos.z = mRadius * cosf(mPhi);
+
+	DirectX::XMVECTOR pos = XMVectorSet(g_EyePos.x, g_EyePos.y, g_EyePos.z, 1.0f);
+	DirectX::XMVECTOR target = DirectX::XMVectorZero();
+	DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(pos, target, up);
+	DirectX::XMStoreFloat4x4(&mView, view);
 }
 
 bool Utility_Manager::Object_Create(OBJECT obj)

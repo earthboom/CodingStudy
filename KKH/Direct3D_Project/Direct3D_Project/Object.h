@@ -19,12 +19,18 @@ public:
 	virtual bool Render(const float& dt) PURE;
 
 protected:
+	virtual void AnimateMaterials(const float& dt) PURE;
+	virtual void UpdateObjectCBs(const float& dt) PURE;
+	virtual void UpdateMaterialCBs(const float& dt) PURE;
+	virtual void UpdateMainPassCB(const float& dt) PURE;
+
+protected:
 	COM_TYPE m_Comtype;
 	std::string m_Name;
 
-	DirectX::XMFLOAT4X4 mWorld; //= MathHelper::Indentity4x4();
-	DirectX::XMFLOAT4X4 mView; //= MathHelper::Indentity4x4();
-	DirectX::XMFLOAT4X4 mProj; //= MathHelper::Indentity4x4();
+	DirectX::XMFLOAT4X4 mWorld; //= MathHelper::Identity4x4();
+	DirectX::XMFLOAT4X4 mView; //= MathHelper::Identity4x4();
+	DirectX::XMFLOAT4X4 mProj; //= MathHelper::Identity4x4();
 
 	float mTheta;	// = 1.5f * PI;
 	float mPhi;		// = DirectX::XM_PIDIV4;

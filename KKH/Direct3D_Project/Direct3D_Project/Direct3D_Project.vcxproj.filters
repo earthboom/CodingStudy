@@ -67,6 +67,9 @@
     <Filter Include="02.Utiltiy\03.Object\Box">
       <UniqueIdentifier>{6b6ca162-b634-4460-bc9e-7b11c8a2d00a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utiltiy\03.Object\LitColumn">
+      <UniqueIdentifier>{40569e06-210c-4aa2-aaa5-75404880a223}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -138,6 +141,9 @@
     <ClInclude Include="Box.h">
       <Filter>02.Utiltiy\03.Object\Box</Filter>
     </ClInclude>
+    <ClInclude Include="LitColumn.h">
+      <Filter>02.Utiltiy\03.Object\LitColumn</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D_Project.cpp">
@@ -184,6 +190,9 @@
     </ClCompile>
     <ClCompile Include="Box.cpp">
       <Filter>02.Utiltiy\03.Object\Box</Filter>
+    </ClCompile>
+    <ClCompile Include="LitColumn.cpp">
+      <Filter>02.Utiltiy\03.Object\LitColumn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

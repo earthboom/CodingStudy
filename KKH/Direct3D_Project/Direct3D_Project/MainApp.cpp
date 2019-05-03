@@ -5,6 +5,7 @@
 #include "Function.h"
 #include "Utility_Manager.h"
 #include "Box.h"
+#include "LitColumn.h"
 
 CMainApp::CMainApp(void)
 	: m_fTime(0.0f)
@@ -59,6 +60,8 @@ bool CMainApp::Ready_MainApp(void)
 
 int CMainApp::Update_MainApp(const float & dt)
 {
+	UTIL.OnKeyboardInput(dt);
+	UTIL.UpdateCamera(dt);
 	//m_Box->Update(dt);
 	//m_Shape->Update(dt);
 	//m_LAW->Update(dt);
@@ -80,7 +83,8 @@ void CMainApp::Render_MainApp(const float& dt)
 
 bool CMainApp::CreateObject(void)
 {
-	if (!UTIL.Object_Create(Box::Create("box", Object::COM_TYPE::CT_STATIC, "BoxGeo", 1.5f, 0.5f, 1.5f, 3))) return FALSE;
+	//if (!UTIL.Object_Create(Box::Create("box", Object::COM_TYPE::CT_STATIC, "BoxGeo", 1.5f, 0.5f, 1.5f, 3))) return FALSE;
+	if(!UTIL.Object_Create(LitColumn::Create("litcolumn", Object::COM_TYPE::CT_STATIC))) return FALSE;
 
 	return TRUE;
 }
