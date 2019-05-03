@@ -18,6 +18,13 @@ struct Material
 	float Shininess;
 };
 
+
+
+float CalcAttenuation(float d, float falloffStart, float falloffEnd)
+{
+	return saturate((falloffEnd - d) / (falloffEnd - falloffStart));
+}
+
 // R0 = ( (n-1) / (n+1) )^2
 float3 SclickFresnel(float R0, float3 normal, float lightVec)
 {
@@ -54,6 +61,49 @@ float3 ComputeDirectionalLight(Light L, Material mat, float3 normal, float3 toEy
 	return BlinnPhong(lightStrength, lightVec, normal, toEye, mat);
 }
 
+float3 ComputePointLight(Light L, Material mat, float3 pos, float3 normal, float3 toEye)
+{
+	float3 lightVec = L.Position - pos;
+
+	float d = length(lightVec);
+
+	if (d > L.FalloffEnd)
+		return 0.0f;
+
+	lightVec /= d;
+
+	float ndotl = mat(dot(lightVec, normal), 0.0f);
+	float3 lightStrength = L.Strength * ndotl;
+
+	float att = CalcAttenuation(d, L.FalloffStart, L.FalloffEnd);
+	lightStrength *= att;
+
+	return BlinnPhong(lightStrength, lightVec, normal, toEye, mat);
+}
+
+float3 ComputeSpotLight(Light L, Material mat, float3 pos, float3 normal, float3 toEye)
+{
+	float3 lightVec = L.Position - pos;
+
+	float d = length(lightVec);
+
+	if (d > L.FalloffEnd)
+		return 0.0f;
+
+	lightVec /= d;
+
+	float ndotl = mat(dot(lightVec, normal), 0.0f);
+	float3 lightStrength = L.Strength * ndotl;
+
+	float att = CalcAttenuation(d, L.FalloffStart, L.FalloffEnd);
+	lightStrength *= att;
+
+	float spotFactor = pow(max(dot(-lightVec, L.Direction), 0.0f), L.SpotPower);
+	lightStrength *= spotFactor;
+
+	return BlinnPhong(lightStrength, lightVec, normal, toEye, mat);
+}
+
 float4 ComputeLighting(Light gLoghts[MaxLights], Material mat, 
 	float pos, float3 normal, float3 toEye, float3 shadowFactor)
 {
@@ -67,9 +117,17 @@ float4 ComputeLighting(Light gLoghts[MaxLights], Material mat,
 #endif
 
 #if (NUM_POINT_LIGHTS > 0)
+	for (int i = NUM_DIR_LIGHTS; o < NUM_DIR_LIGHTS + NUM_POINT_LIGHTS; ++i)
+	{
+		result += ComputePointLight(gLights[i], mat, pos, normal, toEye);
+	}
 #endif
 
 #if (NUM_SPOT_LIGHTS > 0)
+	for (int i = NUM_DIR_LIGHTS + NUM_POINT_LIGHTS; o < NUM_DIR_LIGHTS + NUM_POINT_LIGHTS + NUM_SPOT_LIGHTS; ++i)
+	{
+		result += ComputeSpotLight(gLights[i], mat, pos, normal, toEye);
+	}
 #endif
 
 	return float4(result, 0.0f);
