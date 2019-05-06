@@ -29,7 +29,7 @@ protected:
 	std::string m_Name;
 
 	DirectX::XMFLOAT4X4 mWorld; //= MathHelper::Identity4x4();
-	DirectX::XMFLOAT4X4 mView; //= MathHelper::Identity4x4();
+	//DirectX::XMFLOAT4X4 mView; //= MathHelper::Identity4x4();
 	DirectX::XMFLOAT4X4 mProj; //= MathHelper::Identity4x4();
 
 	float mTheta;	// = 1.5f * PI;

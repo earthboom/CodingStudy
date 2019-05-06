@@ -7,9 +7,9 @@ Utility_Manager::Utility_Manager(void)
 	: mRootSignature(nullptr)
 	, Obj_static_map(new OBJMAP)
 	, Obj_dynamic_map(new OBJMAP)
-	, mTheta(1.5f * PI), mPhi(0.2f * PI), mRadius(15.0f)
+	//, mTheta(1.5f * PI), mPhi(0.2f * PI), mRadius(15.0f)
 	, mView(MathHelper::Identity4x4())
-	, mProj(MathHelper::Identity4x4())
+	//, mProj(MathHelper::Identity4x4())
 	, mCurrFrameResource(nullptr), mCurrFrameResourceIndex(0)
 {
 	allObj_Update_vec.push_back(Obj_static_map);
@@ -110,16 +110,22 @@ void Utility_Manager::OnKeyboardInput(const float & dt)
 
 void Utility_Manager::UpdateCamera(const float & dt)
 {
-	g_EyePos.x = mRadius * sinf(mPhi) * cosf(mTheta);
-	g_EyePos.y = mRadius * sinf(mPhi) * sinf(mTheta);
-	g_EyePos.z = mRadius * cosf(mPhi);
+	for (auto& all : UTIL.Get_Allobjvec())
+	{
+		for (auto& objvec : *all)
+		{
+			g_EyePos.x = objvec.second->Get_Radius() * sinf(objvec.second->Get_Phi()) * cosf(objvec.second->Get_Theta());
+			g_EyePos.z = objvec.second->Get_Radius() * sinf(objvec.second->Get_Phi()) * sinf(objvec.second->Get_Theta());
+			g_EyePos.y = objvec.second->Get_Radius() * cosf(objvec.second->Get_Phi());
 
-	DirectX::XMVECTOR pos = XMVectorSet(g_EyePos.x, g_EyePos.y, g_EyePos.z, 1.0f);
-	DirectX::XMVECTOR target = DirectX::XMVectorZero();
-	DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+			DirectX::XMVECTOR pos = XMVectorSet(g_EyePos.x, g_EyePos.y, g_EyePos.z, 1.0f);
+			DirectX::XMVECTOR target = DirectX::XMVectorZero();
+			DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
-	DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(pos, target, up);
-	DirectX::XMStoreFloat4x4(&mView, view);
+			DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(pos, target, up);
+			DirectX::XMStoreFloat4x4(&mView, view);
+		}
+	}	
 }
 
 bool Utility_Manager::Object_Create(OBJECT obj)

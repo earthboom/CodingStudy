@@ -166,8 +166,8 @@ void LitColumn::UpdateMaterialCBs(const float & dt)
 
 void LitColumn::UpdateMainPassCB(const float & dt)
 {
-	XMMATRIX view = XMLoadFloat4x4(&mView);
-	XMMATRIX proj = XMLoadFloat4x4(&mProj);
+	XMMATRIX view = XMLoadFloat4x4(&UTIL.Get_ViewMat());
+	XMMATRIX proj = XMLoadFloat4x4(&g_Proj);
 
 	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
 	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);

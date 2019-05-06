@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Mouse_Manager.h"
+#include "Utility_Manager.h"
 #include "MathHelper.h"
 #include "Const.h"
 #include "Object.h"
@@ -32,19 +33,36 @@ void Mouse_Manager::OnMouseMove(WPARAM btnState, int x, int y)
 		float dx = DirectX::XMConvertToRadians(0.25f * static_cast<float>(x - mLastMousePos.x));
 		float dy = DirectX::XMConvertToRadians(0.25f * static_cast<float>(y - mLastMousePos.y));
 
-		mObj->Get_Theta() += dx;
-		mObj->Get_Phi() += dy;
+		for (auto& all : UTIL.Get_Allobjvec())
+		{
+			for (auto& objvec : *all)
+			{
+				if (Utility_Manager::ObjState::OS_UPDATE)
+				{
+					objvec.second->Get_Theta() += dx;
 
-		mObj->Get_Phi() = MathHelper::Clamp(mObj->Get_Phi(), 0.1f, PI - 0.1f);
+					objvec.second->Get_Phi() += dy;
+					objvec.second->Get_Phi() = MathHelper::Clamp(objvec.second->Get_Phi(), 0.1f, PI - 0.1f);
+				}
+			}
+		}
 	}
 	else if ((btnState & MK_RBUTTON) != 0)
 	{
 		float dx = 0.05f * static_cast<float>(x - mLastMousePos.x);
 		float dy = 0.05f * static_cast<float>(y - mLastMousePos.y);
 
-		mObj->Get_Radius() += dx - dy;
-
-		mObj->Get_Radius() = MathHelper::Clamp(mObj->Get_Radius(), 5.0f, 150.0f);
+		for (auto& all : UTIL.Get_Allobjvec())
+		{
+			for (auto& objvec : *all)
+			{
+				if (Utility_Manager::ObjState::OS_UPDATE)
+				{
+					objvec.second->Get_Radius() += dx - dy;
+					objvec.second->Get_Radius() = MathHelper::Clamp(objvec.second->Get_Radius(), 5.0f, 150.0f);
+				}
+			}
+		}
 	}
 
 	mLastMousePos.x = x;

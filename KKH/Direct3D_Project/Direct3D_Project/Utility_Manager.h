@@ -65,22 +65,20 @@ private:
 	std::vector<RenderItem*> mDrawLayer[(int)DrawLayer::DL_END];
 
 private:
-	std::map<std::string, OBJECT>* Obj_static_map;
-	std::map<std::string, OBJECT>* Obj_dynamic_map;
 	typedef std::map<std::string, OBJECT> OBJMAP;
+	OBJMAP* Obj_static_map;
+	OBJMAP* Obj_dynamic_map;	
 
-	std::vector<OBJMAP*> allObj_Update_vec;
 	typedef std::vector<OBJMAP*> ALLOBJVEC;
+	ALLOBJVEC allObj_Update_vec;
 
 private:
 	DirectX::XMFLOAT4X4 mView;
-	DirectX::XMFLOAT4X4 mProj;
+	//DirectX::XMFLOAT4X4 mProj;
 
-	float mTheta;
-	float mPhi;
-	float mRadius;
-
-	POINT mLastMousePos;
+	//float mTheta;
+	//float mPhi;
+	//float mRadius;
 
 public:
 	bool Object_Create(OBJECT obj);
@@ -108,7 +106,11 @@ public:
 	std::function<FrameResource*&()> Get_CurrFrameResource = [&]()->FrameResource*& {return mCurrFrameResource; };
 	std::function<int&()> Get_CurrFrameResourceIndex = [&]()->int& {return mCurrFrameResourceIndex; };
 
-	std::function<float&()> Get_Theta = [&]()->float& {return mTheta; };
-	std::function<float&()> Get_Phi = [&]()->float& {return mPhi; };
-	std::function<float&()> Get_Radius = [&]()->float& {return mRadius; };
+	std::function<ALLOBJVEC&()> Get_Allobjvec = [&]()->ALLOBJVEC& {return allObj_Update_vec; };
+
+	std::function<DirectX::XMFLOAT4X4&()> Get_ViewMat = [&]()->DirectX::XMFLOAT4X4& {return mView; };
+
+	//std::function<float&()> Get_Theta = [&]()->float& {return mTheta; };
+	//std::function<float&()> Get_Phi = [&]()->float& {return mPhi; };
+	//std::function<float&()> Get_Radius = [&]()->float& {return mRadius; };
 };
