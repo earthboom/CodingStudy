@@ -170,6 +170,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Common\DDSTextureLoader.h" />
     <ClInclude Include="..\Common\MathHelper.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Component.h" />
@@ -181,6 +182,7 @@
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="GraphicDev.h" />
     <ClInclude Include="Graphic_Manager.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="LitColumn.h" />
     <ClInclude Include="MainApp.h" />
     <ClInclude Include="Mouse_Manager.h" />
@@ -198,6 +200,7 @@
     <ClInclude Include="Waves.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Common\DDSTextureLoader.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="d3dutil_Manager.cpp" />
@@ -206,6 +209,7 @@
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="GraphicDev.cpp" />
     <ClCompile Include="Graphic_Manager.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="LitColumn.cpp" />
     <ClCompile Include="MainApp.cpp" />
     <ClCompile Include="Mouse_Manager.cpp" />

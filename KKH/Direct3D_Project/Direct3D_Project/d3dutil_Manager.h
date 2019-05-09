@@ -96,6 +96,7 @@ struct Material
 
 	int MatCBIndex = -1;
 	int DiffuseSrvHeapIndex = -1;
+	int NormalSrvHeapIndex = -1;
 	int NumFrameDirty = NumFrameResources;
 
 	DirectX::XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };

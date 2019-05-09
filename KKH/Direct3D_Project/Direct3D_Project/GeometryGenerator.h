@@ -54,6 +54,10 @@ public:
 	MeshData CreateCylinder(float bottomRadius, float topRadius, float height, uint32 sliceCount, uint32 stackCount);
 	MeshData CreateGrid(float w, float depth, uint32 m, uint32 n);
 
+public:
+	static float GetHillHeight(float x, float z);
+	static DirectX::XMFLOAT3 GetHillsNormal(float x, float z);
+
 private:
 	void Subdivide(MeshData& meshData);
 	Vertex MidPoint(const Vertex& v0, const Vertex& v1);

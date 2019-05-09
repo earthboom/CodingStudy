@@ -18,6 +18,7 @@ public:
 	
 protected:
 	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems);
+	virtual void BuildDescriptorHeaps(void) {}
 
 	virtual void AnimateMaterials(const float& dt);
 	virtual void UpdateObjectCBs(const float& dt);

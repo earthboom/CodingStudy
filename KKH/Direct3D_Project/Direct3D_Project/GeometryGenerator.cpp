@@ -292,6 +292,26 @@ GeometryGenerator::MeshData GeometryGenerator::CreateGrid(float w, float depth, 
 	return meshData;
 }
 
+float GeometryGenerator::GetHillHeight(float x, float z)
+{
+	return 0.3f * (z * sinf(0.1f * x) + x * cosf(0.1f *z));
+}
+
+DirectX::XMFLOAT3 GeometryGenerator::GetHillsNormal(float x, float z)
+{
+	DirectX::XMFLOAT3 n
+	(
+		-0.03f * z * cosf(0.1f * x) - 0.3f * cosf(0.1f * z),
+		1.0f,
+		-0.03f * sinf(0.1f * x) - 0.3f * x * sinf(0.1f * z)
+	);
+
+	DirectX::XMVECTOR unitNormal = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&n));
+	DirectX::XMStoreFloat3(&n, unitNormal);
+
+	return n;
+}
+
 void GeometryGenerator::Subdivide(GeometryGenerator::MeshData & meshData)
 {
 	GeometryGenerator::MeshData inputCopy = meshData;

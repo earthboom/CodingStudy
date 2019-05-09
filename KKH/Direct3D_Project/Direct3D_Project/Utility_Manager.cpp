@@ -5,6 +5,7 @@
 
 Utility_Manager::Utility_Manager(void)
 	: mRootSignature(nullptr)
+	, mSrvDescriptorHeap(nullptr)
 	, Obj_static_map(new OBJMAP)
 	, Obj_dynamic_map(new OBJMAP)
 	//, mTheta(1.5f * PI), mPhi(0.2f * PI), mRadius(15.0f)
@@ -23,25 +24,44 @@ Utility_Manager::~Utility_Manager(void)
 
 void Utility_Manager::BuildRootSignature(void)
 {
-	CD3DX12_ROOT_PARAMETER slotRootParameter[3];
+	CD3DX12_DESCRIPTOR_RANGE texTable;
+	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
-	slotRootParameter[0].InitAsConstantBufferView(0);
-	slotRootParameter[1].InitAsConstantBufferView(1);
-	slotRootParameter[2].InitAsConstantBufferView(2);
+	CD3DX12_ROOT_PARAMETER slotRootParameter[4];
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(3, slotRootParameter, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+	slotRootParameter[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[1].InitAsConstantBufferView(0);
+	slotRootParameter[2].InitAsConstantBufferView(1);
+	slotRootParameter[3].InitAsConstantBufferView(2);
+
+	auto staticSamplers = GetStaticSamplers();
+
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(4, slotRootParameter, (UINT)staticSamplers.size(), staticSamplers.data(), D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	Microsoft::WRL::ComPtr<ID3DBlob> serializedRootSig = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 
-	HRESULT hr = D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1, serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());
+	HRESULT hr = D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1, 
+		serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());
 
 	if (errorBlob != nullptr)
 		::OutputDebugStringA((char*)errorBlob->GetBufferPointer());
 
 	ThrowIfFailed(hr);
 
-	ThrowIfFailed(GRAPHIC->Get_Device()->CreateRootSignature(0, serializedRootSig->GetBufferPointer(), serializedRootSig->GetBufferSize(), IID_PPV_ARGS(mRootSignature.GetAddressOf())));
+	ThrowIfFailed(GRAPHIC->Get_Device()->CreateRootSignature(
+		0, serializedRootSig->GetBufferPointer(), 
+		serializedRootSig->GetBufferSize(), IID_PPV_ARGS(mRootSignature.GetAddressOf())));
+}
+
+void Utility_Manager::BuildDescriptorHeaps(void)
+{
+	//Create the SRV heap
+	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+	srvHeapDesc.NumDescriptors = 3;
+	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	ThrowIfFailed(GRAPHIC->Get_Device()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSrvDescriptorHeap)));
 }
 
 void Utility_Manager::BuildShadersAndInputLayer(void)

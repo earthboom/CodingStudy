@@ -7,6 +7,7 @@
 
 class Texture_Manger : public CSingleton<Texture_Manger>
 {
+public:
 	explicit Texture_Manger(void);
 	Texture_Manger(const Texture_Manger&) = delete;
 	Texture_Manger& operator=(const Texture_Manger&) = delete;
@@ -18,6 +19,9 @@ public:
 private:
 	typedef std::unordered_map<std::string, std::unique_ptr<Texture>> MAP_TEX;
 	MAP_TEX mTexture;
+
+public:
+	std::function<MAP_TEX&()> Get_Textures = [&]()->MAP_TEX& {return mTexture; };
 };
 
 

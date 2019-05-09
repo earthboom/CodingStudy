@@ -6,9 +6,22 @@
 Object::Object(void)
 	: Component()
 	, m_Comtype(Object::COM_TYPE::CT_STATIC)
-	, m_Name("")
+	, m_Name(""), m_submeshName(""), m_texName(""), m_matName("")
 	, mWorld(MathHelper::Identity4x4())
 	//, mView(MathHelper::Identity4x4())
+	, mProj(MathHelper::Identity4x4())
+	, mTheta(1.5f * PI)
+	, mPhi(DirectX::XM_PIDIV4)
+	, mRadius(5.0f)
+{
+}
+
+Object::Object(std::string _name, std::string _submeshname, std::string _texname, std::string _matname, std::wstring _texpath)
+	: Component()
+	, m_Comtype(Object::COM_TYPE::CT_STATIC)
+	, m_Name(_name), m_submeshName(_submeshname)
+	, m_texName(_texname), m_matName(_matname), m_texPath(_texpath)
+	, mWorld(MathHelper::Identity4x4())
 	, mProj(MathHelper::Identity4x4())
 	, mTheta(1.5f * PI)
 	, mPhi(DirectX::XM_PIDIV4)

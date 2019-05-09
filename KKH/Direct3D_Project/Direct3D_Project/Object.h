@@ -9,6 +9,7 @@ public:
 
 protected:
 	explicit Object(void);
+	Object(std::string _name, std::string _submeshname, std::string _texname, std::string _matname, std::wstring _texpath);
 	Object(const Object&) = delete;
 	Object& operator=(const Object&) = delete;
 	~Object(void);
@@ -19,14 +20,22 @@ public:
 	virtual bool Render(const float& dt) PURE;
 
 protected:
+	virtual void BuildDescriptorHeaps(void)PURE;
+
 	virtual void AnimateMaterials(const float& dt) PURE;
 	virtual void UpdateObjectCBs(const float& dt) PURE;
 	virtual void UpdateMaterialCBs(const float& dt) PURE;
 	virtual void UpdateMainPassCB(const float& dt) PURE;
 
+public:
+	std::string m_Name;
+	std::string m_submeshName;
+	std::string m_texName;
+	std::string m_matName;
+	std::wstring m_texPath;
+
 protected:
 	COM_TYPE m_Comtype;
-	std::string m_Name;
 
 	DirectX::XMFLOAT4X4 mWorld; //= MathHelper::Identity4x4();
 	//DirectX::XMFLOAT4X4 mView; //= MathHelper::Identity4x4();

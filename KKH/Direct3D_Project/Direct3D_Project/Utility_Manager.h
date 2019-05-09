@@ -22,6 +22,7 @@ public:
 
 public:
 	void BuildRootSignature(void);
+	void BuildDescriptorHeaps(void);
 	void BuildShadersAndInputLayer(void);
 
 	void BuildFrameResources(void);
@@ -35,6 +36,8 @@ public:
 
 private:
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature;
+
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap;
 
 	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3DBlob>> mShaders;
 
@@ -91,6 +94,7 @@ public:
 public:
 	std::function<Microsoft::WRL::ComPtr<ID3D12PipelineState>&(std::string)> Get_PSOs = [&](std::string str)->Microsoft::WRL::ComPtr<ID3D12PipelineState>& {return mPSOs[str]; };
 	std::function<Microsoft::WRL::ComPtr<ID3D12RootSignature>&()> Get_RootSignature = [&]()->Microsoft::WRL::ComPtr<ID3D12RootSignature>& {return mRootSignature; };
+	std::function<Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>&()> Get_SrvDiscriptorHeap = [&]()->Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& {return mSrvDescriptorHeap; };
 
 	std::function<GEOMESH&()> Get_Geomesh = [&]()->GEOMESH& {return mGeometries; };
 	std::function<RITEMVEC&()> Get_Ritemvec = [&]()->RITEMVEC& {return mAllRitem; };

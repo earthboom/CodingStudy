@@ -16,6 +16,8 @@ public:
 	virtual bool Render(const float& dt);
 
 protected:
+	virtual void BuildDescriptorHeaps(void) {}
+
 	virtual void AnimateMaterials(const float& dt) {}
 	virtual void UpdateObjectCBs(const float& dt) {}
 	virtual void UpdateMaterialCBs(const float& dt) {}

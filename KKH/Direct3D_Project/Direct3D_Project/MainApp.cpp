@@ -6,6 +6,7 @@
 #include "Utility_Manager.h"
 #include "Box.h"
 #include "LitColumn.h"
+#include "Grid.h"
 
 CMainApp::CMainApp(void)
 	: m_fTime(0.0f)
@@ -29,6 +30,7 @@ bool CMainApp::Ready_MainApp(void)
 	ThrowIfFailed(GRAPHIC->Get_CommandList()->Reset(GRAPHIC->Get_CommandAllocator().Get(), nullptr));
 
 	UTIL.BuildRootSignature();
+	UTIL.BuildDescriptorHeaps();
 	UTIL.BuildShadersAndInputLayer();
 
 	CreateObject();
@@ -84,7 +86,9 @@ void CMainApp::Render_MainApp(const float& dt)
 bool CMainApp::CreateObject(void)
 {
 	//if (!UTIL.Object_Create(Box::Create("box", Object::COM_TYPE::CT_STATIC, "BoxGeo", 1.5f, 0.5f, 1.5f, 3))) return FALSE;
-	if(!UTIL.Object_Create(LitColumn::Create("litcolumn", Object::COM_TYPE::CT_STATIC))) return FALSE;
+	//if(!UTIL.Object_Create(LitColumn::Create("litcolumn", Object::COM_TYPE::CT_STATIC))) return FALSE;
+
+	if (!UTIL.Object_Create(Grid::Create("landGeo", "grid", "grassTex", "grass", L"../Texture/grass.dds"))) return FALSE;
 
 	return TRUE;
 }

@@ -76,6 +76,9 @@
     <Filter Include="02.Utiltiy\51.Texture">
       <UniqueIdentifier>{a4b5810a-468d-4ef0-b723-99c87479cc93}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utiltiy\03.Object\Gird">
+      <UniqueIdentifier>{8b05d674-cd44-4e45-bd2f-32137af95295}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -156,6 +159,12 @@
     <ClInclude Include="Texture_Manger.h">
       <Filter>02.Utiltiy\51.Texture</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\DDSTextureLoader.h">
+      <Filter>98.Help</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>02.Utiltiy\03.Object\Gird</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D_Project.cpp">
@@ -211,6 +220,12 @@
     </ClCompile>
     <ClCompile Include="Texture_Manger.cpp">
       <Filter>02.Utiltiy\51.Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\DDSTextureLoader.cpp">
+      <Filter>98.Help</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>02.Utiltiy\03.Object\Gird</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
