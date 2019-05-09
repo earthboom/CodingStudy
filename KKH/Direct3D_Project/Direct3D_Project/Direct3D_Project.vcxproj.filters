@@ -40,9 +40,6 @@
     <Filter Include="02.Utiltiy\00.d3dutil_Manager">
       <UniqueIdentifier>{efbbf3c1-ad7a-426a-8c09-2726d49315af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utiltiy\96.Mouse_Manager">
-      <UniqueIdentifier>{1e4786f2-6625-45ec-871b-a6d1311d9825}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Utiltiy\97.FrameResource">
       <UniqueIdentifier>{aa76852f-9a1a-438a-a92a-37344b0dc6ea}</UniqueIdentifier>
     </Filter>
@@ -69,6 +66,15 @@
     </Filter>
     <Filter Include="02.Utiltiy\03.Object\LitColumn">
       <UniqueIdentifier>{40569e06-210c-4aa2-aaa5-75404880a223}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\50.Mouse_Manager">
+      <UniqueIdentifier>{1e4786f2-6625-45ec-871b-a6d1311d9825}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\96.Wave">
+      <UniqueIdentifier>{7f989466-384c-45d2-b47c-7b39e4fc90e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\51.Texture">
+      <UniqueIdentifier>{a4b5810a-468d-4ef0-b723-99c87479cc93}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -118,7 +124,7 @@
       <Filter>02.Utiltiy\97.FrameResource</Filter>
     </ClInclude>
     <ClInclude Include="Mouse_Manager.h">
-      <Filter>02.Utiltiy\96.Mouse_Manager</Filter>
+      <Filter>02.Utiltiy\50.Mouse_Manager</Filter>
     </ClInclude>
     <ClInclude Include="GeometryGenerator.h">
       <Filter>02.Utiltiy\95.GeometryGenerator</Filter>
@@ -144,6 +150,12 @@
     <ClInclude Include="LitColumn.h">
       <Filter>02.Utiltiy\03.Object\LitColumn</Filter>
     </ClInclude>
+    <ClInclude Include="Waves.h">
+      <Filter>02.Utiltiy\96.Wave</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture_Manger.h">
+      <Filter>02.Utiltiy\51.Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D_Project.cpp">
@@ -168,7 +180,7 @@
       <Filter>02.Utiltiy\97.FrameResource</Filter>
     </ClCompile>
     <ClCompile Include="Mouse_Manager.cpp">
-      <Filter>02.Utiltiy\96.Mouse_Manager</Filter>
+      <Filter>02.Utiltiy\50.Mouse_Manager</Filter>
     </ClCompile>
     <ClCompile Include="GeometryGenerator.cpp">
       <Filter>02.Utiltiy\95.GeometryGenerator</Filter>
@@ -193,6 +205,12 @@
     </ClCompile>
     <ClCompile Include="LitColumn.cpp">
       <Filter>02.Utiltiy\03.Object\LitColumn</Filter>
+    </ClCompile>
+    <ClCompile Include="Waves.cpp">
+      <Filter>02.Utiltiy\96.Wave</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture_Manger.cpp">
+      <Filter>02.Utiltiy\51.Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

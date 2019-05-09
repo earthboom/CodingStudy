@@ -189,11 +189,13 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Struct.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Texture_Manger.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Timer_Manager.h" />
     <ClInclude Include="Unique_Singleton.h" />
     <ClInclude Include="UploadBuffer.h" />
     <ClInclude Include="Utility_Manager.h" />
+    <ClInclude Include="Waves.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Box.cpp" />
@@ -214,9 +216,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Texture_Manger.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Timer_Manager.cpp" />
     <ClCompile Include="Utility_Manager.cpp" />
+    <ClCompile Include="Waves.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Direct3D_Project.rc" />

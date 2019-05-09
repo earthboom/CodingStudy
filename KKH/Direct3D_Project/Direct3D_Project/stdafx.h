@@ -29,7 +29,6 @@
 #include <DirectXColors.h>
 #include <DirectXCollision.h>
 
-
 #include <memory>
 #include <vector>
 #include <map>

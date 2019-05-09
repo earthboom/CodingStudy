@@ -84,8 +84,6 @@ public:
 	bool Object_Create(OBJECT obj);
 	bool Object_Cycle(const float& dt, ObjState _state);
 
-
-
 	//bool Object_Ready(void);
 	//bool Object_Update(const float& dt);
 	//bool Object_Render(const float& dt);

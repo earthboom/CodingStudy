@@ -20,6 +20,7 @@ Utility_Manager::~Utility_Manager(void)
 {
 }
 
+
 void Utility_Manager::BuildRootSignature(void)
 {
 	CD3DX12_ROOT_PARAMETER slotRootParameter[3];
