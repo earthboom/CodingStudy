@@ -31,10 +31,9 @@ public:
 
 	void OnResize(void);
 
-	void OnKeyboardInput(const float& dt);
-	void UpdateCamera(const float& dt);
-
 private:
+	UINT mCbvSrvDescriptorSize;
+
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature;
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap;
@@ -87,9 +86,13 @@ public:
 	bool Object_Create(OBJECT obj);
 	bool Object_Cycle(const float& dt, ObjState _state);
 
+private:
 	//bool Object_Ready(void);
-	//bool Object_Update(const float& dt);
-	//bool Object_Render(const float& dt);
+	bool Object_Update(const float& dt, OBJECT& obj);
+	bool Object_Render(const float& dt, OBJECT& obj);
+
+	void OnKeyboardInput(const float& dt);
+	void UpdateCamera(const float& dt);
 
 public:
 	std::function<Microsoft::WRL::ComPtr<ID3D12PipelineState>&(std::string)> Get_PSOs = [&](std::string str)->Microsoft::WRL::ComPtr<ID3D12PipelineState>& {return mPSOs[str]; };
@@ -111,6 +114,8 @@ public:
 	std::function<ALLOBJVEC&()> Get_Allobjvec = [&]()->ALLOBJVEC& {return allObj_Update_vec; };
 
 	std::function<DirectX::XMFLOAT4X4&()> Get_ViewMat = [&]()->DirectX::XMFLOAT4X4& {return mView; };
+
+	std::function<UINT&()> Get_CbvSrvDescriptorSize = [&]()->UINT& {return mCbvSrvDescriptorSize; };
 
 	//std::function<float&()> Get_Theta = [&]()->float& {return mTheta; };
 	//std::function<float&()> Get_Phi = [&]()->float& {return mPhi; };

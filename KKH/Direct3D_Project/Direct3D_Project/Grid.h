@@ -6,7 +6,7 @@ class Grid : public Object
 {
 public:
 	explicit Grid(void);
-	Grid(std::string _name, std::string _submeshname, std::string _texname, std::string _matname, std::wstring _texpath);
+	Grid(std::string _name, std::string _submeshname, std::string _texname, std::string _matname);
 	Grid(const Grid&) = delete;
 	Grid& operator=(const Grid&) = delete;
 	~Grid(void);
@@ -20,7 +20,7 @@ protected:
 	virtual void BuildDescriptorHeaps(void);
 
 	virtual void AnimateMaterials(const float& dt) {}
-	virtual void UpdateObjectCBs(const float& dt) {}
+	virtual void UpdateObjectCBs(const float& dt);
 	virtual void UpdateMaterialCBs(const float& dt) {}
 	virtual void UpdateMainPassCB(const float& dt) {}
 
@@ -33,7 +33,7 @@ private:
 
 public:
 	static std::shared_ptr<Grid> Create(std::string _name, std::string _submeshname, 
-		std::string _texname, std::string _matname, std::wstring _texpath);
+		std::string _texname, std::string _matname);
 };
 
 typedef std::shared_ptr<Grid> GRID;

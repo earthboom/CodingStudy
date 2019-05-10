@@ -12,6 +12,7 @@ Utility_Manager::Utility_Manager(void)
 	, mView(MathHelper::Identity4x4())
 	//, mProj(MathHelper::Identity4x4())
 	, mCurrFrameResource(nullptr), mCurrFrameResourceIndex(0)
+	, mCbvSrvDescriptorSize(0)
 {
 	allObj_Update_vec.push_back(Obj_static_map);
 	allObj_Update_vec.push_back(Obj_dynamic_map);
@@ -20,7 +21,6 @@ Utility_Manager::Utility_Manager(void)
 Utility_Manager::~Utility_Manager(void)
 {
 }
-
 
 void Utility_Manager::BuildRootSignature(void)
 {
@@ -36,7 +36,9 @@ void Utility_Manager::BuildRootSignature(void)
 
 	auto staticSamplers = GetStaticSamplers();
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(4, slotRootParameter, (UINT)staticSamplers.size(), staticSamplers.data(), D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(4, slotRootParameter, 
+		(UINT)staticSamplers.size(), staticSamplers.data(), 
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	Microsoft::WRL::ComPtr<ID3DBlob> serializedRootSig = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
@@ -125,30 +127,6 @@ void Utility_Manager::OnResize(void)
 	DirectX::XMStoreFloat4x4(&g_Proj, p);
 }
 
-void Utility_Manager::OnKeyboardInput(const float & dt)
-{
-}
-
-void Utility_Manager::UpdateCamera(const float & dt)
-{
-	for (auto& all : UTIL.Get_Allobjvec())
-	{
-		for (auto& objvec : *all)
-		{
-			g_EyePos.x = objvec.second->Get_Radius() * sinf(objvec.second->Get_Phi()) * cosf(objvec.second->Get_Theta());
-			g_EyePos.z = objvec.second->Get_Radius() * sinf(objvec.second->Get_Phi()) * sinf(objvec.second->Get_Theta());
-			g_EyePos.y = objvec.second->Get_Radius() * cosf(objvec.second->Get_Phi());
-
-			DirectX::XMVECTOR pos = XMVectorSet(g_EyePos.x, g_EyePos.y, g_EyePos.z, 1.0f);
-			DirectX::XMVECTOR target = DirectX::XMVectorZero();
-			DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-			DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(pos, target, up);
-			DirectX::XMStoreFloat4x4(&mView, view);
-		}
-	}	
-}
-
 bool Utility_Manager::Object_Create(OBJECT obj)
 {
 	if (obj == nullptr) return FALSE;
@@ -175,12 +153,14 @@ bool Utility_Manager::Object_Cycle(const float & dt, ObjState _state)
 				break;
 
 			case ObjState::OS_UPDATE:
-				if (!obj.second->Update(dt))
+				//if (!obj.second->Update(dt))
+				if(Object_Update(dt, obj.second))
 					return FALSE;
 				break;
 
 			case ObjState::OS_RENDER:
-				if (!obj.second->Render(dt))
+				//if (!obj.second->Render(dt))
+				if (Object_Render(dt, obj.second))
 					return FALSE;
 				break;
 			}
@@ -188,4 +168,54 @@ bool Utility_Manager::Object_Cycle(const float & dt, ObjState _state)
 	}
 
 	return TRUE;
+}
+
+bool Utility_Manager::Object_Update(const float & dt, OBJECT& obj)
+{
+	OnKeyboardInput(dt);
+	UpdateCamera(dt);
+
+	UTIL.Get_CurrFrameResourceIndex() = (UTIL.Get_CurrFrameResourceIndex() + 1) % NumFrameResources;
+	UTIL.Get_CurrFrameResource() = UTIL.Get_Frameres()[UTIL.Get_CurrFrameResourceIndex()].get();
+
+	if (UTIL.Get_CurrFrameResource()->Fence != 0 && GRAPHIC->Get_Fence()->GetCompletedValue() < UTIL.Get_CurrFrameResource()->Fence)
+	{
+		HANDLE eventHandle = CreateEventEx(nullptr, FALSE, FALSE, EVENT_ALL_ACCESS);
+		ThrowIfFailed(GRAPHIC->Get_Fence()->SetEventOnCompletion(UTIL.Get_CurrFrameResource()->Fence, eventHandle));
+		WaitForSingleObject(eventHandle, INFINITE);
+		CloseHandle(eventHandle);
+	}
+
+	obj->Update(dt);
+
+	return TRUE;
+}
+
+bool Utility_Manager::Object_Render(const float & dt, OBJECT& obj)
+{
+	return TRUE;
+}
+
+void Utility_Manager::OnKeyboardInput(const float & dt)
+{
+}
+
+void Utility_Manager::UpdateCamera(const float & dt)
+{
+	for (auto& all : UTIL.Get_Allobjvec())
+	{
+		for (auto& objvec : *all)
+		{
+			g_EyePos.x = objvec.second->Get_Radius() * sinf(objvec.second->Get_Phi()) * cosf(objvec.second->Get_Theta());
+			g_EyePos.z = objvec.second->Get_Radius() * sinf(objvec.second->Get_Phi()) * sinf(objvec.second->Get_Theta());
+			g_EyePos.y = objvec.second->Get_Radius() * cosf(objvec.second->Get_Phi());
+
+			DirectX::XMVECTOR pos = XMVectorSet(g_EyePos.x, g_EyePos.y, g_EyePos.z, 1.0f);
+			DirectX::XMVECTOR target = DirectX::XMVectorZero();
+			DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+			DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(pos, target, up);
+			DirectX::XMStoreFloat4x4(&mView, view);
+		}
+	}
 }

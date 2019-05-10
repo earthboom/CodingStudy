@@ -10,8 +10,8 @@ Grid::Grid(void)
 {
 }
 
-Grid::Grid(std::string _name, std::string _submeshname, std::string _texname, std::string _matname, std::wstring _texpath)
-	: Object(_name, _submeshname, _texname, _matname, _texpath)
+Grid::Grid(std::string _name, std::string _submeshname, std::string _texname, std::string _matname)
+	: Object(_name, _submeshname, _texname, _matname)
 {
 }
 
@@ -21,8 +21,6 @@ Grid::~Grid(void)
 
 bool Grid::Ready(void)
 {
-	TEX.onDDSLoad(m_texName, m_texPath);
-
 	BuildDescriptorHeaps();
 	BuildGeometry();
 	BuildMaterials();
@@ -33,6 +31,11 @@ bool Grid::Ready(void)
 
 bool Grid::Update(const float & dt)
 {
+	AnimateMaterials(dt);
+	UpdateObjectCBs(dt);
+	UpdateMaterialCBs(dt);
+	UpdateMainPassCB(dt);
+
 	return TRUE;
 }
 
@@ -54,6 +57,12 @@ void Grid::BuildDescriptorHeaps(void)
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = -1;
 	GRAPHIC->Get_Device()->CreateShaderResourceView(tex.Get(), &srvDesc, hDescriptor);
+
+	hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
+}
+
+void Grid::UpdateObjectCBs(const float & dt)
+{
 }
 
 void Grid::BuildMaterials(void)
@@ -140,9 +149,9 @@ void Grid::BuildGeometry(void)
 }
 
 std::shared_ptr<Grid> Grid::Create(std::string _name, std::string _submeshname, 
-					std::string _texname, std::string _matname, std::wstring _texpath)
+					std::string _texname, std::string _matname)
 {
-	GRID pGrid = std::make_shared<Grid>(_name, _submeshname, _texname, _matname, _texpath);
+	GRID pGrid = std::make_shared<Grid>(_name, _submeshname, _texname, _matname);
 	if (!pGrid) return nullptr;
 	
 	return pGrid;
