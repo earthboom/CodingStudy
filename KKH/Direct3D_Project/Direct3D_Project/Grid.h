@@ -6,7 +6,7 @@ class Grid : public Object
 {
 public:
 	explicit Grid(void);
-	Grid(std::string _name, std::string _submeshname, std::string _texname, std::string _matname);
+	Grid(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname);
 	Grid(const Grid&) = delete;
 	Grid& operator=(const Grid&) = delete;
 	~Grid(void);
@@ -32,7 +32,7 @@ private:
 	void BuildGeometry(void);
 
 public:
-	static std::shared_ptr<Grid> Create(std::string _name, std::string _submeshname, 
+	static std::shared_ptr<Grid> Create(Object::COM_TYPE _type, std::string _name, std::string _submeshname,
 		std::string _texname, std::string _matname);
 };
 

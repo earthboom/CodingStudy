@@ -16,9 +16,9 @@ Object::Object(void)
 {
 }
 
-Object::Object(std::string _name, std::string _submeshname, std::string _texname, std::string _matname)
+Object::Object(COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname)
 	: Component()
-	, m_Comtype(Object::COM_TYPE::CT_STATIC)
+	, m_Comtype(_type)
 	, m_Name(_name), m_submeshName(_submeshname)
 	, m_texName(_texname), m_matName(_matname)
 	, mWorld(MathHelper::Identity4x4())

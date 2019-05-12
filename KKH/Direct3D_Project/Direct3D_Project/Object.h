@@ -9,7 +9,7 @@ public:
 
 protected:
 	explicit Object(void);
-	Object(std::string _name, std::string _submeshname, std::string _texname, std::string _matname);
+	Object(COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname);
 	Object(const Object&) = delete;
 	Object& operator=(const Object&) = delete;
 	~Object(void);

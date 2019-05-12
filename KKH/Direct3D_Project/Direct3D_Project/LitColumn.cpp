@@ -2,7 +2,6 @@
 #include "LitColumn.h"
 #include "GeometryGenerator.h"
 #include "d3dutil_Manager.h"
-#include "FrameResource.h"
 #include "Utility_Manager.h"
 #include "MathHelper.h"
 #include "Timer_Manager.h"

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Utility_Manager.h"
 #include "Graphic_Manager.h"
+#include "Timer_Manager.h"
 #include "Function.h"
 
 Utility_Manager::Utility_Manager(void)
@@ -188,12 +189,165 @@ bool Utility_Manager::Object_Update(const float & dt, OBJECT& obj)
 
 	obj->Update(dt);
 
+	AnimateMaterials(dt);
+	UpdateObjectCBs(dt);
+	UpdateMaterialCBs(dt);
+	UpdateMainPassCB(dt);
+
 	return TRUE;
 }
 
 bool Utility_Manager::Object_Render(const float & dt, OBJECT& obj)
 {
+	auto cmdListAlloc = UTIL.Get_CurrFrameResource()->CmdListAlloc;
+
+	ThrowIfFailed(cmdListAlloc->Reset());
+	ThrowIfFailed(GRAPHIC->Get_CommandList()->Reset(cmdListAlloc.Get(), UTIL.Get_PSOs("opaque").Get()));
+
+	GRAPHIC->Get_CommandList()->RSSetViewports(1, &GRAPHIC->Get_ScreenViewport());
+	GRAPHIC->Get_CommandList()->RSSetScissorRects(1, &GRAPHIC->Get_ScissorRect());
+
+	GRAPHIC->Get_CommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GRAPHIC->Get_CurrentBackBuffer_Resource(),
+		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+
+	GRAPHIC->Get_CommandList()->ClearRenderTargetView(GRAPHIC->Get_CurrentBackBufferView_Handle(), Colors::LightSteelBlue, 0, nullptr);
+	GRAPHIC->Get_CommandList()->ClearDepthStencilView(GRAPHIC->Get_DepthStencilView_Handle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0.0f, 0.0f, nullptr);
+
+	GRAPHIC->Get_CommandList()->OMSetRenderTargets(1, &GRAPHIC->Get_CurrentBackBufferView_Handle(), TRUE, &GRAPHIC->Get_DepthStencilView_Handle());
+
+	GRAPHIC->Get_CommandList()->SetGraphicsRootSignature(UTIL.Get_RootSignature().Get());
+
+	auto passCB = UTIL.Get_CurrFrameResource()->PassCB->Resource();
+	GRAPHIC->Get_CommandList()->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
+
+	DrawRenderItems(GRAPHIC->Get_CommandList().Get(), UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE));
+
+	GRAPHIC->Get_CommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GRAPHIC->Get_CurrentBackBuffer_Resource(),
+		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+
+	ThrowIfFailed(GRAPHIC->Get_CommandList()->Close());
+
+	ID3D12CommandList* cmdsLists[] = { GRAPHIC->Get_CommandList().Get() };
+	GRAPHIC->Get_CommandQueue()->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+
+	ThrowIfFailed(GRAPHIC->Get_SwapChain()->Present(0, 0));
+	GRAPHIC->Get_Set_CurrBackBuffer() = (GRAPHIC->Get_Set_CurrBackBuffer() + 1) % GRAPHIC->Get_SwapChainBufferCount();
+
+	UTIL.Get_CurrFrameResource()->Fence = ++GRAPHIC->Get_CurrentFence();
+
+	GRAPHIC->Get_CommandQueue()->Signal(GRAPHIC->Get_Fence().Get(), GRAPHIC->Get_CurrentFence());
+
 	return TRUE;
+}
+
+void Utility_Manager::AnimateMaterials(const float & dt)
+{
+}
+
+void Utility_Manager::UpdateObjectCBs(const float & dt)
+{
+	auto currObjectCB = UTIL.Get_CurrFrameResource()->ObjectCB.get();
+	for (auto& e : UTIL.Get_Ritemvec())
+	{
+		if (e->NumFramesDirty > 0)
+		{
+			DirectX::XMMATRIX world = DirectX::XMLoadFloat4x4(&e->World);
+			DirectX::XMMATRIX texTransform = DirectX::XMLoadFloat4x4(&e->TexTransform);
+
+			ObjectConstants objConstants;
+			DirectX::XMStoreFloat4x4(&objConstants.World, DirectX::XMMatrixTranspose(world));
+			DirectX::XMStoreFloat4x4(&objConstants.TexTransform, DirectX::XMMatrixTranspose(texTransform));
+
+			currObjectCB->CopyData(e->objCBIndex, objConstants);
+
+			e->NumFramesDirty--;
+		}
+	}
+}
+
+void Utility_Manager::UpdateMaterialCBs(const float & dt)
+{
+	auto currMaterialCB = UTIL.Get_CurrFrameResource()->MaterialCB.get();
+	for (auto& e : UTIL.Get_Materials())
+	{
+		Material* mat = e.second.get();
+		if (mat->NumFrameDirty > 0)
+		{
+			DirectX::XMMATRIX matTransform = DirectX::XMLoadFloat4x4(&mat->MatTransform);
+
+			MaterialConstants matConstants;
+			matConstants.DiffuseAlbedo = mat->DiffuseAlbedo;
+			matConstants.FresnelR0 = mat->FresnelR0;
+			matConstants.Roughness = mat->Roughness;
+			DirectX::XMStoreFloat4x4(&matConstants.MatTransform, DirectX::XMMatrixTranspose(matTransform));
+
+			currMaterialCB->CopyData(mat->MatCBIndex, matConstants);
+
+			mat->NumFrameDirty--;
+		}
+	}
+}
+
+void Utility_Manager::UpdateMainPassCB(const float & dt)
+{
+	XMMATRIX view = XMLoadFloat4x4(&UTIL.Get_ViewMat());
+	XMMATRIX proj = XMLoadFloat4x4(&g_Proj);
+
+	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
+	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
+	XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+
+	XMStoreFloat4x4(&UTIL.Get_MainPassCB().View, XMMatrixTranspose(view));
+	XMStoreFloat4x4(&UTIL.Get_MainPassCB().InvView, XMMatrixTranspose(invView));
+	XMStoreFloat4x4(&UTIL.Get_MainPassCB().Proj, XMMatrixTranspose(proj));
+	XMStoreFloat4x4(&UTIL.Get_MainPassCB().InvProj, XMMatrixTranspose(invProj));
+	XMStoreFloat4x4(&UTIL.Get_MainPassCB().ViewProj, XMMatrixTranspose(viewProj));
+	XMStoreFloat4x4(&UTIL.Get_MainPassCB().InvViewProj, XMMatrixTranspose(invViewProj));
+	UTIL.Get_MainPassCB().EyePosW = g_EyePos;
+	UTIL.Get_MainPassCB().RenderTargetSize = XMFLOAT2((float)WINSIZE_X, (float)WINSIZE_Y);
+	UTIL.Get_MainPassCB().InvRenderTargetSize = XMFLOAT2(1.0f / WINSIZE_X, 1.0f / WINSIZE_Y);
+	UTIL.Get_MainPassCB().NearZ = 1.0f;
+	UTIL.Get_MainPassCB().FarZ = 1000.0f;
+	UTIL.Get_MainPassCB().TotalTime = dt;
+	UTIL.Get_MainPassCB().DeltaTime = dt;
+	UTIL.Get_MainPassCB().AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
+	UTIL.Get_MainPassCB().Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
+	UTIL.Get_MainPassCB().Lights[0].Strength = { 0.6f, 0.6f, 0.6f };
+	UTIL.Get_MainPassCB().Lights[1].Direction = { -0.57735f, -0.57735f, 0.57735f };
+	UTIL.Get_MainPassCB().Lights[1].Strength = { 0.3f, 0.3f, 0.3f };
+	UTIL.Get_MainPassCB().Lights[2].Direction = { 0.0f, -0.707f, -0.707f };
+	UTIL.Get_MainPassCB().Lights[2].Strength = { 0.15f, 0.15f, 0.15f };
+
+	auto currPassCB = UTIL.Get_CurrFrameResource()->PassCB.get();
+	currPassCB->CopyData(0, UTIL.Get_MainPassCB());
+}
+
+void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const std::vector<RenderItem*>& ritems)
+{
+	UINT objCBByteSize = d3dutil_Mananger::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+	UINT matCBByteSize = d3dutil_Mananger::CalcConstantBufferByteSize(sizeof(MaterialConstants));
+
+	auto objectCB = UTIL.Get_CurrFrameResource()->ObjectCB->Resource();
+	auto matCB = UTIL.Get_CurrFrameResource()->MaterialCB->Resource();
+
+	// For each render item...
+	for (size_t i = 0; i < ritems.size(); ++i)
+	{
+		auto ri = ritems[i];
+
+		cmdList->IASetVertexBuffers(0, 1, &ri->Geo->VertexBufferView());
+		cmdList->IASetIndexBuffer(&ri->Geo->IndexBufferView());
+		cmdList->IASetPrimitiveTopology(ri->PrimitiveType);
+
+		D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ri->objCBIndex*objCBByteSize;
+		D3D12_GPU_VIRTUAL_ADDRESS matCBAddress = matCB->GetGPUVirtualAddress() + ri->Mat->MatCBIndex*matCBByteSize;
+
+		cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
+		cmdList->SetGraphicsRootConstantBufferView(1, matCBAddress);
+
+		cmdList->DrawIndexedInstanced(ri->IndexCount, 1, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
+	}
 }
 
 void Utility_Manager::OnKeyboardInput(const float & dt)

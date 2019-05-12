@@ -10,8 +10,8 @@ Grid::Grid(void)
 {
 }
 
-Grid::Grid(std::string _name, std::string _submeshname, std::string _texname, std::string _matname)
-	: Object(_name, _submeshname, _texname, _matname)
+Grid::Grid(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname)
+	: Object(_type, _name, _submeshname, _texname, _matname)
 {
 }
 
@@ -31,11 +31,6 @@ bool Grid::Ready(void)
 
 bool Grid::Update(const float & dt)
 {
-	AnimateMaterials(dt);
-	UpdateObjectCBs(dt);
-	UpdateMaterialCBs(dt);
-	UpdateMainPassCB(dt);
-
 	return TRUE;
 }
 
@@ -126,12 +121,10 @@ void Grid::BuildGeometry(void)
 	CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
 	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), 
-		GRAPHIC->Get_CommandList().Get(),
-		vertices.data(), vbByteSize, geo->VertexBufferUploader);
+		GRAPHIC->Get_CommandList().Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
 
 	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), 
-		GRAPHIC->Get_CommandList().Get(),
-		indices.data(), ibByteSize, geo->IndexBufferUploader);
+		GRAPHIC->Get_CommandList().Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
 
 	geo->VertexByteStride = sizeof(Vertex);
 	geo->VertexBufferByteSize = vbByteSize;
@@ -148,10 +141,10 @@ void Grid::BuildGeometry(void)
 	UTIL.Get_Geomesh()[geo->Name] = std::move(geo);
 }
 
-std::shared_ptr<Grid> Grid::Create(std::string _name, std::string _submeshname, 
+std::shared_ptr<Grid> Grid::Create(Object::COM_TYPE _type, std::string _name, std::string _submeshname,
 					std::string _texname, std::string _matname)
 {
-	GRID pGrid = std::make_shared<Grid>(_name, _submeshname, _texname, _matname);
+	GRID pGrid = std::make_shared<Grid>(_type, _name, _submeshname, _texname, _matname);
 	if (!pGrid) return nullptr;
 	
 	return pGrid;

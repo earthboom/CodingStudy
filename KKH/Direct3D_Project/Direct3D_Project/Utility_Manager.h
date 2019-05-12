@@ -91,6 +91,13 @@ private:
 	bool Object_Update(const float& dt, OBJECT& obj);
 	bool Object_Render(const float& dt, OBJECT& obj);
 
+	void AnimateMaterials(const float& dt);
+	void UpdateObjectCBs(const float& dt);
+	void UpdateMaterialCBs(const float& dt);
+	void UpdateMainPassCB(const float& dt);
+	
+	void DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const std::vector<RenderItem*>& ritems);
+
 	void OnKeyboardInput(const float& dt);
 	void UpdateCamera(const float& dt);
 

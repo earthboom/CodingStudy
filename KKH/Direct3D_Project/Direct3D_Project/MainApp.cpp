@@ -32,7 +32,7 @@ bool CMainApp::Ready_MainApp(void)
 
 	UTIL.Get_CbvSrvDescriptorSize() = GRAPHIC->Get_Device()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-	if (TEX.onDDSLoad("grassTex", L"../Texture/grass.dds")) return FALSE;
+	if (!TEX.onDDSLoad("grassTex", L"../Texture/grass.dds")) return FALSE;
 
 	UTIL.BuildRootSignature();
 	UTIL.BuildDescriptorHeaps();
@@ -91,7 +91,7 @@ bool CMainApp::CreateObject(void)
 	//if (!UTIL.Object_Create(Box::Create("box", Object::COM_TYPE::CT_STATIC, "BoxGeo", 1.5f, 0.5f, 1.5f, 3))) return FALSE;
 	//if(!UTIL.Object_Create(LitColumn::Create("litcolumn", Object::COM_TYPE::CT_STATIC))) return FALSE;
 
-	if (!UTIL.Object_Create(Grid::Create("landGeo", "grid", "grassTex", "grass"))) return FALSE;
+	if (!UTIL.Object_Create(Grid::Create(Object::COM_TYPE::CT_STATIC, "landGeo", "grid", "grassTex", "grass"))) return FALSE;
 
 	return TRUE;
 }
