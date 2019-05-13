@@ -45,7 +45,7 @@ void Grid::BuildDescriptorHeaps(void)
 
 	auto tex = TEX.Get_Textures()[m_texName]->Resource;
 
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.Format = tex->GetDesc().Format;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
@@ -53,7 +53,7 @@ void Grid::BuildDescriptorHeaps(void)
 	srvDesc.Texture2D.MipLevels = -1;
 	GRAPHIC->Get_Device()->CreateShaderResourceView(tex.Get(), &srvDesc, hDescriptor);
 
-	hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
+	//hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
 }
 
 void Grid::UpdateObjectCBs(const float & dt)
@@ -64,13 +64,13 @@ void Grid::BuildMaterials(void)
 {
 	auto mat = std::make_unique<Material>();
 	mat->Name = m_matName;
-	mat->MatCBIndex = 1;
-	mat->DiffuseSrvHeapIndex = 1;
+	mat->MatCBIndex = 0;
+	mat->DiffuseSrvHeapIndex = 0;
 	mat->DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	mat->FresnelR0 = DirectX::XMFLOAT3(0.2f, 0.2f, 0.2f);
-	mat->Roughness = 0.0f;
+	mat->FresnelR0 = DirectX::XMFLOAT3(0.01f, 0.01f, 0.01f);
+	mat->Roughness = 0.125f;
 
-	UTIL.Get_Materials()[mat->Name] = std::move(mat);
+	UTIL.Get_Materials()[m_matName] = std::move(mat);
 }
 
 void Grid::BuildRenderItem(void)

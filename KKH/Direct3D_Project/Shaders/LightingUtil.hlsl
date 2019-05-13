@@ -19,7 +19,6 @@ struct Material
 };
 
 
-
 float CalcAttenuation(float d, float falloffStart, float falloffEnd)
 {
 	return saturate((falloffEnd - d) / (falloffEnd - falloffStart));

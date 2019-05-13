@@ -2,6 +2,7 @@
 #include "Utility_Manager.h"
 #include "Graphic_Manager.h"
 #include "Timer_Manager.h"
+#include "Texture_Manger.h"
 #include "Function.h"
 
 Utility_Manager::Utility_Manager(void)
@@ -65,11 +66,23 @@ void Utility_Manager::BuildDescriptorHeaps(void)
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	ThrowIfFailed(GRAPHIC->Get_Device()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSrvDescriptorHeap)));
+
+	/*CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+
+	auto tex = TEX.Get_Textures()["grassTex"]->Resource;
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Format = tex->GetDesc().Format;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = -1;
+	GRAPHIC->Get_Device()->CreateShaderResourceView(tex.Get(), &srvDesc, hDescriptor);*/
 }
 
 void Utility_Manager::BuildShadersAndInputLayer(void)
 {
-	const D3D_SHADER_MACRO alphaTestDefines[] = { "ALPHA_TEST", "1", NULL, NULL };
+	//const D3D_SHADER_MACRO alphaTestDefines[] = { "ALPHA_TEST", "1", NULL, NULL };
 
 	mShaders["standardVS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", nullptr, "VS", "vs_5_1");
 	mShaders["opaquePS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", nullptr, "PS", "ps_5_1");
@@ -86,7 +99,7 @@ void Utility_Manager::BuildFrameResources(void)
 {
 	for (int i = 0; i < NumFrameResources; ++i)
 	{
-		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC->Get_Device().Get(), 1, (UINT)mAllRitem.size(), (UINT)mMaterials.size()));
+		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC->Get_Device().Get(), 1, (UINT)mAllRitem.size(), (UINT)mMaterials.size(), 1));
 	}
 }
 
@@ -176,18 +189,19 @@ bool Utility_Manager::Object_Update(const float & dt, OBJECT& obj)
 	OnKeyboardInput(dt);
 	UpdateCamera(dt);
 
-	UTIL.Get_CurrFrameResourceIndex() = (UTIL.Get_CurrFrameResourceIndex() + 1) % NumFrameResources;
-	UTIL.Get_CurrFrameResource() = UTIL.Get_Frameres()[UTIL.Get_CurrFrameResourceIndex()].get();
+	mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % NumFrameResources;
+	mCurrFrameResource = UTIL.Get_Frameres()[mCurrFrameResourceIndex].get();
 
-	if (UTIL.Get_CurrFrameResource()->Fence != 0 && GRAPHIC->Get_Fence()->GetCompletedValue() < UTIL.Get_CurrFrameResource()->Fence)
+	if (mCurrFrameResource->Fence != 0 && GRAPHIC->Get_Fence()->GetCompletedValue() < mCurrFrameResource->Fence)
 	{
 		HANDLE eventHandle = CreateEventEx(nullptr, FALSE, FALSE, EVENT_ALL_ACCESS);
-		ThrowIfFailed(GRAPHIC->Get_Fence()->SetEventOnCompletion(UTIL.Get_CurrFrameResource()->Fence, eventHandle));
+		ThrowIfFailed(GRAPHIC->Get_Fence()->SetEventOnCompletion(mCurrFrameResource->Fence, eventHandle));
 		WaitForSingleObject(eventHandle, INFINITE);
 		CloseHandle(eventHandle);
 	}
 
-	obj->Update(dt);
+	if (!obj->Update(dt))
+		return FALSE;
 
 	AnimateMaterials(dt);
 	UpdateObjectCBs(dt);
@@ -199,10 +213,10 @@ bool Utility_Manager::Object_Update(const float & dt, OBJECT& obj)
 
 bool Utility_Manager::Object_Render(const float & dt, OBJECT& obj)
 {
-	auto cmdListAlloc = UTIL.Get_CurrFrameResource()->CmdListAlloc;
+	auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
 
 	ThrowIfFailed(cmdListAlloc->Reset());
-	ThrowIfFailed(GRAPHIC->Get_CommandList()->Reset(cmdListAlloc.Get(), UTIL.Get_PSOs("opaque").Get()));
+	ThrowIfFailed(GRAPHIC->Get_CommandList()->Reset(cmdListAlloc.Get(), mPSOs["opaque"].Get()));
 
 	GRAPHIC->Get_CommandList()->RSSetViewports(1, &GRAPHIC->Get_ScreenViewport());
 	GRAPHIC->Get_CommandList()->RSSetScissorRects(1, &GRAPHIC->Get_ScissorRect());
@@ -215,12 +229,15 @@ bool Utility_Manager::Object_Render(const float & dt, OBJECT& obj)
 
 	GRAPHIC->Get_CommandList()->OMSetRenderTargets(1, &GRAPHIC->Get_CurrentBackBufferView_Handle(), TRUE, &GRAPHIC->Get_DepthStencilView_Handle());
 
-	GRAPHIC->Get_CommandList()->SetGraphicsRootSignature(UTIL.Get_RootSignature().Get());
+	ID3D12DescriptorHeap* descriptorHeaps[] = { mSrvDescriptorHeap.Get() };
+	GRAPHIC->Get_CommandList()->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-	auto passCB = UTIL.Get_CurrFrameResource()->PassCB->Resource();
+	GRAPHIC->Get_CommandList()->SetGraphicsRootSignature(mRootSignature.Get());
+
+	auto passCB = mCurrFrameResource->PassCB->Resource();
 	GRAPHIC->Get_CommandList()->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
 
-	DrawRenderItems(GRAPHIC->Get_CommandList().Get(), UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE));
+	DrawRenderItems(GRAPHIC->Get_CommandList().Get(), mDrawLayer[(int)DrawLayer::DL_OPAUQE]);
 
 	GRAPHIC->Get_CommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GRAPHIC->Get_CurrentBackBuffer_Resource(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
@@ -233,7 +250,7 @@ bool Utility_Manager::Object_Render(const float & dt, OBJECT& obj)
 	ThrowIfFailed(GRAPHIC->Get_SwapChain()->Present(0, 0));
 	GRAPHIC->Get_Set_CurrBackBuffer() = (GRAPHIC->Get_Set_CurrBackBuffer() + 1) % GRAPHIC->Get_SwapChainBufferCount();
 
-	UTIL.Get_CurrFrameResource()->Fence = ++GRAPHIC->Get_CurrentFence();
+	mCurrFrameResource->Fence = ++GRAPHIC->Get_CurrentFence();
 
 	GRAPHIC->Get_CommandQueue()->Signal(GRAPHIC->Get_Fence().Get(), GRAPHIC->Get_CurrentFence());
 
@@ -246,8 +263,8 @@ void Utility_Manager::AnimateMaterials(const float & dt)
 
 void Utility_Manager::UpdateObjectCBs(const float & dt)
 {
-	auto currObjectCB = UTIL.Get_CurrFrameResource()->ObjectCB.get();
-	for (auto& e : UTIL.Get_Ritemvec())
+	auto currObjectCB = mCurrFrameResource->ObjectCB.get();
+	for (auto& e : mAllRitem)
 	{
 		if (e->NumFramesDirty > 0)
 		{
@@ -267,8 +284,8 @@ void Utility_Manager::UpdateObjectCBs(const float & dt)
 
 void Utility_Manager::UpdateMaterialCBs(const float & dt)
 {
-	auto currMaterialCB = UTIL.Get_CurrFrameResource()->MaterialCB.get();
-	for (auto& e : UTIL.Get_Materials())
+	auto currMaterialCB = mCurrFrameResource->MaterialCB.get();
+	for (auto& e : mMaterials)
 	{
 		Material* mat = e.second.get();
 		if (mat->NumFrameDirty > 0)
@@ -290,7 +307,7 @@ void Utility_Manager::UpdateMaterialCBs(const float & dt)
 
 void Utility_Manager::UpdateMainPassCB(const float & dt)
 {
-	XMMATRIX view = XMLoadFloat4x4(&UTIL.Get_ViewMat());
+	XMMATRIX view = XMLoadFloat4x4(&mView);
 	XMMATRIX proj = XMLoadFloat4x4(&g_Proj);
 
 	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
@@ -298,29 +315,29 @@ void Utility_Manager::UpdateMainPassCB(const float & dt)
 	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
 	XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
 
-	XMStoreFloat4x4(&UTIL.Get_MainPassCB().View, XMMatrixTranspose(view));
-	XMStoreFloat4x4(&UTIL.Get_MainPassCB().InvView, XMMatrixTranspose(invView));
-	XMStoreFloat4x4(&UTIL.Get_MainPassCB().Proj, XMMatrixTranspose(proj));
-	XMStoreFloat4x4(&UTIL.Get_MainPassCB().InvProj, XMMatrixTranspose(invProj));
-	XMStoreFloat4x4(&UTIL.Get_MainPassCB().ViewProj, XMMatrixTranspose(viewProj));
-	XMStoreFloat4x4(&UTIL.Get_MainPassCB().InvViewProj, XMMatrixTranspose(invViewProj));
-	UTIL.Get_MainPassCB().EyePosW = g_EyePos;
-	UTIL.Get_MainPassCB().RenderTargetSize = XMFLOAT2((float)WINSIZE_X, (float)WINSIZE_Y);
-	UTIL.Get_MainPassCB().InvRenderTargetSize = XMFLOAT2(1.0f / WINSIZE_X, 1.0f / WINSIZE_Y);
-	UTIL.Get_MainPassCB().NearZ = 1.0f;
-	UTIL.Get_MainPassCB().FarZ = 1000.0f;
-	UTIL.Get_MainPassCB().TotalTime = dt;
-	UTIL.Get_MainPassCB().DeltaTime = dt;
-	UTIL.Get_MainPassCB().AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
-	UTIL.Get_MainPassCB().Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
-	UTIL.Get_MainPassCB().Lights[0].Strength = { 0.6f, 0.6f, 0.6f };
-	UTIL.Get_MainPassCB().Lights[1].Direction = { -0.57735f, -0.57735f, 0.57735f };
-	UTIL.Get_MainPassCB().Lights[1].Strength = { 0.3f, 0.3f, 0.3f };
-	UTIL.Get_MainPassCB().Lights[2].Direction = { 0.0f, -0.707f, -0.707f };
-	UTIL.Get_MainPassCB().Lights[2].Strength = { 0.15f, 0.15f, 0.15f };
+	XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));
+	XMStoreFloat4x4(&mMainPassCB.InvView, XMMatrixTranspose(invView));
+	XMStoreFloat4x4(&mMainPassCB.Proj, XMMatrixTranspose(proj));
+	XMStoreFloat4x4(&mMainPassCB.InvProj, XMMatrixTranspose(invProj));
+	XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));
+	XMStoreFloat4x4(&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
+	mMainPassCB.EyePosW = g_EyePos;
+	mMainPassCB.RenderTargetSize = XMFLOAT2((float)WINSIZE_X, (float)WINSIZE_Y);
+	mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / WINSIZE_X, 1.0f / WINSIZE_Y);
+	mMainPassCB.NearZ = 1.0f;
+	mMainPassCB.FarZ = 1000.0f;
+	mMainPassCB.TotalTime = dt;
+	mMainPassCB.DeltaTime = dt;
+	mMainPassCB.AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
+	mMainPassCB.Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
+	mMainPassCB.Lights[0].Strength = { 0.6f, 0.6f, 0.6f };
+	mMainPassCB.Lights[1].Direction = { -0.57735f, -0.57735f, 0.57735f };
+	mMainPassCB.Lights[1].Strength = { 0.3f, 0.3f, 0.3f };
+	mMainPassCB.Lights[2].Direction = { 0.0f, -0.707f, -0.707f };
+	mMainPassCB.Lights[2].Strength = { 0.15f, 0.15f, 0.15f };
 
-	auto currPassCB = UTIL.Get_CurrFrameResource()->PassCB.get();
-	currPassCB->CopyData(0, UTIL.Get_MainPassCB());
+	auto currPassCB = mCurrFrameResource->PassCB.get();
+	currPassCB->CopyData(0, mMainPassCB);
 }
 
 void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const std::vector<RenderItem*>& ritems)
@@ -328,8 +345,8 @@ void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const
 	UINT objCBByteSize = d3dutil_Mananger::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 	UINT matCBByteSize = d3dutil_Mananger::CalcConstantBufferByteSize(sizeof(MaterialConstants));
 
-	auto objectCB = UTIL.Get_CurrFrameResource()->ObjectCB->Resource();
-	auto matCB = UTIL.Get_CurrFrameResource()->MaterialCB->Resource();
+	auto objectCB = mCurrFrameResource->ObjectCB->Resource();
+	auto matCB = mCurrFrameResource->MaterialCB->Resource();
 
 	// For each render item...
 	for (size_t i = 0; i < ritems.size(); ++i)
@@ -340,11 +357,15 @@ void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const
 		cmdList->IASetIndexBuffer(&ri->Geo->IndexBufferView());
 		cmdList->IASetPrimitiveTopology(ri->PrimitiveType);
 
-		D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ri->objCBIndex*objCBByteSize;
-		D3D12_GPU_VIRTUAL_ADDRESS matCBAddress = matCB->GetGPUVirtualAddress() + ri->Mat->MatCBIndex*matCBByteSize;
+		CD3DX12_GPU_DESCRIPTOR_HANDLE tex(mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+		tex.Offset(ri->Mat->DiffuseSrvHeapIndex, mCbvSrvDescriptorSize);
 
-		cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
-		cmdList->SetGraphicsRootConstantBufferView(1, matCBAddress);
+		D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ri->objCBIndex * objCBByteSize;
+		D3D12_GPU_VIRTUAL_ADDRESS matCBAddress = matCB->GetGPUVirtualAddress() + ri->Mat->MatCBIndex * matCBByteSize;
+
+		cmdList->SetGraphicsRootDescriptorTable(0, tex);
+		cmdList->SetGraphicsRootConstantBufferView(1, objCBAddress);
+		cmdList->SetGraphicsRootConstantBufferView(3, matCBAddress);
 
 		cmdList->DrawIndexedInstanced(ri->IndexCount, 1, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
 	}
@@ -356,7 +377,7 @@ void Utility_Manager::OnKeyboardInput(const float & dt)
 
 void Utility_Manager::UpdateCamera(const float & dt)
 {
-	for (auto& all : UTIL.Get_Allobjvec())
+	for (auto& all : allObj_Update_vec)
 	{
 		for (auto& objvec : *all)
 		{
