@@ -71,8 +71,8 @@ void Box::BuildBox(void)
 	ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
 	CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
-	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), GRAPHIC->Get_CommandList().Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
-	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), GRAPHIC->Get_CommandList().Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
+	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), COM_LIST.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
+	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
 
 	geo->VertexByteStride = sizeof(Vertex);
 	geo->VertexBufferByteSize = vbByteSize;

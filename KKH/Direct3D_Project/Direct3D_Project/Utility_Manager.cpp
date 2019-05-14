@@ -65,19 +65,7 @@ void Utility_Manager::BuildDescriptorHeaps(void)
 	srvHeapDesc.NumDescriptors = 3;
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	ThrowIfFailed(GRAPHIC->Get_Device()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSrvDescriptorHeap)));
-
-	/*CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-
-	auto tex = TEX.Get_Textures()["grassTex"]->Resource;
-
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.Format = tex->GetDesc().Format;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MostDetailedMip = 0;
-	srvDesc.Texture2D.MipLevels = -1;
-	GRAPHIC->Get_Device()->CreateShaderResourceView(tex.Get(), &srvDesc, hDescriptor);*/
+	ThrowIfFailed(GRAPHIC_DEV->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSrvDescriptorHeap)));
 }
 
 void Utility_Manager::BuildShadersAndInputLayer(void)
@@ -216,35 +204,35 @@ bool Utility_Manager::Object_Render(const float & dt, OBJECT& obj)
 	auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
 
 	ThrowIfFailed(cmdListAlloc->Reset());
-	ThrowIfFailed(GRAPHIC->Get_CommandList()->Reset(cmdListAlloc.Get(), mPSOs["opaque"].Get()));
+	ThrowIfFailed(COM_LIST->Reset(cmdListAlloc.Get(), mPSOs["opaque"].Get()));
+	
+	COM_LIST->RSSetViewports(1, &GRAPHIC->Get_ScreenViewport());
+	COM_LIST->RSSetScissorRects(1, &GRAPHIC->Get_ScissorRect());
 
-	GRAPHIC->Get_CommandList()->RSSetViewports(1, &GRAPHIC->Get_ScreenViewport());
-	GRAPHIC->Get_CommandList()->RSSetScissorRects(1, &GRAPHIC->Get_ScissorRect());
-
-	GRAPHIC->Get_CommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GRAPHIC->Get_CurrentBackBuffer_Resource(),
+	COM_LIST->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GRAPHIC->Get_CurrentBackBuffer_Resource(),
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
-	GRAPHIC->Get_CommandList()->ClearRenderTargetView(GRAPHIC->Get_CurrentBackBufferView_Handle(), Colors::LightSteelBlue, 0, nullptr);
-	GRAPHIC->Get_CommandList()->ClearDepthStencilView(GRAPHIC->Get_DepthStencilView_Handle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0.0f, 0.0f, nullptr);
+	COM_LIST->ClearRenderTargetView(GRAPHIC->Get_CurrentBackBufferView_Handle(), Colors::LightSteelBlue, 0, nullptr);
+	COM_LIST->ClearDepthStencilView(GRAPHIC->Get_DepthStencilView_Handle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0.0f, 0.0f, nullptr);
 
-	GRAPHIC->Get_CommandList()->OMSetRenderTargets(1, &GRAPHIC->Get_CurrentBackBufferView_Handle(), TRUE, &GRAPHIC->Get_DepthStencilView_Handle());
+	COM_LIST->OMSetRenderTargets(1, &GRAPHIC->Get_CurrentBackBufferView_Handle(), TRUE, &GRAPHIC->Get_DepthStencilView_Handle());
 
 	ID3D12DescriptorHeap* descriptorHeaps[] = { mSrvDescriptorHeap.Get() };
-	GRAPHIC->Get_CommandList()->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+	COM_LIST->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-	GRAPHIC->Get_CommandList()->SetGraphicsRootSignature(mRootSignature.Get());
+	COM_LIST->SetGraphicsRootSignature(mRootSignature.Get());
 
 	auto passCB = mCurrFrameResource->PassCB->Resource();
-	GRAPHIC->Get_CommandList()->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
+	COM_LIST->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
 
-	DrawRenderItems(GRAPHIC->Get_CommandList().Get(), mDrawLayer[(int)DrawLayer::DL_OPAUQE]);
+	DrawRenderItems(COM_LIST.Get(), mDrawLayer[(int)DrawLayer::DL_OPAUQE]);
 
-	GRAPHIC->Get_CommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GRAPHIC->Get_CurrentBackBuffer_Resource(),
+	COM_LIST->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GRAPHIC->Get_CurrentBackBuffer_Resource(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
-	ThrowIfFailed(GRAPHIC->Get_CommandList()->Close());
+	ThrowIfFailed(COM_LIST->Close());
 
-	ID3D12CommandList* cmdsLists[] = { GRAPHIC->Get_CommandList().Get() };
+	ID3D12CommandList* cmdsLists[] = { COM_LIST.Get() };
 	GRAPHIC->Get_CommandQueue()->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 
 	ThrowIfFailed(GRAPHIC->Get_SwapChain()->Present(0, 0));
@@ -330,11 +318,11 @@ void Utility_Manager::UpdateMainPassCB(const float & dt)
 	mMainPassCB.DeltaTime = dt;
 	mMainPassCB.AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
 	mMainPassCB.Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
-	mMainPassCB.Lights[0].Strength = { 0.6f, 0.6f, 0.6f };
+	mMainPassCB.Lights[0].Strength = { 0.9f, 0.9f, 0.9f };
 	mMainPassCB.Lights[1].Direction = { -0.57735f, -0.57735f, 0.57735f };
-	mMainPassCB.Lights[1].Strength = { 0.3f, 0.3f, 0.3f };
+	mMainPassCB.Lights[1].Strength = { 0.5f, 0.5f, 0.5f };
 	mMainPassCB.Lights[2].Direction = { 0.0f, -0.707f, -0.707f };
-	mMainPassCB.Lights[2].Strength = { 0.15f, 0.15f, 0.15f };
+	mMainPassCB.Lights[2].Strength = { 0.2f, 0.2f, 0.2f };
 
 	auto currPassCB = mCurrFrameResource->PassCB.get();
 	currPassCB->CopyData(0, mMainPassCB);

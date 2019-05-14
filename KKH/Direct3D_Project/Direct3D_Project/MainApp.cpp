@@ -28,9 +28,9 @@ bool CMainApp::Ready_MainApp(void)
 		return FALSE;
 
 	//Reset the command list to prep for initialization commands.
-	ThrowIfFailed(GRAPHIC->Get_CommandList()->Reset(GRAPHIC->Get_CommandAllocator().Get(), nullptr));
+	ThrowIfFailed(COM_LIST->Reset(GRAPHIC->Get_CommandAllocator().Get(), nullptr));
 
-	UTIL.Get_CbvSrvDescriptorSize() = GRAPHIC->Get_Device()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	UTIL.Get_CbvSrvDescriptorSize() = GRAPHIC_DEV->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	if (!TEX.onDDSLoad("grassTex", L"../Texture/grass.dds")) return FALSE;
 
@@ -54,9 +54,9 @@ bool CMainApp::Ready_MainApp(void)
 	//MOUSE.Set_Obj(m_LAW);
 
 	//Execute the initialization commands.
-	ThrowIfFailed(GRAPHIC->Get_CommandList()->Close());
+	ThrowIfFailed(COM_LIST->Close());
 
-	ID3D12CommandList* cmdLists[] = { GRAPHIC->Get_CommandList().Get() };
+	ID3D12CommandList* cmdLists[] = { COM_LIST.Get() };
 	GRAPHIC->Get_CommandQueue()->ExecuteCommandLists(_countof(cmdLists), cmdLists);
 
 	//Wait until initialization is complete.

@@ -20,8 +20,8 @@ bool Texture_Manger::onDDSLoad(std::string _key, std::wstring _fileadress)
 	auto ResTex = std::make_unique<Texture>();
 	ResTex->Name = _key;
 	ResTex->Filename = _fileadress;
-	ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(GRAPHIC->Get_Device().Get(),
-		GRAPHIC->Get_CommandList().Get(), ResTex->Filename.c_str(),
+	ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(GRAPHIC_DEV.Get(),
+		COM_LIST.Get(), ResTex->Filename.c_str(),
 		ResTex->Resource, ResTex->UploadHeap));
 	
 	mTexture[ResTex->Name] = std::move(ResTex);

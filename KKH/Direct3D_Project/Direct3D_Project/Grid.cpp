@@ -51,9 +51,18 @@ void Grid::BuildDescriptorHeaps(void)
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = -1;
-	GRAPHIC->Get_Device()->CreateShaderResourceView(tex.Get(), &srvDesc, hDescriptor);
+	GRAPHIC_DEV->CreateShaderResourceView(tex.Get(), &srvDesc, hDescriptor);
 
 	//hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
+
+	//srvDesc.Format = {};
+	//GRAPHIC_DEV->CreateShaderResourceView(nullptr, &srvDesc, hDescriptor);
+
+	// next descriptor
+	//hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
+
+	//srvDesc.Format = {};
+	//GRAPHIC_DEV->CreateShaderResourceView(nullptr, &srvDesc, hDescriptor);
 }
 
 void Grid::UpdateObjectCBs(const float & dt)
@@ -78,7 +87,7 @@ void Grid::BuildRenderItem(void)
 	auto ritem = std::make_unique<RenderItem>();
 	ritem->World = MathHelper::Identity4x4();
 	DirectX::XMStoreFloat4x4(&ritem->TexTransform, DirectX::XMMatrixScaling(5.0f, 5.0f, 1.0f));
-	ritem->objCBIndex = 1;
+	ritem->objCBIndex = 0;
 	ritem->Mat = UTIL.Get_Materials()[m_matName].get();
 	ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
 	ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -121,10 +130,10 @@ void Grid::BuildGeometry(void)
 	CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
 	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), 
-		GRAPHIC->Get_CommandList().Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
+		COM_LIST.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
 
 	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), 
-		GRAPHIC->Get_CommandList().Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
+		COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
 
 	geo->VertexByteStride = sizeof(Vertex);
 	geo->VertexBufferByteSize = vbByteSize;

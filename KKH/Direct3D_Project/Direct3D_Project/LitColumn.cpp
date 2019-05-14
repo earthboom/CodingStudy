@@ -50,32 +50,32 @@ bool LitColumn::Render(const float & dt)
 	auto cmdListAlloc = UTIL.Get_CurrFrameResource()->CmdListAlloc;
 
 	ThrowIfFailed(cmdListAlloc->Reset());
-	ThrowIfFailed(GRAPHIC->Get_CommandList()->Reset(cmdListAlloc.Get(), UTIL.Get_PSOs("opaque").Get()));
+	ThrowIfFailed(COM_LIST->Reset(cmdListAlloc.Get(), UTIL.Get_PSOs("opaque").Get()));
 
-	GRAPHIC->Get_CommandList()->RSSetViewports(1, &GRAPHIC->Get_ScreenViewport());
-	GRAPHIC->Get_CommandList()->RSSetScissorRects(1, &GRAPHIC->Get_ScissorRect());
+	COM_LIST->RSSetViewports(1, &GRAPHIC->Get_ScreenViewport());
+	COM_LIST->RSSetScissorRects(1, &GRAPHIC->Get_ScissorRect());
 
-	GRAPHIC->Get_CommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GRAPHIC->Get_CurrentBackBuffer_Resource(),
+	COM_LIST->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GRAPHIC->Get_CurrentBackBuffer_Resource(),
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
-	GRAPHIC->Get_CommandList()->ClearRenderTargetView(GRAPHIC->Get_CurrentBackBufferView_Handle(), Colors::LightSteelBlue, 0, nullptr);
-	GRAPHIC->Get_CommandList()->ClearDepthStencilView(GRAPHIC->Get_DepthStencilView_Handle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0.0f, 0.0f, nullptr);
+	COM_LIST->ClearRenderTargetView(GRAPHIC->Get_CurrentBackBufferView_Handle(), Colors::LightSteelBlue, 0, nullptr);
+	COM_LIST->ClearDepthStencilView(GRAPHIC->Get_DepthStencilView_Handle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0.0f, 0.0f, nullptr);
 
-	GRAPHIC->Get_CommandList()->OMSetRenderTargets(1, &GRAPHIC->Get_CurrentBackBufferView_Handle(), TRUE, &GRAPHIC->Get_DepthStencilView_Handle());
+	COM_LIST->OMSetRenderTargets(1, &GRAPHIC->Get_CurrentBackBufferView_Handle(), TRUE, &GRAPHIC->Get_DepthStencilView_Handle());
 
-	GRAPHIC->Get_CommandList()->SetGraphicsRootSignature(UTIL.Get_RootSignature().Get());
+	COM_LIST->SetGraphicsRootSignature(UTIL.Get_RootSignature().Get());
 
 	auto passCB = UTIL.Get_CurrFrameResource()->PassCB->Resource();
-	GRAPHIC->Get_CommandList()->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
+	COM_LIST->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
 
-	DrawRenderItems(GRAPHIC->Get_CommandList().Get(), UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE));
+	DrawRenderItems(COM_LIST.Get(), UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE));
 
-	GRAPHIC->Get_CommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GRAPHIC->Get_CurrentBackBuffer_Resource(),
+	COM_LIST->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GRAPHIC->Get_CurrentBackBuffer_Resource(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
-	ThrowIfFailed(GRAPHIC->Get_CommandList()->Close());
+	ThrowIfFailed(COM_LIST->Close());
 
-	ID3D12CommandList* cmdsLists[] = { GRAPHIC->Get_CommandList().Get() };
+	ID3D12CommandList* cmdsLists[] = { COM_LIST.Get() };
 	GRAPHIC->Get_CommandQueue()->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 
 	ThrowIfFailed(GRAPHIC->Get_SwapChain()->Present(0, 0));
@@ -286,10 +286,10 @@ void LitColumn::BuildShapeGeometry(void)
 	CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
 	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(),
-		GRAPHIC->Get_CommandList().Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
+		COM_LIST.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
 
 	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(),
-		GRAPHIC->Get_CommandList().Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
+		COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
 
 	geo->VertexByteStride = sizeof(Vertex);
 	geo->VertexBufferByteSize = vbByteSize;
@@ -352,8 +352,8 @@ void LitColumn::BuildSkullGeometry(void)
 	ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
 	CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
-	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), GRAPHIC->Get_CommandList().Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
-	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), GRAPHIC->Get_CommandList().Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
+	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), COM_LIST.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
+	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
 
 	geo->VertexByteStride = sizeof(Vertex);
 	geo->VertexBufferByteSize = vbByteSize;

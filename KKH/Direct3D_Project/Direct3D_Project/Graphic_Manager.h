@@ -5,6 +5,8 @@
 
 #define GRAPHIC_MGR CGraphic_Manager::GetInstnace()
 #define GRAPHIC CGraphic_Manager::GetInstnace().Get_Graphic()
+#define GRAPHIC_DEV	CGraphic_Manager::GetInstnace().Get_Graphic()->Get_Device()
+#define COM_LIST GRAPHIC->Get_CommandList()
 
 class CGraphic_Manager : public CSingleton<CGraphic_Manager>
 {

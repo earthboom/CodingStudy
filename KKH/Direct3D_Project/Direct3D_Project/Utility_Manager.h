@@ -51,8 +51,8 @@ private:
 	typedef std::unordered_map<std::string, std::unique_ptr<Material>> MATERIAL;
 	MATERIAL mMaterials;
 
-	typedef std::unordered_map<std::string, std::unique_ptr<Texture>> TEXTURE;
-	TEXTURE mTextures;
+	//typedef std::unordered_map<std::string, std::unique_ptr<Texture>> TEXTURE;
+	//TEXTURE mTextures;
 
 	typedef std::vector<std::unique_ptr<RenderItem>> RITEMVEC;
 	RITEMVEC mAllRitem;
@@ -110,7 +110,7 @@ public:
 	std::function<RITEMVEC&()> Get_Ritemvec = [&]()->RITEMVEC& {return mAllRitem; };
 	std::function<FRAMERES&()> Get_Frameres = [&]()->FRAMERES& {return mFrameResources; };
 	std::function<MATERIAL&()> Get_Materials = [&]()->MATERIAL& {return mMaterials; };
-	std::function<TEXTURE&()> Get_Textures = [&]()->TEXTURE& {return mTextures; };
+	//std::function<TEXTURE&()> Get_Textures = [&]()->TEXTURE& {return mTextures; };
 	std::function<std::vector<RenderItem*>&(int)> Get_Drawlayer = [&](int _type)->std::vector<RenderItem*>& {return mDrawLayer[_type]; };
 
 	std::function<PassConstants&()> Get_MainPassCB = [&]()->PassConstants& {return mMainPassCB; };
