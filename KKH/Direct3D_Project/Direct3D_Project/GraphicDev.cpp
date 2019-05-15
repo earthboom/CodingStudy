@@ -13,6 +13,7 @@ CGraphicDev::CGraphicDev(void)
 	, m_DepthStencilBuffer(nullptr)
 	, m_RtvHeap(nullptr)
 	, m_DsvHeap(nullptr)
+	, m_iCurrBackBuffer(0)
 {
 	for(int i=0; i<m_iSwapChainBufferCount; ++i)
 		m_SwapChainBuffer[i] = nullptr;
@@ -23,6 +24,8 @@ CGraphicDev::CGraphicDev(void)
 
 CGraphicDev::~CGraphicDev(void)
 {
+	if (m_Device != nullptr)
+		FlushCommandQueue();
 }
 
 bool CGraphicDev::Init_Graphic(void)
