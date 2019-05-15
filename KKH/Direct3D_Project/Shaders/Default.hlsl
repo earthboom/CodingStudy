@@ -99,16 +99,16 @@ float4 PS(VertexOut pin) : SV_Target
 
 	float3 toEyeW = normalize(gEyePosW - pin.PosW);
 
-	float4 ambient = gAmbientLight * gDiffuseAlbedo;
+	float4 ambient = gAmbientLight * diffuseAlbedo;
 
 	const float shininess = 1.0f - gRoughness;
-	Material mat = { gDiffuseAlbedo, gFresnelR0, shininess };
+	Material mat = { diffuseAlbedo, gFresnelR0, shininess };
 	float3 shadowFactor = 1.0f;
 	float4 directLight = ComputeLighting(gLights, mat, pin.PosW, pin.NormalW, toEyeW, shadowFactor);
 
 	float4 litColor = ambient + directLight;
 
-	litColor.a = gDiffuseAlbedo.a;
+	litColor.a = diffuseAlbedo.a;
 
 	return litColor;
 }

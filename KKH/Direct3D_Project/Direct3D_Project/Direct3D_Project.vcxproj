@@ -197,7 +197,8 @@
     <ClInclude Include="Unique_Singleton.h" />
     <ClInclude Include="UploadBuffer.h" />
     <ClInclude Include="Utility_Manager.h" />
-    <ClInclude Include="Waves.h" />
+    <ClInclude Include="ComputeWaves.h" />
+    <ClInclude Include="Wave.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Common\DDSTextureLoader.cpp" />
@@ -224,7 +225,8 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Timer_Manager.cpp" />
     <ClCompile Include="Utility_Manager.cpp" />
-    <ClCompile Include="Waves.cpp" />
+    <ClCompile Include="ComputeWaves.cpp" />
+    <ClCompile Include="Wave.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Direct3D_Project.rc" />

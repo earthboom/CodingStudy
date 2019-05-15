@@ -1,12 +1,12 @@
 #pragma once
 
-class Waves
+class ComputeWaves
 {
 public:
-	explicit Waves(int m, int n, float dx, float dt, float speed, float damping);
-	Waves(const Waves&) = delete;
-	Waves& operator=(const Waves&) = delete;
-	~Waves(void);
+	explicit ComputeWaves(int m, int n, float dx, float dt, float speed, float damping);
+	ComputeWaves(const ComputeWaves&) = delete;
+	ComputeWaves& operator=(const ComputeWaves&) = delete;
+	~ComputeWaves(void);
 
 	int RowCount(void)const;
 	int ColumnCount(void)const;

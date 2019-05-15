@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "Waves.h"
+#include "ComputeWaves.h"
 #include <ppl.h>
 
-Waves::Waves(int m, int n, float dx, float dt, float speed, float damping)
+ComputeWaves::ComputeWaves(int m, int n, float dx, float dt, float speed, float damping)
 	: mNumRows(m), mNumCols(n)
 	, mVertexCount(m * n)
 	, mTriangleCount((m-1)*(n-1)*2)
@@ -36,41 +36,41 @@ Waves::Waves(int m, int n, float dx, float dt, float speed, float damping)
 	}
 }
 
-Waves::~Waves(void)
+ComputeWaves::~ComputeWaves(void)
 {
 }
 
-int Waves::RowCount(void) const
+int ComputeWaves::RowCount(void) const
 {
 	return mNumRows;
 }
 
-int Waves::ColumnCount(void) const
+int ComputeWaves::ColumnCount(void) const
 {
 	return mNumCols;
 }
 
-int Waves::VertexCount(void) const
+int ComputeWaves::VertexCount(void) const
 {
 	return mVertexCount;
 }
 
-int Waves::TriangleCount() const
+int ComputeWaves::TriangleCount() const
 {
 	return mTriangleCount;
 }
 
-float Waves::Width(void) const
+float ComputeWaves::Width(void) const
 {
 	return mNumCols * mSpatialStep;
 }
 
-float Waves::Depth(void) const
+float ComputeWaves::Depth(void) const
 {
 	return mNumRows * mSpatialStep;
 }
 
-void Waves::Update(const float & dt)
+void ComputeWaves::Update(const float & dt)
 {
 	static float t = 0.0f;
 
@@ -120,7 +120,7 @@ void Waves::Update(const float & dt)
 	});
 }
 
-void Waves::Disturb(int i, int j, float magnitude)
+void ComputeWaves::Disturb(int i, int j, float magnitude)
 {
 	assert(i > 1 && i < mNumRows - 2);
 	assert(j > 1 && j < mNumCols - 2);

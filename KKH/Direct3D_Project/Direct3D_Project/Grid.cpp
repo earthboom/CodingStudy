@@ -51,6 +51,7 @@ void Grid::BuildDescriptorHeaps(void)
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = -1;
+	//srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 	GRAPHIC_DEV->CreateShaderResourceView(tex.Get(), &srvDesc, hDescriptor);
 
 	//hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
@@ -63,10 +64,6 @@ void Grid::BuildDescriptorHeaps(void)
 
 	//srvDesc.Format = {};
 	//GRAPHIC_DEV->CreateShaderResourceView(nullptr, &srvDesc, hDescriptor);
-}
-
-void Grid::UpdateObjectCBs(const float & dt)
-{
 }
 
 void Grid::BuildMaterials(void)

@@ -22,11 +22,6 @@ public:
 protected:
 	virtual void BuildDescriptorHeaps(void)PURE;
 
-	virtual void AnimateMaterials(const float& dt) PURE;
-	virtual void UpdateObjectCBs(const float& dt) PURE;
-	virtual void UpdateMaterialCBs(const float& dt) PURE;
-	virtual void UpdateMainPassCB(const float& dt) PURE;
-
 public:
 	std::string m_Name;
 	std::string m_submeshName;

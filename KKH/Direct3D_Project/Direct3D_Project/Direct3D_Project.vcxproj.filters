@@ -79,6 +79,9 @@
     <Filter Include="02.Utiltiy\03.Object\Gird">
       <UniqueIdentifier>{8b05d674-cd44-4e45-bd2f-32137af95295}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utiltiy\03.Object\Wave">
+      <UniqueIdentifier>{911acdaa-8448-4446-854c-07f98b3defb9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -153,9 +156,6 @@
     <ClInclude Include="LitColumn.h">
       <Filter>02.Utiltiy\03.Object\LitColumn</Filter>
     </ClInclude>
-    <ClInclude Include="Waves.h">
-      <Filter>02.Utiltiy\96.Wave</Filter>
-    </ClInclude>
     <ClInclude Include="Texture_Manger.h">
       <Filter>02.Utiltiy\51.Texture</Filter>
     </ClInclude>
@@ -164,6 +164,12 @@
     </ClInclude>
     <ClInclude Include="Grid.h">
       <Filter>02.Utiltiy\03.Object\Gird</Filter>
+    </ClInclude>
+    <ClInclude Include="ComputeWaves.h">
+      <Filter>02.Utiltiy\96.Wave</Filter>
+    </ClInclude>
+    <ClInclude Include="Wave.h">
+      <Filter>02.Utiltiy\03.Object\Wave</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -215,9 +221,6 @@
     <ClCompile Include="LitColumn.cpp">
       <Filter>02.Utiltiy\03.Object\LitColumn</Filter>
     </ClCompile>
-    <ClCompile Include="Waves.cpp">
-      <Filter>02.Utiltiy\96.Wave</Filter>
-    </ClCompile>
     <ClCompile Include="Texture_Manger.cpp">
       <Filter>02.Utiltiy\51.Texture</Filter>
     </ClCompile>
@@ -226,6 +229,12 @@
     </ClCompile>
     <ClCompile Include="Grid.cpp">
       <Filter>02.Utiltiy\03.Object\Gird</Filter>
+    </ClCompile>
+    <ClCompile Include="ComputeWaves.cpp">
+      <Filter>02.Utiltiy\96.Wave</Filter>
+    </ClCompile>
+    <ClCompile Include="Wave.cpp">
+      <Filter>02.Utiltiy\03.Object\Wave</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

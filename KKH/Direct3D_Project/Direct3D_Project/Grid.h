@@ -19,11 +19,6 @@ public:
 protected:
 	virtual void BuildDescriptorHeaps(void);
 
-	virtual void AnimateMaterials(const float& dt) {}
-	virtual void UpdateObjectCBs(const float& dt);
-	virtual void UpdateMaterialCBs(const float& dt) {}
-	virtual void UpdateMainPassCB(const float& dt) {}
-
 private:
 	void BuildMaterials(void);
 	void BuildRenderItem(void);
