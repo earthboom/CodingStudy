@@ -17,6 +17,9 @@ DirectX::XMFLOAT3 g_EyePos = { 0.0f, 100.0f, -100.0f };
 bool mIsWireframe = FALSE;
 DirectX::XMFLOAT4X4 g_Proj = MathHelper::Identity4x4();
 
+short g_MatCBcount = 0;
+short g_ObjCBcount = 0;
+
 HWND	g_hWnd;
 HINSTANCE g_hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text

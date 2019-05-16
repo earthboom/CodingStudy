@@ -70,9 +70,6 @@
     <Filter Include="02.Utiltiy\50.Mouse_Manager">
       <UniqueIdentifier>{1e4786f2-6625-45ec-871b-a6d1311d9825}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utiltiy\96.Wave">
-      <UniqueIdentifier>{7f989466-384c-45d2-b47c-7b39e4fc90e9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Utiltiy\51.Texture">
       <UniqueIdentifier>{a4b5810a-468d-4ef0-b723-99c87479cc93}</UniqueIdentifier>
     </Filter>
@@ -81,6 +78,9 @@
     </Filter>
     <Filter Include="02.Utiltiy\03.Object\Wave">
       <UniqueIdentifier>{911acdaa-8448-4446-854c-07f98b3defb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\96.ComputeWaves">
+      <UniqueIdentifier>{7f989466-384c-45d2-b47c-7b39e4fc90e9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -166,7 +166,7 @@
       <Filter>02.Utiltiy\03.Object\Gird</Filter>
     </ClInclude>
     <ClInclude Include="ComputeWaves.h">
-      <Filter>02.Utiltiy\96.Wave</Filter>
+      <Filter>02.Utiltiy\96.ComputeWaves</Filter>
     </ClInclude>
     <ClInclude Include="Wave.h">
       <Filter>02.Utiltiy\03.Object\Wave</Filter>
@@ -231,7 +231,7 @@
       <Filter>02.Utiltiy\03.Object\Gird</Filter>
     </ClCompile>
     <ClCompile Include="ComputeWaves.cpp">
-      <Filter>02.Utiltiy\96.Wave</Filter>
+      <Filter>02.Utiltiy\96.ComputeWaves</Filter>
     </ClCompile>
     <ClCompile Include="Wave.cpp">
       <Filter>02.Utiltiy\03.Object\Wave</Filter>

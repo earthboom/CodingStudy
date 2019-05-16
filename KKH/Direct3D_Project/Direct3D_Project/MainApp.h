@@ -16,6 +16,7 @@ public:
 	void	Render_MainApp(const float& dt);
 
 private:
+	bool	LoadTexture(void);
 	bool	CreateObject(void);
 
 private:

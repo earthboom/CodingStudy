@@ -87,7 +87,7 @@ void Utility_Manager::BuildFrameResources(void)
 {
 	for (int i = 0; i < NumFrameResources; ++i)
 	{
-		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC->Get_Device().Get(), 1, (UINT)mAllRitem.size(), (UINT)mMaterials.size(), 1));
+		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC->Get_Device().Get(), 1, (UINT)mAllRitem.size(), (UINT)mMaterials.size(), mCPWave->VertexCount()));
 	}
 }
 
@@ -156,13 +156,13 @@ bool Utility_Manager::Object_Cycle(const float & dt, ObjState _state)
 
 			case ObjState::OS_UPDATE:
 				//if (!obj.second->Update(dt))
-				if(Object_Update(dt, obj.second))
+				if(!Object_Update(dt, obj.second))
 					return FALSE;
 				break;
 
 			case ObjState::OS_RENDER:
 				//if (!obj.second->Render(dt))
-				if (Object_Render(dt, obj.second))
+				if (!Object_Render(dt, obj.second))
 					return FALSE;
 				break;
 			}
@@ -314,8 +314,8 @@ void Utility_Manager::UpdateMainPassCB(const float & dt)
 	mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / WINSIZE_X, 1.0f / WINSIZE_Y);
 	mMainPassCB.NearZ = 1.0f;
 	mMainPassCB.FarZ = 1000.0f;
-	mMainPassCB.TotalTime = TIME_MGR.Get_TotalTime(L"MainTimer");;
-	mMainPassCB.DeltaTime = TIME_MGR.Get_TimeDelta(L"MainTimer");;
+	mMainPassCB.TotalTime = TIME_MGR.Get_TotalTime(L"MainTimer");
+	mMainPassCB.DeltaTime = TIME_MGR.Get_TimeDelta(L"MainTimer");
 	mMainPassCB.AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
 	mMainPassCB.Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
 	mMainPassCB.Lights[0].Strength = { 0.9f, 0.9f, 0.9f };

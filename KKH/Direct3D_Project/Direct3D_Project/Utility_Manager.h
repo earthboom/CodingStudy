@@ -3,6 +3,7 @@
 #include "Unique_Singleton.h"
 #include "d3dutil_Manager.h"
 #include "FrameResource.h"
+#include "ComputeWaves.h"
 
 #include "Object.h"
 #include "Struct.h"
@@ -66,6 +67,8 @@ private:
 
 	std::vector<RenderItem*> mDrawLayer[(int)DrawLayer::DL_END];
 
+	std::unique_ptr<ComputeWaves> mCPWave;
+
 private:
 	typedef std::map<std::string, OBJECT> OBJMAP;
 	OBJMAP* Obj_static_map;
@@ -123,6 +126,8 @@ public:
 	std::function<DirectX::XMFLOAT4X4&()> Get_ViewMat = [&]()->DirectX::XMFLOAT4X4& {return mView; };
 
 	std::function<UINT&()> Get_CbvSrvDescriptorSize = [&]()->UINT& {return mCbvSrvDescriptorSize; };
+
+	std::function<std::unique_ptr<ComputeWaves>&()> Get_CPWave = [&]()->std::unique_ptr<ComputeWaves>& {return mCPWave; };
 
 	//std::function<float&()> Get_Theta = [&]()->float& {return mTheta; };
 	//std::function<float&()> Get_Phi = [&]()->float& {return mPhi; };

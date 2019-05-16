@@ -54,7 +54,7 @@ void Grid::BuildDescriptorHeaps(void)
 	//srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 	GRAPHIC_DEV->CreateShaderResourceView(tex.Get(), &srvDesc, hDescriptor);
 
-	//hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
+	hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
 
 	//srvDesc.Format = {};
 	//GRAPHIC_DEV->CreateShaderResourceView(nullptr, &srvDesc, hDescriptor);
@@ -70,13 +70,15 @@ void Grid::BuildMaterials(void)
 {
 	auto mat = std::make_unique<Material>();
 	mat->Name = m_matName;
-	mat->MatCBIndex = 0;
-	mat->DiffuseSrvHeapIndex = 0;
+	mat->MatCBIndex = g_MatCBcount;
+	mat->DiffuseSrvHeapIndex = g_MatCBcount;
 	mat->DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	mat->FresnelR0 = DirectX::XMFLOAT3(0.01f, 0.01f, 0.01f);
 	mat->Roughness = 0.125f;
 
 	UTIL.Get_Materials()[m_matName] = std::move(mat);
+
+	++g_MatCBcount;
 }
 
 void Grid::BuildRenderItem(void)
@@ -84,7 +86,7 @@ void Grid::BuildRenderItem(void)
 	auto ritem = std::make_unique<RenderItem>();
 	ritem->World = MathHelper::Identity4x4();
 	DirectX::XMStoreFloat4x4(&ritem->TexTransform, DirectX::XMMatrixScaling(5.0f, 5.0f, 1.0f));
-	ritem->objCBIndex = 0;
+	ritem->objCBIndex = g_ObjCBcount;
 	ritem->Mat = UTIL.Get_Materials()[m_matName].get();
 	ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
 	ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -95,6 +97,8 @@ void Grid::BuildRenderItem(void)
 	UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(ritem.get());
 
 	UTIL.Get_Ritemvec().push_back(std::move(ritem));
+
+	++g_ObjCBcount;
 }
 
 void Grid::BuildGeometry(void)

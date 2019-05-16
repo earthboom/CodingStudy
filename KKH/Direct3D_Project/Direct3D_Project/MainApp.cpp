@@ -7,6 +7,7 @@
 #include "Box.h"
 #include "LitColumn.h"
 #include "Grid.h"
+#include "Wave.h"
 #include "Texture_Manger.h"
 
 CMainApp::CMainApp(void)
@@ -32,7 +33,7 @@ bool CMainApp::Ready_MainApp(void)
 
 	UTIL.Get_CbvSrvDescriptorSize() = GRAPHIC_DEV->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-	if (!TEX.onDDSLoad("grassTex", L"../Texture/grass.dds")) return FALSE;
+	LoadTexture();	
 
 	UTIL.BuildRootSignature();
 	UTIL.BuildDescriptorHeaps();
@@ -86,12 +87,22 @@ void CMainApp::Render_MainApp(const float& dt)
 	if (UTIL.Object_Cycle(dt, Utility_Manager::OS_RENDER)) return;
 }
 
+bool CMainApp::LoadTexture(void)
+{
+	if (!TEX.onDDSLoad("grassTex", L"../Texture/grass.dds")) return FALSE;
+	if (!TEX.onDDSLoad("waterTex", L"../Texture/water1.dds")) return FALSE;
+	if (!TEX.onDDSLoad("fenceTex", L"../Texture/WoodCrate01.dds")) return FALSE;
+
+	return TRUE;
+}
+
 bool CMainApp::CreateObject(void)
 {
 	//if (!UTIL.Object_Create(Box::Create("box", Object::COM_TYPE::CT_STATIC, "BoxGeo", 1.5f, 0.5f, 1.5f, 3))) return FALSE;
 	//if(!UTIL.Object_Create(LitColumn::Create("litcolumn", Object::COM_TYPE::CT_STATIC))) return FALSE;
 
 	if (!UTIL.Object_Create(Grid::Create(Object::COM_TYPE::CT_STATIC, "landGeo", "grid", "grassTex", "grass"))) return FALSE;
+	if (!UTIL.Object_Create(Wave::Create(Object::COM_TYPE::CT_STATIC, "waterGeo", "grid", "waterTex", "water"))) return FALSE;
 
 	return TRUE;
 }
