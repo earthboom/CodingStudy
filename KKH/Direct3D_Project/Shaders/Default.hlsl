@@ -48,6 +48,11 @@ cbuffer cbPass : register(b1)
 	float gDeltaTime;
 	float4 gAmbientLight;
 
+	float4 gFogColor;
+	float gFogStart;
+	float gFogRange;
+	float2 cbPerObjectPad2;
+
 	Light gLights[MaxLights];
 };
 
@@ -95,9 +100,15 @@ float4 PS(VertexOut pin) : SV_Target
 {
 	float4 diffuseAlbedo = gDiffuseMap.Sample(gsamAnisotropicWrap, pin.TexC) * gDiffuseAlbedo;
 
+#ifdef ALPHA_TEST
+	clip(diffuseAlbedo.a - 0.1f);
+#endif
+
 	pin.NormalW = normalize(pin.NormalW);
 
-	float3 toEyeW = normalize(gEyePosW - pin.PosW);
+	float3 toEyeW = gEyePosW - pin.PosW;
+	float distToEye = length(toEyeW);
+	toEyeW /= distToEye;
 
 	float4 ambient = gAmbientLight * diffuseAlbedo;
 
@@ -107,6 +118,11 @@ float4 PS(VertexOut pin) : SV_Target
 	float4 directLight = ComputeLighting(gLights, mat, pin.PosW, pin.NormalW, toEyeW, shadowFactor);
 
 	float4 litColor = ambient + directLight;
+
+#ifdef FOG
+	float fogAmount = saturate((distToEye - gFogStart) / gFogRange);
+	litColor = lerp(litColor, gFogColor, fogAmount);
+#endif
 
 	litColor.a = diffuseAlbedo.a;
 

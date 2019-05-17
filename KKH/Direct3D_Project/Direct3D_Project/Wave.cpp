@@ -69,8 +69,8 @@ void Wave::BuildMaterials(void)
 	mat->Name = m_matName;
 	mat->MatCBIndex = g_MatCBcount;
 	mat->DiffuseSrvHeapIndex = g_MatCBcount;
-	mat->DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	mat->FresnelR0 = DirectX::XMFLOAT3(0.2f, 0.2f, 0.2f);
+	mat->DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
+	mat->FresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);
 	mat->Roughness = 0.0f;
 
 	UTIL.Get_Materials()[m_matName] = std::move(mat);
@@ -93,7 +93,7 @@ void Wave::BuildRenderItem(void)
 
 	mWaveRitem = ritem.get();
 
-	UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(ritem.get());
+	UTIL.Get_Drawlayer((int)DrawLayer::DL_TRANSPARENT).push_back(ritem.get());
 
 	UTIL.Get_Ritemvec().push_back(std::move(ritem));
 

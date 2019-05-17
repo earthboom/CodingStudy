@@ -70,10 +70,12 @@ void Utility_Manager::BuildDescriptorHeaps(void)
 
 void Utility_Manager::BuildShadersAndInputLayer(void)
 {
-	//const D3D_SHADER_MACRO alphaTestDefines[] = { "ALPHA_TEST", "1", NULL, NULL };
+	const D3D_SHADER_MACRO defines[] = { "FOG", "1", NULL, NULL };
+	const D3D_SHADER_MACRO alphaTestDefines[] = { "FOG", "1", "ALPHA_TEST", "1", NULL, NULL };
 
 	mShaders["standardVS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", nullptr, "VS", "vs_5_1");
-	mShaders["opaquePS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", nullptr, "PS", "ps_5_1");
+	mShaders["opaquePS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", defines, "PS", "ps_5_1");
+	mShaders["alphaTestedPS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
 
 	mInputLayout =
 	{
@@ -116,7 +118,36 @@ void Utility_Manager::BuildPSOs(void)
 	psoDesc.SampleDesc.Quality = GRAPHIC->Get_4xMsaaState() ? (GRAPHIC->Get_4xMsaaQuality() - 1) : 0;
 	psoDesc.DSVFormat = GRAPHIC->Get_DepthStencilFormat();
 
-	ThrowIfFailed(GRAPHIC->Get_Device()->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
+	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
+
+
+	//PSO for transparent objects
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC transparentPsoDesc = psoDesc;
+
+	D3D12_RENDER_TARGET_BLEND_DESC transparencyBlenDesc;
+	transparencyBlenDesc.BlendEnable = TRUE;
+	transparencyBlenDesc.LogicOpEnable = FALSE;
+	transparencyBlenDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	transparencyBlenDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	transparencyBlenDesc.BlendOp = D3D12_BLEND_OP_ADD;
+	transparencyBlenDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+	transparencyBlenDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+	transparencyBlenDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	transparencyBlenDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
+	transparencyBlenDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	transparentPsoDesc.BlendState.RenderTarget[0] = transparencyBlenDesc;
+	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&transparentPsoDesc, IID_PPV_ARGS(&mPSOs["transparent"])));
+
+
+	//PSO for alpha tested objects
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC alphaTestedPSoDesc = psoDesc;
+
+	alphaTestedPSoDesc.PS = 
+	{	reinterpret_cast<BYTE*>(mShaders["alphaTestedPS"]->GetBufferPointer()), mShaders["alphaTestedPS"]->GetBufferSize()	};
+
+	alphaTestedPSoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&alphaTestedPSoDesc, IID_PPV_ARGS(&mPSOs["alphaTested"])));
 
 	//D3D12_GRAPHICS_PIPELINE_STATE_DESC opaqueWireframePsoDesc = psoDesc;
 	//opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
@@ -236,7 +267,7 @@ bool Utility_Manager::Object_Render(const float & dt)//, OBJMAP& _objmap)
 	COM_LIST->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GRAPHIC->Get_CurrentBackBuffer_Resource(),
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
-	COM_LIST->ClearRenderTargetView(GRAPHIC->Get_CurrentBackBufferView_Handle(), Colors::LightSteelBlue, 0, nullptr);
+	COM_LIST->ClearRenderTargetView(GRAPHIC->Get_CurrentBackBufferView_Handle(), (float*)&mMainPassCB.FogColor, 0, nullptr);
 	COM_LIST->ClearDepthStencilView(GRAPHIC->Get_DepthStencilView_Handle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0.0f, 0.0f, nullptr);
 
 	COM_LIST->OMSetRenderTargets(1, &GRAPHIC->Get_CurrentBackBufferView_Handle(), TRUE, &GRAPHIC->Get_DepthStencilView_Handle());
@@ -250,6 +281,12 @@ bool Utility_Manager::Object_Render(const float & dt)//, OBJMAP& _objmap)
 	COM_LIST->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
 
 	DrawRenderItems(COM_LIST.Get(), mDrawLayer[(int)DrawLayer::DL_OPAUQE]);
+
+	COM_LIST->SetPipelineState(mPSOs["alphaTested"].Get());
+	DrawRenderItems(COM_LIST.Get(), mDrawLayer[(int)DrawLayer::DL_ALAPHTESTED]);
+	
+	COM_LIST->SetPipelineState(mPSOs["transparent"].Get());
+	DrawRenderItems(COM_LIST.Get(), mDrawLayer[(int)DrawLayer::DL_TRANSPARENT]);
 
 	COM_LIST->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GRAPHIC->Get_CurrentBackBuffer_Resource(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
@@ -339,14 +376,14 @@ void Utility_Manager::UpdateMainPassCB(const float & dt)
 	mMainPassCB.NearZ = 1.0f;
 	mMainPassCB.FarZ = 1000.0f;
 	mMainPassCB.TotalTime = TIME_MGR.Get_TotalTime(L"MainTimer");
-	mMainPassCB.DeltaTime = TIME_MGR.Get_TimeDelta(L"MainTimer");
+	mMainPassCB.DeltaTime = dt;
 	mMainPassCB.AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
 	mMainPassCB.Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
-	mMainPassCB.Lights[0].Strength = { 0.9f, 0.9f, 0.9f };
+	mMainPassCB.Lights[0].Strength = { 0.9f, 0.9f, 0.8f };
 	mMainPassCB.Lights[1].Direction = { -0.57735f, -0.57735f, 0.57735f };
-	mMainPassCB.Lights[1].Strength = { 0.5f, 0.5f, 0.5f };
+	mMainPassCB.Lights[1].Strength = { 0.3f, 0.3f, 0.3f };
 	mMainPassCB.Lights[2].Direction = { 0.0f, -0.707f, -0.707f };
-	mMainPassCB.Lights[2].Strength = { 0.2f, 0.2f, 0.2f };
+	mMainPassCB.Lights[2].Strength = { 0.15f, 0.15f, 0.15f };
 
 	auto currPassCB = mCurrFrameResource->PassCB.get();
 	currPassCB->CopyData(0, mMainPassCB);

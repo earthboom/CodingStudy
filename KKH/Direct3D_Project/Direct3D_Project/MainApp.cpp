@@ -91,7 +91,7 @@ bool CMainApp::LoadTexture(void)
 {
 	if (!TEX.onDDSLoad("grassTex", L"../Texture/grass.dds")) return FALSE;
 	if (!TEX.onDDSLoad("waterTex", L"../Texture/water1.dds")) return FALSE;
-	if (!TEX.onDDSLoad("fenceTex", L"../Texture/WoodCrate01.dds")) return FALSE;
+	if (!TEX.onDDSLoad("fenceTex", L"../Texture/WireFence.dds")) return FALSE;
 
 	return TRUE;
 }
@@ -102,6 +102,7 @@ bool CMainApp::CreateObject(void)
 	//if(!UTIL.Object_Create(LitColumn::Create("litcolumn", Object::COM_TYPE::CT_STATIC))) return FALSE;
 
 	g_MatCBcount = 0;
+	g_ObjCBcount = 0;
 
 	if (!UTIL.Object_Create(Grid::Create(Object::COM_TYPE::CT_STATIC, "landGeo", "grid", "grassTex", "grass"))) return FALSE;
 	if (!UTIL.Object_Create(Wave::Create(Object::COM_TYPE::CT_STATIC, "waterGeo", "grid", "waterTex", "water"))) return FALSE;

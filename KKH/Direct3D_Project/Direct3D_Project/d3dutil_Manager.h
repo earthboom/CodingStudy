@@ -108,6 +108,8 @@ struct Material
 enum class DrawLayer : int
 {
 	DL_OPAUQE = 0,
+	DL_TRANSPARENT,
+	DL_ALAPHTESTED,
 	DL_END
 };
 
