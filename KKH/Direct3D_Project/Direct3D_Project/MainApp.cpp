@@ -101,8 +101,11 @@ bool CMainApp::CreateObject(void)
 	//if (!UTIL.Object_Create(Box::Create("box", Object::COM_TYPE::CT_STATIC, "BoxGeo", 1.5f, 0.5f, 1.5f, 3))) return FALSE;
 	//if(!UTIL.Object_Create(LitColumn::Create("litcolumn", Object::COM_TYPE::CT_STATIC))) return FALSE;
 
+	g_MatCBcount = 0;
+
 	if (!UTIL.Object_Create(Grid::Create(Object::COM_TYPE::CT_STATIC, "landGeo", "grid", "grassTex", "grass"))) return FALSE;
 	if (!UTIL.Object_Create(Wave::Create(Object::COM_TYPE::CT_STATIC, "waterGeo", "grid", "waterTex", "water"))) return FALSE;
+	if (!UTIL.Object_Create(Box::Create(Object::COM_TYPE::CT_STATIC, "boxGeo", "box", "fenceTex", "wirefence"))) return FALSE;
 
 	return TRUE;
 }

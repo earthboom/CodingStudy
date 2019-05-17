@@ -24,8 +24,8 @@ private:
 	void BuildMaterials(void);
 	void BuildRenderItem(void);
 	
-	void AnimateMaterials(void);
-	void UpdateWaves(void);
+	void AnimateMaterials(const float & dt);
+	void UpdateWaves(const float & dt);
 
 private:
 	void BuildGeometry(void);

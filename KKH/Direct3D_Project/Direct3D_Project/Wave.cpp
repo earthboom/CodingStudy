@@ -34,8 +34,8 @@ bool Wave::Ready(void)
 
 bool Wave::Update(const float & dt)
 {
-	AnimateMaterials();
-	UpdateWaves();
+	AnimateMaterials(dt);
+	UpdateWaves(dt);
 
 	return TRUE;
 }
@@ -49,6 +49,8 @@ void Wave::BuildDescriptorHeaps(void)
 {
 	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart());
 
+	hDescriptor.Offset(g_MatCBcount, UTIL.Get_CbvSrvDescriptorSize());
+
 	auto tex = TEX.Get_Textures()[m_texName]->Resource;
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -59,8 +61,6 @@ void Wave::BuildDescriptorHeaps(void)
 	srvDesc.Texture2D.MipLevels = -1;
 	//srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 	GRAPHIC_DEV->CreateShaderResourceView(tex.Get(), &srvDesc, hDescriptor);
-
-	hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
 }
 
 void Wave::BuildMaterials(void)
@@ -71,7 +71,7 @@ void Wave::BuildMaterials(void)
 	mat->DiffuseSrvHeapIndex = g_MatCBcount;
 	mat->DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	mat->FresnelR0 = DirectX::XMFLOAT3(0.2f, 0.2f, 0.2f);
-	mat->Roughness = 0.125f;
+	mat->Roughness = 0.0f;
 
 	UTIL.Get_Materials()[m_matName] = std::move(mat);
 
@@ -100,7 +100,7 @@ void Wave::BuildRenderItem(void)
 	++g_ObjCBcount;
 }
 
-void Wave::AnimateMaterials(void)
+void Wave::AnimateMaterials(const float & dt)
 {
 	//Scroll the water material texture coordinate
 	auto waterMat = UTIL.Get_Materials()[m_matName].get();
@@ -108,8 +108,8 @@ void Wave::AnimateMaterials(void)
 	float& tu = waterMat->MatTransform(3, 0);
 	float& tv = waterMat->MatTransform(3, 1);
 
-	tu += 0.1f * TIME_MGR.Get_TimeDelta(L"MainTimer");
-	tv += 0.02f * TIME_MGR.Get_TimeDelta(L"MainTimer");
+	tu += 0.1f * dt;
+	tv += 0.02f * dt;
 
 	if (tu >= 1.0f)
 		tu -= 1.0f;
@@ -123,7 +123,7 @@ void Wave::AnimateMaterials(void)
 	waterMat->NumFrameDirty = NumFrameResources;
 }
 
-void Wave::UpdateWaves(void)
+void Wave::UpdateWaves(const float & dt)
 {
 	static float t_base = 0.0f;
 	if ((TIME_MGR.Get_TotalTime(L"MainTimer") - t_base) >= 0.25f)
@@ -138,7 +138,7 @@ void Wave::UpdateWaves(void)
 		UTIL.Get_CPWave()->Disturb(i, j, r);
 	}
 
-	UTIL.Get_CPWave()->Update(TIME_MGR.Get_TimeDelta(L"MainTimer"));
+	UTIL.Get_CPWave()->Update(dt);
 
 	auto currWaveCB = UTIL.Get_CurrFrameResource()->WavesVB.get();
 	for (int i = 0; i < UTIL.Get_CPWave()->VertexCount(); ++i)

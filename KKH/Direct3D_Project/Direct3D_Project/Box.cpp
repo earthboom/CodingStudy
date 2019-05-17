@@ -4,10 +4,16 @@
 #include "FrameResource.h"
 #include "d3dutil_Manager.h"
 #include "Utility_Manager.h"
+#include "Texture_Manger.h"
 #include "Struct.h"
 
 Box::Box(void)
-	: mGeoName(""), mWidth(0.0f), mHeight(0.0f), mDepth(0.0f), mSubdiv(0U)
+	: Object()
+{
+}
+
+Box::Box(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname)
+	: Object(_type, _name, _submeshname, _texname, _matname)
 {
 }
 
@@ -17,7 +23,9 @@ Box::~Box(void)
 
 bool Box::Ready(void)
 {
-	BuildBox();
+	BuildDescriptorHeaps();
+	BuildGeometry();
+	BuildMaterials();
 	BuildRenderItem();
 
 	return TRUE;
@@ -33,37 +41,45 @@ bool Box::Render(const float & dt)
 	return TRUE;
 }
 
-void Box::BuildBox(void)
+void Box::BuildDescriptorHeaps(void)
+{
+	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart());
+
+	hDescriptor.Offset(g_MatCBcount, UTIL.Get_CbvSrvDescriptorSize());
+
+	auto tex = TEX.Get_Textures()[m_texName]->Resource;
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Format = tex->GetDesc().Format;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = -1;
+	//srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+	GRAPHIC_DEV->CreateShaderResourceView(tex.Get(), &srvDesc, hDescriptor);
+}
+
+void Box::BuildGeometry(void)
 {
 	GeometryGenerator geoBox;
-	GeometryGenerator::MeshData box = geoBox.CreateBox(1.5f, 0.5f, 1.5f, 3);
+	GeometryGenerator::MeshData box = geoBox.CreateBox(8.0f, 8.0f, 8.0f, 3);
 
-	UINT VertexOffset = 0;
-	UINT IndexOffset = 0;
-
-	SubmeshGeometry submesh;
-	submesh.IndexCount = (UINT)box.Indices32.size();
-	submesh.StartIndexLocation = VertexOffset;
-	submesh.BaseVertexLocation = IndexOffset;
-
-	auto vertexCount = box.Vertices.size();
-
-	std::vector<Vertex> vertices(vertexCount);
-
-	for (size_t i=0; i<box.Vertices.size(); ++i)
+	std::vector<Vertex> vertices(box.Vertices.size());
+	for (size_t i = 0; i < box.Vertices.size(); ++i)
 	{
-		vertices[i].Pos = box.Vertices[i].Position;
-		//vertices[i].Color = DirectX::XMFLOAT4(DirectX::Colors::DarkGreen);
+		auto& p = box.Vertices[i].Position;
+		vertices[i].Pos = p;
+		vertices[i].Normal = box.Vertices[i].Normal;
+		vertices[i].TexC = box.Vertices[i].TexC;
 	}
 
-	std::vector<std::uint16_t> indices;
-	indices.insert(indices.end(), std::begin(box.GetIndices16()), std::end(box.GetIndices16()));
-
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+
+	std::vector<std::uint16_t> indices = box.GetIndices16();
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
 	auto geo = std::make_unique<MeshGeometry>();
-	geo->Name = mGeoName;
+	geo->Name = m_Name;
 
 	ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
 	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
@@ -71,52 +87,66 @@ void Box::BuildBox(void)
 	ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
 	CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
-	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), COM_LIST.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
-	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
+	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC_DEV.Get(),
+		COM_LIST.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
+
+	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC_DEV.Get(),
+		COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
 
 	geo->VertexByteStride = sizeof(Vertex);
 	geo->VertexBufferByteSize = vbByteSize;
 	geo->IndexFormat = DXGI_FORMAT_R16_UINT;
 	geo->IndexBufferByteSize = ibByteSize;
 
-	geo->DrawArgs["Box"] = submesh;
+	SubmeshGeometry submesh;
+	submesh.IndexCount = (UINT)indices.size();
+	submesh.StartIndexLocation = 0;
+	submesh.BaseVertexLocation = 0;
+
+	geo->DrawArgs[m_submeshName] = submesh;
 
 	UTIL.Get_Geomesh()[geo->Name] = std::move(geo);
 }
 
+void Box::BuildMaterials(void)
+{
+	auto mat = std::make_unique<Material>();
+	mat->Name = m_matName;
+	mat->MatCBIndex = g_MatCBcount;
+	mat->DiffuseSrvHeapIndex = g_MatCBcount;
+	mat->DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	mat->FresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);
+	mat->Roughness = 0.25f;
+
+	UTIL.Get_Materials()[m_matName] = std::move(mat);
+
+	++g_MatCBcount;
+}
+
 void Box::BuildRenderItem(void)
 {
-	auto boxRitem = std::make_unique<RenderItem>();
-	DirectX::XMStoreFloat4x4(&boxRitem->World, DirectX::XMMatrixScaling(2.0f, 2.0f, 2.0f) * DirectX::XMMatrixTranslation(0.0f, 0.5f, 0.0f));
-	boxRitem->objCBIndex = 0;
-	boxRitem->Geo = UTIL.Get_Geomesh()[mGeoName].get();
-	boxRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	boxRitem->IndexCount = boxRitem->Geo->DrawArgs["Box"].IndexCount;
-	boxRitem->StartIndexLocation = boxRitem->Geo->DrawArgs["Box"].BaseVertexLocation;
-	boxRitem->BaseVertexLocation = boxRitem->Geo->DrawArgs["Box"].BaseVertexLocation;
+	auto ritem = std::make_unique<RenderItem>();
+	ritem->World = MathHelper::Identity4x4();
+	DirectX::XMStoreFloat4x4(&ritem->TexTransform, DirectX::XMMatrixScaling(3.0f, 2.0f, -9.0f));
+	ritem->objCBIndex = g_ObjCBcount;
+	ritem->Mat = UTIL.Get_Materials()[m_matName].get();
+	ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
+	ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	ritem->IndexCount = ritem->Geo->DrawArgs[m_submeshName].IndexCount;
+	ritem->StartIndexLocation = ritem->Geo->DrawArgs[m_submeshName].StartIndexLocation;
+	ritem->BaseVertexLocation = ritem->Geo->DrawArgs[m_submeshName].BaseVertexLocation;
 
-	UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(boxRitem.get());
+	UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(ritem.get());
 
-	UTIL.Get_Ritemvec().push_back(std::move(boxRitem));
+	UTIL.Get_Ritemvec().push_back(std::move(ritem));
+
+	++g_ObjCBcount;
 }
 
-void Box::Set_BoxAtt(const std::string& _name, const float & w, const float & h, const float & d, const uint32_t & s)
+std::shared_ptr<Box> Box::Create(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname)
 {
-	mGeoName	= _name;
-	mWidth		= w;
-	mHeight		= h;
-	mDepth		= d;
-	mSubdiv		= s;
-}
-
-std::shared_ptr<Box> Box::Create(std::string _name, Object::COM_TYPE _type, std::string _geoname, float _w, float _h, float _d, float _subdiv)
-{
-	BOX pBox = std::make_shared<Box>();
+	BOX pBox = std::make_shared<Box>(_type, _name, _submeshname, _texname, _matname);
 	if (!pBox)	return nullptr;
-
-	pBox->Get_Objname() = _name;
-	pBox->Get_Comtype() = _type;
-	pBox->Set_BoxAtt(_geoname, _w, _h, _d, _subdiv);
 
 	return pBox;
 }

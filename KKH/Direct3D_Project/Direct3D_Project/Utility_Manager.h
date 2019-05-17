@@ -90,9 +90,9 @@ public:
 	bool Object_Cycle(const float& dt, ObjState _state);
 
 private:
-	//bool Object_Ready(void);
-	bool Object_Update(const float& dt, OBJECT& obj);
-	bool Object_Render(const float& dt, OBJECT& obj);
+	bool Object_Ready(OBJMAP& _objmap);
+	bool Object_Update(const float& dt, OBJMAP& _objmap);
+	bool Object_Render(const float& dt);//, OBJMAP& _objmap);
 
 	void AnimateMaterials(const float& dt);
 	void UpdateObjectCBs(const float& dt);

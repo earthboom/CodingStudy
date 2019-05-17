@@ -43,6 +43,8 @@ void Grid::BuildDescriptorHeaps(void)
 {
 	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart());
 
+	hDescriptor.Offset(g_MatCBcount, UTIL.Get_CbvSrvDescriptorSize());
+
 	auto tex = TEX.Get_Textures()[m_texName]->Resource;
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -53,17 +55,6 @@ void Grid::BuildDescriptorHeaps(void)
 	srvDesc.Texture2D.MipLevels = -1;
 	//srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 	GRAPHIC_DEV->CreateShaderResourceView(tex.Get(), &srvDesc, hDescriptor);
-
-	hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
-
-	//srvDesc.Format = {};
-	//GRAPHIC_DEV->CreateShaderResourceView(nullptr, &srvDesc, hDescriptor);
-
-	// next descriptor
-	//hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
-
-	//srvDesc.Format = {};
-	//GRAPHIC_DEV->CreateShaderResourceView(nullptr, &srvDesc, hDescriptor);
 }
 
 void Grid::BuildMaterials(void)

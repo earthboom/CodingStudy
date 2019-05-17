@@ -90,7 +90,7 @@ void CTimer::Tick(void)
 	m_i64CurrTime = currTime;
 
 	//이 시간과 이전 프레임 시간의 차이
-	m_dbDeltaTime = (m_i64CurrTime - m_i64PausedTime) * m_dbSecondPerCount;
+	m_dbDeltaTime = (m_i64CurrTime - m_i64PrevTime) * m_dbSecondPerCount;
 
 	//다음 프레임 준비
 	m_i64PrevTime = m_i64CurrTime;

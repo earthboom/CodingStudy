@@ -87,7 +87,7 @@ void Utility_Manager::BuildFrameResources(void)
 {
 	for (int i = 0; i < NumFrameResources; ++i)
 	{
-		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC->Get_Device().Get(), 1, (UINT)mAllRitem.size(), (UINT)mMaterials.size(), mCPWave->VertexCount()));
+		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC_DEV.Get(), 1, (UINT)mAllRitem.size(), (UINT)mMaterials.size(), mCPWave->VertexCount()));
 	}
 }
 
@@ -145,34 +145,49 @@ bool Utility_Manager::Object_Cycle(const float & dt, ObjState _state)
 {
 	for (auto& objmap : allObj_Update_vec)
 	{
-		for (auto& obj : *objmap)
+		switch (_state)
 		{
-			switch (_state)
-			{
-			case ObjState::OS_READY:
-				if (!obj.second->Ready())
-					return FALSE;
-				break;
+		case ObjState::OS_READY:
+			//if (!obj.second->Ready())
+			if(!Object_Ready(*objmap))
+				return FALSE;
+			break;
 
-			case ObjState::OS_UPDATE:
-				//if (!obj.second->Update(dt))
-				if(!Object_Update(dt, obj.second))
-					return FALSE;
-				break;
+		case ObjState::OS_UPDATE:
+			//if (!obj.second->Update(dt))
+			if(!Object_Update(dt, *objmap))
+				return FALSE;
+			break;
 
-			case ObjState::OS_RENDER:
-				//if (!obj.second->Render(dt))
-				if (!Object_Render(dt, obj.second))
-					return FALSE;
-				break;
-			}
+		case ObjState::OS_RENDER:
+			//if (!obj.second->Render(dt))
+			if (!Object_Render(dt))//, obj.second))
+				return FALSE;
+			break;
 		}
 	}
 
 	return TRUE;
 }
 
-bool Utility_Manager::Object_Update(const float & dt, OBJECT& obj)
+bool Utility_Manager::Object_Ready(OBJMAP& _objmap)
+{
+	OBJECT pObject = nullptr;
+	for (auto& obj : _objmap)
+	{
+		pObject = obj.second;
+
+		if (pObject == nullptr)
+			return FALSE;
+		
+		if (!pObject->Ready())
+			return FALSE;
+	}
+
+	return TRUE;
+}
+
+bool Utility_Manager::Object_Update(const float & dt, OBJMAP& _objmap)
 {
 	OnKeyboardInput(dt);
 	UpdateCamera(dt);
@@ -188,8 +203,17 @@ bool Utility_Manager::Object_Update(const float & dt, OBJECT& obj)
 		CloseHandle(eventHandle);
 	}
 
-	if (!obj->Update(dt))
-		return FALSE;
+	OBJECT pObject = nullptr;
+	for (auto& obj : _objmap)
+	{
+		pObject = obj.second;
+
+		if (pObject == nullptr)
+			return FALSE;
+
+		if (!pObject->Update(dt))
+			return FALSE;
+	}
 
 	AnimateMaterials(dt);
 	UpdateObjectCBs(dt);
@@ -199,7 +223,7 @@ bool Utility_Manager::Object_Update(const float & dt, OBJECT& obj)
 	return TRUE;
 }
 
-bool Utility_Manager::Object_Render(const float & dt, OBJECT& obj)
+bool Utility_Manager::Object_Render(const float & dt)//, OBJMAP& _objmap)
 {
 	auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
 
