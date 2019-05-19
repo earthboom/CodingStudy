@@ -9,6 +9,7 @@
 #include "Grid.h"
 #include "Wave.h"
 #include "Texture_Manger.h"
+#include "Timer_Manager.h"
 
 CMainApp::CMainApp(void)
 	: m_fTime(0.0f)
@@ -72,6 +73,8 @@ int CMainApp::Update_MainApp(const float & dt)
 	//m_Shape->Update(dt);
 	//m_LAW->Update(dt);
 
+	CalculateFrameStats();
+
 	if (UTIL.Object_Cycle(dt, Utility_Manager::OS_UPDATE)) return 0;
 
 	return 1;
@@ -109,6 +112,37 @@ bool CMainApp::CreateObject(void)
 	if (!UTIL.Object_Create(Box::Create(Object::COM_TYPE::CT_STATIC, "boxGeo", "box", "fenceTex", "wirefence"))) return FALSE;
 
 	return TRUE;
+}
+
+void CMainApp::CalculateFrameStats()
+{
+	// Code computes the average frames per second, and also the 
+	// average time it takes to render one frame.  These stats 
+	// are appended to the window caption bar.
+
+	static int frameCnt = 0;
+	static float timeElapsed = 0.0f;
+
+	frameCnt++;
+
+	int time = TIME_MGR.Get_TotalTime(L"MainTimer");
+	// Compute averages over one second period.
+	if ((TIME_MGR.Get_TotalTime(L"MainTimer") - timeElapsed) >= 1.0f)
+	{
+		float fps = (float)frameCnt; // fps = frameCnt / 1
+		float mspf = 1000.0f / fps;
+
+		std::wstring fpsStr = std::to_wstring(fps);
+		std::wstring mspfStr = std::to_wstring(mspf);
+
+		std::wstring windowText = L"    fps: " + fpsStr + L"   mspf: " + mspfStr;
+
+		SetWindowText(g_hWnd, windowText.c_str());
+
+		// Reset for next average.
+		frameCnt = 0;
+		timeElapsed += 1.0f;
+	}
 }
 
 void CMainApp::Free(void)

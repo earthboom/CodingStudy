@@ -19,6 +19,8 @@ private:
 	bool	LoadTexture(void);
 	bool	CreateObject(void);
 
+	void	CalculateFrameStats(void);
+
 private:
 	//PBOX	m_Box;
 	//SHAPE m_Shape;

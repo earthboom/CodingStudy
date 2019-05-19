@@ -58,6 +58,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	TIME_MGR.Ready_Timer(L"MainTimer");
 	TIME_MGR.Get_Start(L"MainTimer");
+	TIME_MGR.Get_Reset(L"MainTimer");
 
 	std::shared_ptr<CMainApp> pMainApp = std::make_shared<CMainApp>();
 	pMainApp->Ready_MainApp();

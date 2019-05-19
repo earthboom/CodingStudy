@@ -59,6 +59,16 @@ bool CTimer_Manager::Get_Start(const TCHAR * pTag)
 	return TRUE;
 }
 
+bool CTimer_Manager::Get_Reset(const TCHAR * pTag)
+{
+	auto pTimer = Find_Timer(pTag);
+	if (pTimer == nullptr)
+		return FALSE;
+
+	pTimer->Reset();
+	return TRUE;
+}
+
 bool CTimer_Manager::Get_Stop(const TCHAR * pTag)
 {
 	auto pTimer = Find_Timer(pTag);
