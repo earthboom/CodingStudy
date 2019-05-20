@@ -16,8 +16,8 @@ protected:
 
 public:
 	virtual bool Ready(void);
-	virtual bool Update(const float& dt);
-	virtual bool Render(const float& dt) PURE;
+	virtual bool Update(const CTimer& mt);
+	virtual bool Render(const CTimer& mt) PURE;
 
 protected:
 	virtual void BuildDescriptorHeaps(void)PURE;

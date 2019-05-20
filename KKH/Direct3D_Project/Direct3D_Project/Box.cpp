@@ -31,12 +31,12 @@ bool Box::Ready(void)
 	return TRUE;
 }
 
-bool Box::Update(const float & dt)
+bool Box::Update(const CTimer& mt)
 {
 	return TRUE;
 }
 
-bool Box::Render(const float & dt)
+bool Box::Render(const CTimer& mt)
 {
 	return TRUE;
 }

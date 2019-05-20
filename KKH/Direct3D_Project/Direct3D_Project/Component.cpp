@@ -14,7 +14,7 @@ bool Component::Ready(void)
 	return TRUE;
 }
 
-bool Component::Update(const float & dt)
+bool Component::Update(const CTimer& mt)
 {
 	return TRUE;
 }

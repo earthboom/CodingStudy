@@ -13,7 +13,7 @@ CTimer::CTimer(void)
 {
 	__int64 CntPerSec = 0;
 	QueryPerformanceFrequency((LARGE_INTEGER*)&CntPerSec);
-	m_dbSecondPerCount = 1.0f / CntPerSec;
+	m_dbSecondPerCount = 1.0f / (double)CntPerSec;
 }
 
 CTimer::~CTimer(void)

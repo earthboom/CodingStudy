@@ -32,15 +32,15 @@ bool Wave::Ready(void)
 	return TRUE;
 }
 
-bool Wave::Update(const float & dt)
+bool Wave::Update(const CTimer& mt)
 {
-	AnimateMaterials(dt);
-	UpdateWaves(dt);
+	AnimateMaterials(mt);
+	UpdateWaves(mt);
 
 	return TRUE;
 }
 
-bool Wave::Render(const float & dt)
+bool Wave::Render(const CTimer& mt)
 {
 	return TRUE;
 }
@@ -100,7 +100,7 @@ void Wave::BuildRenderItem(void)
 	++g_ObjCBcount;
 }
 
-void Wave::AnimateMaterials(const float & dt)
+void Wave::AnimateMaterials(const CTimer& mt)
 {
 	//Scroll the water material texture coordinate
 	auto waterMat = UTIL.Get_Materials()[m_matName].get();
@@ -108,8 +108,8 @@ void Wave::AnimateMaterials(const float & dt)
 	float& tu = waterMat->MatTransform(3, 0);
 	float& tv = waterMat->MatTransform(3, 1);
 
-	tu += 0.1f * dt;
-	tv += 0.02f * dt;
+	tu += 0.1f * mt.DeltaTime();
+	tv += 0.02f * mt.DeltaTime();
 
 	if (tu >= 1.0f)
 		tu -= 1.0f;
@@ -123,10 +123,10 @@ void Wave::AnimateMaterials(const float & dt)
 	waterMat->NumFrameDirty = NumFrameResources;
 }
 
-void Wave::UpdateWaves(const float & dt)
+void Wave::UpdateWaves(const CTimer& mt)
 {
 	static float t_base = 0.0f;
-	if ((TIME_MGR.Get_TotalTime(TimerType::TIMER_MAIN) - t_base) >= 0.25f)
+	if ((mt.TotalTime() - t_base) >= 0.25f)
 	{
 		t_base += 0.25f;
 
@@ -138,7 +138,7 @@ void Wave::UpdateWaves(const float & dt)
 		UTIL.Get_CPWave()->Disturb(i, j, r);
 	}
 
-	UTIL.Get_CPWave()->Update(dt);
+	UTIL.Get_CPWave()->Update(mt);
 
 	auto currWaveCB = UTIL.Get_CurrFrameResource()->WavesVB.get();
 	for (int i = 0; i < UTIL.Get_CPWave()->VertexCount(); ++i)

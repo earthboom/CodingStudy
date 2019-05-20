@@ -31,6 +31,12 @@ void CTimer_Manager::Compute_Timer(TimerType pTag)
 	pTimer->Tick();
 }
 
+const CTimer& CTimer_Manager::Get_Timer(const TimerType pTag)
+{
+	auto pTimer = Find_Timer(pTag);
+	return *pTimer;
+}
+
 float CTimer_Manager::Get_TimeDelta(TimerType pTag)
 {
 	auto pTimer = Find_Timer(pTag);
@@ -77,15 +83,6 @@ bool CTimer_Manager::Get_Stop(TimerType pTag)
 
 	pTimer->Stop();
 	return TRUE;
-}
-
-void CTimer_Manager::Get_Tick(TimerType pTag)
-{
-	auto pTimer = Find_Timer(pTag);
-	if (pTimer == nullptr)
-		return;
-
-	pTimer->Tick();
 }
 
 PTIMER CTimer_Manager::Find_Timer(TimerType pTag)

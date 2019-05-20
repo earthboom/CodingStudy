@@ -32,6 +32,8 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+void CalculateFrameStats(void);
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -73,15 +75,46 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 		else
 		{
-			TIME_MGR.Get_Tick(TimerType::TIMER_MAIN);
-			pMainApp->Update_MainApp(TIME_MGR.Get_TimeDelta(TimerType::TIMER_MAIN));
-			pMainApp->Render_MainApp(TIME_MGR.Get_TimeDelta(TimerType::TIMER_MAIN));
+			TIME_MGR.Compute_Timer(TimerType::TIMER_MAIN);
+			CalculateFrameStats();
+			pMainApp->Update_MainApp(TIME_MGR.Get_Timer(TimerType::TIMER_MAIN));
+			pMainApp->Render_MainApp(TIME_MGR.Get_Timer(TimerType::TIMER_MAIN));
 		}
 	}
 
     return (int) msg.wParam;
 }
 
+void CalculateFrameStats(void)
+{
+	// Code computes the average frames per second, and also the 
+	// average time it takes to render one frame.  These stats 
+	// are appended to the window caption bar.
+
+	static int frameCnt = 0;
+	static float timeElapsed = 0.0f;
+
+	frameCnt++;
+
+	int time = TIME_MGR.Get_TotalTime(TimerType::TIMER_MAIN);
+	// Compute averages over one second period.
+	if ((TIME_MGR.Get_TotalTime(TimerType::TIMER_MAIN) - timeElapsed) >= 1.0f)
+	{
+		float fps = (float)frameCnt; // fps = frameCnt / 1
+		float mspf = 1000.0f / fps;
+
+		std::wstring fpsStr = std::to_wstring(fps);
+		std::wstring mspfStr = std::to_wstring(mspf);
+
+		std::wstring windowText = L"    fps: " + fpsStr + L"   mspf: " + mspfStr;
+
+		SetWindowText(g_hWnd, windowText.c_str());
+
+		// Reset for next average.
+		frameCnt = 0;
+		timeElapsed += 1.0f;
+	}
+}
 
 
 //

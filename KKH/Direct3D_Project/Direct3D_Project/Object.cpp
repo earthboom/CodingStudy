@@ -38,7 +38,7 @@ bool Object::Ready(void)
 	return TRUE;
 }
 
-bool Object::Update(const float & dt)
+bool Object::Update(const CTimer& mt)
 {
 	return TRUE;
 }

@@ -13,7 +13,7 @@
 class Utility_Manager : public CSingleton<Utility_Manager>
 {
 public:
-	enum ObjState { OS_READY, OS_UPDATE, OS_RENDER, OS_END };
+	enum ObjState { OS_UPDATE, OS_RENDER, OS_END };
 
 public:
 	explicit Utility_Manager(void);
@@ -87,22 +87,21 @@ private:
 
 public:
 	bool Object_Create(OBJECT obj);
-	bool Object_Cycle(const float& dt, ObjState _state);
+	bool Object_Ready(void);
+	bool Object_Cycle(const CTimer& mt, ObjState _state = OS_END);
 
 private:
-	bool Object_Ready(void);
-	bool Object_Update(const float& dt);
-	bool Object_Render(const float& dt);//, OBJMAP& _objmap);
+	bool Object_Update(const CTimer& mt);
+	bool Object_Render(const CTimer& mt);//, OBJMAP& _objmap);
 
-	void AnimateMaterials(const float& dt);
-	void UpdateObjectCBs(const float& dt);
-	void UpdateMaterialCBs(const float& dt);
-	void UpdateMainPassCB(const float& dt);
+	void UpdateObjectCBs(const CTimer& mt);
+	void UpdateMaterialCBs(const CTimer& mt);
+	void UpdateMainPassCB(const CTimer& mt);
 	
 	void DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const std::vector<RenderItem*>& ritems);
 
-	void OnKeyboardInput(const float& dt);
-	void UpdateCamera(const float& dt);
+	void OnKeyboardInput(const CTimer& mt);
+	void UpdateCamera(const CTimer& mtt);
 
 public:
 	//std::function<Microsoft::WRL::ComPtr<ID3D12PipelineState>&(std::string)> Get_PSOs = [&](std::string str)->Microsoft::WRL::ComPtr<ID3D12PipelineState>& {return mPSOs[str]; };

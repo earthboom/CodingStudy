@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Timer.h"
+
 class ComputeWaves
 {
 public:
@@ -20,7 +22,7 @@ public:
 	const DirectX::XMFLOAT3& TangentX(int i) const { return mTangentX[i]; }
 
 public:
-	void Update(const float& dt);
+	void Update(const CTimer& mt);
 	void Disturb(int i, int j, float magnitude);
 
 private:

@@ -4,6 +4,8 @@
 //#include "ShapeScene.h"
 //#include "LandAndWave.h"
 
+#include "Timer.h"
+
 class CMainApp
 {
 public:
@@ -12,15 +14,13 @@ public:
 
 public:
 	bool	Ready_MainApp(void);
-	int		Update_MainApp(const float& dt);
-	void	Render_MainApp(const float& dt);
+	int		Update_MainApp(const CTimer& mt);
+	void	Render_MainApp(const CTimer& mt);
 
 private:
 	bool	LoadTexture(void);
 	bool	CreateObject(void);
-
-	void	CalculateFrameStats(void);
-
+	
 private:
 	//PBOX	m_Box;
 	//SHAPE m_Shape;

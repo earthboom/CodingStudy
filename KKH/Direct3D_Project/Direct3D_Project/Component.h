@@ -1,6 +1,7 @@
 #pragma once
 
 #include "combaseapi.h"
+#include "Timer.h"
 
 class Component
 {
@@ -10,7 +11,7 @@ protected:
 
 protected:
 	virtual bool Ready(void) PURE;
-	virtual bool Update(const float& dt) PURE;	
+	virtual bool Update(const CTimer& mt) PURE;
 };
 
 typedef std::shared_ptr<Component> COM;

@@ -18,6 +18,8 @@ public:
 	HRESULT	Ready_Timer(const TimerType pTag);
 	void	Compute_Timer(const TimerType pTag);
 
+	const CTimer&	Get_Timer(const TimerType pTag);
+
 public:
 	float	Get_TimeDelta(const TimerType pTag);
 	float	Get_TotalTime(const TimerType pTag);
@@ -25,8 +27,6 @@ public:
 	bool	Get_Start(const TimerType pTag);
 	bool	Get_Reset(const TimerType pTag);
 	bool	Get_Stop(const TimerType pTag);
-
-	void	Get_Tick(const TimerType pTag);
 
 private:
 	std::map<const TimerType, PTIMER> m_mapTimer;

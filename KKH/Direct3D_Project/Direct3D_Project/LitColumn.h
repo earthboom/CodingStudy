@@ -13,8 +13,8 @@ public:
 
 public:
 	virtual bool Ready(void);
-	virtual bool Update(const float& dt);
-	virtual bool Render(const float& dt);
+	virtual bool Update(const CTimer& mt);
+	virtual bool Render(const CTimer& mt);
 	
 protected:
 	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems);

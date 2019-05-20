@@ -172,22 +172,17 @@ bool Utility_Manager::Object_Create(OBJECT obj)
 	return TRUE;
 }
 
-bool Utility_Manager::Object_Cycle(const float & dt, ObjState _state)
+bool Utility_Manager::Object_Cycle(const CTimer& mt, ObjState _state)
 {
 	switch (_state)
 	{
-	case ObjState::OS_READY:
-		if (!Object_Ready())
-			return FALSE;
-		break;
-
 	case ObjState::OS_UPDATE:
-		if (!Object_Update(dt))
+		if (!Object_Update(mt))
 			return FALSE;
 		break;
 
 	case ObjState::OS_RENDER:
-		if (!Object_Render(dt))
+		if (!Object_Render(mt))
 			return FALSE;
 		break;
 	}
@@ -210,10 +205,10 @@ bool Utility_Manager::Object_Ready()
 	return TRUE;
 }
 
-bool Utility_Manager::Object_Update(const float & dt)
+bool Utility_Manager::Object_Update(const CTimer& mt)
 {
-	OnKeyboardInput(dt);
-	UpdateCamera(dt);
+	OnKeyboardInput(mt);
+	UpdateCamera(mt);
 
 	mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % NumFrameResources;
 	mCurrFrameResource = UTIL.Get_Frameres()[mCurrFrameResourceIndex].get();
@@ -232,19 +227,18 @@ bool Utility_Manager::Object_Update(const float & dt)
 		{
 			OBJECT& pObject = obj.second;
 			if (pObject == nullptr)		return FALSE;
-			if (!pObject->Update(dt))	return FALSE;
+			if (!pObject->Update(mt))	return FALSE;
 		}
 	}
 
-	AnimateMaterials(dt);
-	UpdateObjectCBs(dt);
-	UpdateMaterialCBs(dt);
-	UpdateMainPassCB(dt);
+	UpdateObjectCBs(mt);
+	UpdateMaterialCBs(mt);
+	UpdateMainPassCB(mt);
 
 	return TRUE;
 }
 
-bool Utility_Manager::Object_Render(const float & dt)//, OBJMAP& _objmap)
+bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 {
 	auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
 
@@ -296,11 +290,7 @@ bool Utility_Manager::Object_Render(const float & dt)//, OBJMAP& _objmap)
 	return TRUE;
 }
 
-void Utility_Manager::AnimateMaterials(const float & dt)
-{
-}
-
-void Utility_Manager::UpdateObjectCBs(const float & dt)
+void Utility_Manager::UpdateObjectCBs(const CTimer& mt)
 {
 	auto currObjectCB = mCurrFrameResource->ObjectCB.get();
 	for (auto& e : mAllRitem)
@@ -321,7 +311,7 @@ void Utility_Manager::UpdateObjectCBs(const float & dt)
 	}
 }
 
-void Utility_Manager::UpdateMaterialCBs(const float & dt)
+void Utility_Manager::UpdateMaterialCBs(const CTimer& mt)
 {
 	auto currMaterialCB = mCurrFrameResource->MaterialCB.get();
 	for (auto& e : mMaterials)
@@ -344,7 +334,7 @@ void Utility_Manager::UpdateMaterialCBs(const float & dt)
 	}
 }
 
-void Utility_Manager::UpdateMainPassCB(const float & dt)
+void Utility_Manager::UpdateMainPassCB(const CTimer& mt)
 {
 	XMMATRIX view = XMLoadFloat4x4(&mView);
 	XMMATRIX proj = XMLoadFloat4x4(&g_Proj);
@@ -365,8 +355,8 @@ void Utility_Manager::UpdateMainPassCB(const float & dt)
 	mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / WINSIZE_X, 1.0f / WINSIZE_Y);
 	mMainPassCB.NearZ = 1.0f;
 	mMainPassCB.FarZ = 1000.0f;
-	mMainPassCB.TotalTime = TIME_MGR.Get_TotalTime(TimerType::TIMER_MAIN);
-	mMainPassCB.DeltaTime = dt;
+	mMainPassCB.TotalTime = mt.TotalTime();
+	mMainPassCB.DeltaTime = mt.DeltaTime();
 	mMainPassCB.AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
 	mMainPassCB.Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
 	mMainPassCB.Lights[0].Strength = { 0.9f, 0.9f, 0.8f };
@@ -410,11 +400,11 @@ void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const
 	}
 }
 
-void Utility_Manager::OnKeyboardInput(const float & dt)
+void Utility_Manager::OnKeyboardInput(const CTimer& mt)
 {
 }
 
-void Utility_Manager::UpdateCamera(const float & dt)
+void Utility_Manager::UpdateCamera(const CTimer& mt)
 {
 	for (auto& all : allObj_Update_vec)
 	{

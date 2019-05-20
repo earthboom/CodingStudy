@@ -9,7 +9,6 @@
 #include "Grid.h"
 #include "Wave.h"
 #include "Texture_Manger.h"
-#include "Timer_Manager.h"
 
 CMainApp::CMainApp(void)
 	: m_fTime(0.0f)
@@ -41,7 +40,7 @@ bool CMainApp::Ready_MainApp(void)
 	UTIL.BuildShadersAndInputLayer();
 
 	CreateObject();
-	if (!UTIL.Object_Cycle(0.0f, Utility_Manager::OS_READY)) return FALSE;
+	if (!UTIL.Object_Ready()) return FALSE;
 
 	UTIL.BuildFrameResources();
 	UTIL.BuildPSOs();
@@ -67,18 +66,16 @@ bool CMainApp::Ready_MainApp(void)
 	return TRUE;
 }
 
-int CMainApp::Update_MainApp(const float & dt)
+int CMainApp::Update_MainApp(const CTimer& mt)
 {
-	CalculateFrameStats();
-
-	if (UTIL.Object_Cycle(dt, Utility_Manager::OS_UPDATE)) return 0;
+	if (!UTIL.Object_Cycle(mt, Utility_Manager::OS_UPDATE)) return 0;
 
 	return 1;
 }
 
-void CMainApp::Render_MainApp(const float& dt)
+void CMainApp::Render_MainApp(const CTimer& mt)
 {
-	if (UTIL.Object_Cycle(dt, Utility_Manager::OS_RENDER)) return;
+	if (!UTIL.Object_Cycle(mt, Utility_Manager::OS_RENDER)) return;
 }
 
 bool CMainApp::LoadTexture(void)
@@ -105,36 +102,6 @@ bool CMainApp::CreateObject(void)
 	return TRUE;
 }
 
-void CMainApp::CalculateFrameStats()
-{
-	// Code computes the average frames per second, and also the 
-	// average time it takes to render one frame.  These stats 
-	// are appended to the window caption bar.
-
-	static int frameCnt = 0;
-	static float timeElapsed = 0.0f;
-
-	frameCnt++;
-
-	int time = TIME_MGR.Get_TotalTime(TimerType::TIMER_MAIN);
-	// Compute averages over one second period.
-	if ((TIME_MGR.Get_TotalTime(TimerType::TIMER_MAIN) - timeElapsed) >= 1.0f)
-	{
-		float fps = (float)frameCnt; // fps = frameCnt / 1
-		float mspf = 1000.0f / fps;
-
-		std::wstring fpsStr = std::to_wstring(fps);
-		std::wstring mspfStr = std::to_wstring(mspf);
-
-		std::wstring windowText = L"    fps: " + fpsStr + L"   mspf: " + mspfStr;
-
-		SetWindowText(g_hWnd, windowText.c_str());
-
-		// Reset for next average.
-		frameCnt = 0;
-		timeElapsed += 1.0f;
-	}
-}
 
 void CMainApp::Free(void)
 {

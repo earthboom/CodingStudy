@@ -24,7 +24,7 @@ bool LitColumn::Ready(void)
 	return TRUE;
 }
 
-bool LitColumn::Update(const float & dt)
+bool LitColumn::Update(const CTimer& mt)
 {
 	UTIL.Get_CurrFrameResourceIndex() = (UTIL.Get_CurrFrameResourceIndex() + 1) % NumFrameResources;
 	UTIL.Get_CurrFrameResource() = UTIL.Get_Frameres()[UTIL.Get_CurrFrameResourceIndex()].get();
@@ -37,15 +37,15 @@ bool LitColumn::Update(const float & dt)
 		CloseHandle(eventHandle);
 	}
 
-	AnimateMaterials(dt);
-	UpdateObjectCBs(dt);
-	UpdateMaterialCBs(dt);
-	UpdateMainPassCB(dt);
+	//AnimateMaterials(dt);
+	//UpdateObjectCBs(dt);
+	//UpdateMaterialCBs(dt);
+	//UpdateMainPassCB(dt);
 
 	return TRUE;
 }
 
-bool LitColumn::Render(const float & dt)
+bool LitColumn::Render(const CTimer& mt)
 {
 	auto cmdListAlloc = UTIL.Get_CurrFrameResource()->CmdListAlloc;
 

@@ -29,12 +29,12 @@ bool Grid::Ready(void)
 	return TRUE;
 }
 
-bool Grid::Update(const float & dt)
+bool Grid::Update(const CTimer& mt)
 {
 	return TRUE;
 }
 
-bool Grid::Render(const float & dt)
+bool Grid::Render(const CTimer& mt)
 {
 	return TRUE;
 }

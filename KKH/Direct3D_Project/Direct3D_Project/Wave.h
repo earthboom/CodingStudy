@@ -14,8 +14,8 @@ public:
 
 public:
 	virtual bool Ready(void);
-	virtual bool Update(const float& dt);
-	virtual bool Render(const float& dt);
+	virtual bool Update(const CTimer& mt);
+	virtual bool Render(const CTimer& mt);
 
 protected:
 	virtual void BuildDescriptorHeaps(void);
@@ -24,8 +24,8 @@ private:
 	void BuildMaterials(void);
 	void BuildRenderItem(void);
 	
-	void AnimateMaterials(const float & dt);
-	void UpdateWaves(const float & dt);
+	void AnimateMaterials(const CTimer& mt);
+	void UpdateWaves(const CTimer& mt);
 
 private:
 	void BuildGeometry(void);

@@ -70,11 +70,11 @@ float ComputeWaves::Depth(void) const
 	return mNumRows * mSpatialStep;
 }
 
-void ComputeWaves::Update(const float & dt)
+void ComputeWaves::Update(const CTimer& mt)
 {
 	static float t = 0.0f;
 
-	t += dt;
+	t += mt.DeltaTime();
 
 	if (t >= mTimeStep)
 	{
