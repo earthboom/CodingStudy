@@ -40,16 +40,17 @@ protected:
 	float mRadius;	// = 5.0f;
 
 public:
-	std::function<COM_TYPE&()> Get_Comtype = [&]()->COM_TYPE& {return m_Comtype; };
-	std::function<std::string&()> Get_Objname = [&]()->std::string& {return m_Name; };
+	//std::function<COM_TYPE&()> Get_Comtype = [&]()->COM_TYPE& {return m_Comtype; };
+	//std::function<std::string&()> Get_Objname = [&]()->std::string& {return m_Name; };
+	COM_TYPE& Get_Comtype(void){return m_Comtype; }
+	std::string& Get_Objname(void){return m_Name; }
 
-	std::function<float&()> Get_Theta = [&]()->float& {return mTheta; };
-	std::function<float&()> Get_Phi = [&]()->float& {return mPhi; };
-	std::function<float&()> Get_Radius = [&]()->float& {return mRadius; };
-	
-	//float& Get_Theta(void) { return mTheta; }
-	//float& Get_Phi(void) { return mPhi; }
-	//float& Get_Radius(void) { return mRadius; }
+	//std::function<float&()> Get_Theta = [&]()->float& {return mTheta; };
+	//std::function<float&()> Get_Phi = [&]()->float& {return mPhi; };
+	//std::function<float&()> Get_Radius = [&]()->float& {return mRadius; };
+	float& Get_Theta(void) { return mTheta; }
+	float& Get_Phi(void) { return mPhi; }
+	float& Get_Radius(void) { return mRadius; }
 };
 
 typedef std::shared_ptr<Object> OBJECT;
