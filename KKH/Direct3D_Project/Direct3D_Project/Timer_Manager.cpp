@@ -10,7 +10,7 @@ CTimer_Manager::~CTimer_Manager(void)
 	Free();
 }
 
-HRESULT CTimer_Manager::Ready_Timer(const TCHAR * pTag)
+HRESULT CTimer_Manager::Ready_Timer(TimerType pTag)
 {
 	auto pTimer = Find_Timer(pTag);
 	if (pTimer)	return E_FAIL;
@@ -22,7 +22,7 @@ HRESULT CTimer_Manager::Ready_Timer(const TCHAR * pTag)
 	return S_OK;
 }
 
-void CTimer_Manager::Compute_Timer(const TCHAR * pTag)
+void CTimer_Manager::Compute_Timer(TimerType pTag)
 {
 	auto pTimer = Find_Timer(pTag);
 	if (pTimer == nullptr)
@@ -31,7 +31,7 @@ void CTimer_Manager::Compute_Timer(const TCHAR * pTag)
 	pTimer->Tick();
 }
 
-float CTimer_Manager::Get_TimeDelta(const TCHAR * pTag)
+float CTimer_Manager::Get_TimeDelta(TimerType pTag)
 {
 	auto pTimer = Find_Timer(pTag);
 	if (pTimer == nullptr)
@@ -40,7 +40,7 @@ float CTimer_Manager::Get_TimeDelta(const TCHAR * pTag)
 	return pTimer->DeltaTime();
 }
 
-float CTimer_Manager::Get_TotalTime(const TCHAR * pTag)
+float CTimer_Manager::Get_TotalTime(TimerType pTag)
 {
 	auto pTimer = Find_Timer(pTag);
 	if (pTimer == nullptr)
@@ -49,7 +49,7 @@ float CTimer_Manager::Get_TotalTime(const TCHAR * pTag)
 	return pTimer->TotalTime();
 }
 
-bool CTimer_Manager::Get_Start(const TCHAR * pTag)
+bool CTimer_Manager::Get_Start(TimerType pTag)
 {
 	auto pTimer = Find_Timer(pTag);
 	if (pTimer == nullptr)
@@ -59,7 +59,7 @@ bool CTimer_Manager::Get_Start(const TCHAR * pTag)
 	return TRUE;
 }
 
-bool CTimer_Manager::Get_Reset(const TCHAR * pTag)
+bool CTimer_Manager::Get_Reset(TimerType pTag)
 {
 	auto pTimer = Find_Timer(pTag);
 	if (pTimer == nullptr)
@@ -69,7 +69,7 @@ bool CTimer_Manager::Get_Reset(const TCHAR * pTag)
 	return TRUE;
 }
 
-bool CTimer_Manager::Get_Stop(const TCHAR * pTag)
+bool CTimer_Manager::Get_Stop(TimerType pTag)
 {
 	auto pTimer = Find_Timer(pTag);
 	if (pTimer == nullptr)
@@ -79,7 +79,7 @@ bool CTimer_Manager::Get_Stop(const TCHAR * pTag)
 	return TRUE;
 }
 
-void CTimer_Manager::Get_Tick(const TCHAR * pTag)
+void CTimer_Manager::Get_Tick(TimerType pTag)
 {
 	auto pTimer = Find_Timer(pTag);
 	if (pTimer == nullptr)
@@ -88,13 +88,13 @@ void CTimer_Manager::Get_Tick(const TCHAR * pTag)
 	pTimer->Tick();
 }
 
-PTIMER CTimer_Manager::Find_Timer(const TCHAR * pTag)
+PTIMER CTimer_Manager::Find_Timer(TimerType pTag)
 {
 	//auto pFindTimer = [pTag](auto& itr)->bool { 	if (!_tcscmp(itr.first, pTag))	return TRUE;	else return FALSE;};
 
 	//auto pTimer = find(begin(m_mapTimer), end(m_mapTimer), pFindTimer);
 
-	auto pTimer = find_if(begin(m_mapTimer), end(m_mapTimer), [pTag](const MAP_TIMER::value_type& _timer) { if (!_tcscmp(_timer.first, pTag)) return TRUE;	else return FALSE; });
+	auto pTimer = find_if(begin(m_mapTimer), end(m_mapTimer), [pTag](const MAP_TIMER::value_type& _timer) { if (_timer.first == pTag) return TRUE;	else return FALSE; });
 	if (pTimer == m_mapTimer.end())
 		return nullptr;
 

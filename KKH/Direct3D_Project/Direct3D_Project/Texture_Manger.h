@@ -21,7 +21,8 @@ private:
 	MAP_TEX mTexture;
 
 public:
-	std::function<MAP_TEX&()> Get_Textures = [&]()->MAP_TEX& {return mTexture; };
+	//std::function<MAP_TEX&()> Get_Textures = [&]()->MAP_TEX& {return mTexture; };
+	MAP_TEX& Get_Textures(void){return mTexture; }
 };
 
 

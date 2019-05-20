@@ -9,6 +9,7 @@
 #include "Mouse_Manager.h"
 #include "MathHelper.h"
 #include "Const.h"
+#include "Struct.h"
 
 #define MAX_LOADSTRING 100
 
@@ -56,9 +57,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	MSG msg = { 0, };
 
-	TIME_MGR.Ready_Timer(L"MainTimer");
-	TIME_MGR.Get_Start(L"MainTimer");
-	TIME_MGR.Get_Reset(L"MainTimer");
+	TIME_MGR.Ready_Timer(TimerType::TIMER_MAIN);
+	TIME_MGR.Get_Start(TimerType::TIMER_MAIN);
+	TIME_MGR.Get_Reset(TimerType::TIMER_MAIN);
 
 	std::shared_ptr<CMainApp> pMainApp = std::make_shared<CMainApp>();
 	pMainApp->Ready_MainApp();
@@ -72,9 +73,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 		else
 		{
-			TIME_MGR.Get_Tick(L"MainTimer");
-			pMainApp->Update_MainApp(TIME_MGR.Get_TimeDelta(L"MainTimer"));
-			pMainApp->Render_MainApp(TIME_MGR.Get_TimeDelta(L"MainTimer"));
+			TIME_MGR.Get_Tick(TimerType::TIMER_MAIN);
+			pMainApp->Update_MainApp(TIME_MGR.Get_TimeDelta(TimerType::TIMER_MAIN));
+			pMainApp->Render_MainApp(TIME_MGR.Get_TimeDelta(TimerType::TIMER_MAIN));
 		}
 	}
 

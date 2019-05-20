@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Timer.h"
+#include "Struct.h"
 #include "Unique_Singleton.h"
 
 #define TIME_MGR	CTimer_Manager::GetInstnace()
@@ -14,24 +15,24 @@ public:
 	~CTimer_Manager(void);
 
 public:
-	HRESULT	Ready_Timer(const TCHAR* pTag);
-	void	Compute_Timer(const TCHAR* pTag);
+	HRESULT	Ready_Timer(const TimerType pTag);
+	void	Compute_Timer(const TimerType pTag);
 
 public:
-	float	Get_TimeDelta(const TCHAR* pTag);
-	float	Get_TotalTime(const TCHAR* pTag);
+	float	Get_TimeDelta(const TimerType pTag);
+	float	Get_TotalTime(const TimerType pTag);
 
-	bool	Get_Start(const TCHAR* pTag);
-	bool	Get_Reset(const TCHAR* pTag);
-	bool	Get_Stop(const TCHAR* pTag);
+	bool	Get_Start(const TimerType pTag);
+	bool	Get_Reset(const TimerType pTag);
+	bool	Get_Stop(const TimerType pTag);
 
-	void	Get_Tick(const TCHAR* pTag);
+	void	Get_Tick(const TimerType pTag);
 
 private:
-	std::map<const TCHAR*, PTIMER> m_mapTimer;
-	typedef std::map<const TCHAR*, PTIMER>	MAP_TIMER;
+	std::map<const TimerType, PTIMER> m_mapTimer;
+	typedef std::map<const TimerType, PTIMER>	MAP_TIMER;
 
-	PTIMER	Find_Timer(const TCHAR* pTag);
+	PTIMER	Find_Timer(const TimerType pTag);
 
 private:
 	void Free(void);

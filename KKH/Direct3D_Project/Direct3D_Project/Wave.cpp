@@ -126,7 +126,7 @@ void Wave::AnimateMaterials(const float & dt)
 void Wave::UpdateWaves(const float & dt)
 {
 	static float t_base = 0.0f;
-	if ((TIME_MGR.Get_TotalTime(L"MainTimer") - t_base) >= 0.25f)
+	if ((TIME_MGR.Get_TotalTime(TimerType::TIMER_MAIN) - t_base) >= 0.25f)
 	{
 		t_base += 0.25f;
 

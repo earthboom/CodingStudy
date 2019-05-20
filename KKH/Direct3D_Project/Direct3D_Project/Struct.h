@@ -32,3 +32,9 @@ struct Texture
 	Microsoft::WRL::ComPtr<ID3D12Resource> Resource = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> UploadHeap = nullptr;
 };
+
+enum class TimerType
+{
+	TIMER_MAIN,
+	TIMER_END
+};

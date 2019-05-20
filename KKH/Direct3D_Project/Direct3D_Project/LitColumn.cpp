@@ -184,8 +184,8 @@ void LitColumn::UpdateMainPassCB(const float & dt)
 	UTIL.Get_MainPassCB().InvRenderTargetSize = XMFLOAT2(1.0f / WINSIZE_X, 1.0f / WINSIZE_Y);
 	UTIL.Get_MainPassCB().NearZ = 1.0f;
 	UTIL.Get_MainPassCB().FarZ = 1000.0f;
-	UTIL.Get_MainPassCB().TotalTime = TIME_MGR.Get_TotalTime(L"MainTimer");
-	UTIL.Get_MainPassCB().DeltaTime = TIME_MGR.Get_TimeDelta(L"MainTimer");
+	UTIL.Get_MainPassCB().TotalTime = TIME_MGR.Get_TotalTime(TimerType::TIMER_MAIN);
+	UTIL.Get_MainPassCB().DeltaTime = TIME_MGR.Get_TimeDelta(TimerType::TIMER_MAIN);
 	UTIL.Get_MainPassCB().AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
 	UTIL.Get_MainPassCB().Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
 	UTIL.Get_MainPassCB().Lights[0].Strength = { 0.6f, 0.6f, 0.6f };

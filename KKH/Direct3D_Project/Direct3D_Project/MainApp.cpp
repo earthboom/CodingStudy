@@ -69,10 +69,6 @@ bool CMainApp::Ready_MainApp(void)
 
 int CMainApp::Update_MainApp(const float & dt)
 {
-	//m_Box->Update(dt);
-	//m_Shape->Update(dt);
-	//m_LAW->Update(dt);
-
 	CalculateFrameStats();
 
 	if (UTIL.Object_Cycle(dt, Utility_Manager::OS_UPDATE)) return 0;
@@ -82,11 +78,6 @@ int CMainApp::Update_MainApp(const float & dt)
 
 void CMainApp::Render_MainApp(const float& dt)
 {
-	//GRAPHIC_MGR.Draw(dt);
-	//m_Box->Render(dt);
-	//m_Shape->Render(dt);
-	//m_LAW->Render(dt);
-
 	if (UTIL.Object_Cycle(dt, Utility_Manager::OS_RENDER)) return;
 }
 
@@ -125,9 +116,9 @@ void CMainApp::CalculateFrameStats()
 
 	frameCnt++;
 
-	int time = TIME_MGR.Get_TotalTime(L"MainTimer");
+	int time = TIME_MGR.Get_TotalTime(TimerType::TIMER_MAIN);
 	// Compute averages over one second period.
-	if ((TIME_MGR.Get_TotalTime(L"MainTimer") - timeElapsed) >= 1.0f)
+	if ((TIME_MGR.Get_TotalTime(TimerType::TIMER_MAIN) - timeElapsed) >= 1.0f)
 	{
 		float fps = (float)frameCnt; // fps = frameCnt / 1
 		float mspf = 1000.0f / fps;

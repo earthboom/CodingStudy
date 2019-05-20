@@ -24,5 +24,6 @@ private:
 	PGRAPHIC	m_pGraphic;
 
 public:
-	std::function< PGRAPHIC&()>	Get_Graphic = [&]()->PGRAPHIC& { return m_pGraphic; };
+	//std::function< PGRAPHIC&()>	Get_Graphic = [&]()->PGRAPHIC& { return m_pGraphic; };
+	PGRAPHIC& Get_Graphic(void) { return m_pGraphic; }
 };

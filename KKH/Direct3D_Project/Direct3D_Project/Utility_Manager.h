@@ -90,8 +90,8 @@ public:
 	bool Object_Cycle(const float& dt, ObjState _state);
 
 private:
-	bool Object_Ready(OBJMAP& _objmap);
-	bool Object_Update(const float& dt, OBJMAP& _objmap);
+	bool Object_Ready(void);
+	bool Object_Update(const float& dt);
 	bool Object_Render(const float& dt);//, OBJMAP& _objmap);
 
 	void AnimateMaterials(const float& dt);
@@ -105,31 +105,42 @@ private:
 	void UpdateCamera(const float& dt);
 
 public:
-	std::function<Microsoft::WRL::ComPtr<ID3D12PipelineState>&(std::string)> Get_PSOs = [&](std::string str)->Microsoft::WRL::ComPtr<ID3D12PipelineState>& {return mPSOs[str]; };
-	std::function<Microsoft::WRL::ComPtr<ID3D12RootSignature>&()> Get_RootSignature = [&]()->Microsoft::WRL::ComPtr<ID3D12RootSignature>& {return mRootSignature; };
-	std::function<Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>&()> Get_SrvDiscriptorHeap = [&]()->Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& {return mSrvDescriptorHeap; };
+	//std::function<Microsoft::WRL::ComPtr<ID3D12PipelineState>&(std::string)> Get_PSOs = [&](std::string str)->Microsoft::WRL::ComPtr<ID3D12PipelineState>& {return mPSOs[str]; };
+	//std::function<Microsoft::WRL::ComPtr<ID3D12RootSignature>&()> Get_RootSignature = [&]()->Microsoft::WRL::ComPtr<ID3D12RootSignature>& {return mRootSignature; };
+	//std::function<Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>&()> Get_SrvDiscriptorHeap = [&]()->Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& {return mSrvDescriptorHeap; };
+	Microsoft::WRL::ComPtr<ID3D12PipelineState>& Get_PSOs(std::string str){return mPSOs[str]; }
+	Microsoft::WRL::ComPtr<ID3D12RootSignature>& Get_RootSignature(void){return mRootSignature; }
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& Get_SrvDiscriptorHeap(void){return mSrvDescriptorHeap; }
 
-	std::function<GEOMESH&()> Get_Geomesh = [&]()->GEOMESH& {return mGeometries; };
-	std::function<RITEMVEC&()> Get_Ritemvec = [&]()->RITEMVEC& {return mAllRitem; };
-	std::function<FRAMERES&()> Get_Frameres = [&]()->FRAMERES& {return mFrameResources; };
-	std::function<MATERIAL&()> Get_Materials = [&]()->MATERIAL& {return mMaterials; };
-	//std::function<TEXTURE&()> Get_Textures = [&]()->TEXTURE& {return mTextures; };
-	std::function<std::vector<RenderItem*>&(int)> Get_Drawlayer = [&](int _type)->std::vector<RenderItem*>& {return mDrawLayer[_type]; };
+	//std::function<GEOMESH&()> Get_Geomesh = [&]()->GEOMESH& {return mGeometries; };
+	//std::function<RITEMVEC&()> Get_Ritemvec = [&]()->RITEMVEC& {return mAllRitem; };
+	//std::function<FRAMERES&()> Get_Frameres = [&]()->FRAMERES& {return mFrameResources; };
+	//std::function<MATERIAL&()> Get_Materials = [&]()->MATERIAL& {return mMaterials; };
+	GEOMESH&	Get_Geomesh(void){return mGeometries; }
+	RITEMVEC&	Get_Ritemvec(void){return mAllRitem; }
+	FRAMERES&	Get_Frameres(void){return mFrameResources; }
+	MATERIAL&	Get_Materials(void){return mMaterials; }
+	
+	//std::function<std::vector<RenderItem*>&(int)> Get_Drawlayer = [&](int _type)->std::vector<RenderItem*>& {return mDrawLayer[_type]; };
+	std::vector<RenderItem*>&Get_Drawlayer(int _type){return mDrawLayer[_type]; }
 
-	std::function<PassConstants&()> Get_MainPassCB = [&]()->PassConstants& {return mMainPassCB; };
+	//std::function<PassConstants&()> Get_MainPassCB = [&]()->PassConstants& {return mMainPassCB; };
+	PassConstants&Get_MainPassCB(void){return mMainPassCB; }
 
-	std::function<FrameResource*&()> Get_CurrFrameResource = [&]()->FrameResource*& {return mCurrFrameResource; };
-	std::function<int&()> Get_CurrFrameResourceIndex = [&]()->int& {return mCurrFrameResourceIndex; };
+	//std::function<FrameResource*&()> Get_CurrFrameResource = [&]()->FrameResource*& {return mCurrFrameResource; };
+	//std::function<int&()> Get_CurrFrameResourceIndex = [&]()->int& {return mCurrFrameResourceIndex; };
+	FrameResource*& Get_CurrFrameResource(void){return mCurrFrameResource; }
+	int& Get_CurrFrameResourceIndex(void){return mCurrFrameResourceIndex; }
 
-	std::function<ALLOBJVEC&()> Get_Allobjvec = [&]()->ALLOBJVEC& {return allObj_Update_vec; };
+	//std::function<ALLOBJVEC&()> Get_Allobjvec = [&]()->ALLOBJVEC& {return allObj_Update_vec; };
+	ALLOBJVEC& Get_Allobjvec(void){return allObj_Update_vec; }
 
-	std::function<DirectX::XMFLOAT4X4&()> Get_ViewMat = [&]()->DirectX::XMFLOAT4X4& {return mView; };
+	//std::function<DirectX::XMFLOAT4X4&()> Get_ViewMat = [&]()->DirectX::XMFLOAT4X4& {return mView; };
+	DirectX::XMFLOAT4X4& Get_ViewMat(void){return mView; }
 
-	std::function<UINT&()> Get_CbvSrvDescriptorSize = [&]()->UINT& {return mCbvSrvDescriptorSize; };
+	//std::function<UINT&()> Get_CbvSrvDescriptorSize = [&]()->UINT& {return mCbvSrvDescriptorSize; };
+	UINT& Get_CbvSrvDescriptorSize(void){return mCbvSrvDescriptorSize; }
 
-	std::function<std::unique_ptr<ComputeWaves>&()> Get_CPWave = [&]()->std::unique_ptr<ComputeWaves>& {return mCPWave; };
-
-	//std::function<float&()> Get_Theta = [&]()->float& {return mTheta; };
-	//std::function<float&()> Get_Phi = [&]()->float& {return mPhi; };
-	//std::function<float&()> Get_Radius = [&]()->float& {return mRadius; };
+	//std::function<std::unique_ptr<ComputeWaves>&()> Get_CPWave = [&]()->std::unique_ptr<ComputeWaves>& {return mCPWave; };
+	std::unique_ptr<ComputeWaves>& Get_CPWave(void){return mCPWave; }
 };

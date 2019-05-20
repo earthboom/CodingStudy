@@ -174,51 +174,43 @@ bool Utility_Manager::Object_Create(OBJECT obj)
 
 bool Utility_Manager::Object_Cycle(const float & dt, ObjState _state)
 {
+	switch (_state)
+	{
+	case ObjState::OS_READY:
+		if (!Object_Ready())
+			return FALSE;
+		break;
+
+	case ObjState::OS_UPDATE:
+		if (!Object_Update(dt))
+			return FALSE;
+		break;
+
+	case ObjState::OS_RENDER:
+		if (!Object_Render(dt))
+			return FALSE;
+		break;
+	}
+
+	return TRUE;
+}
+
+bool Utility_Manager::Object_Ready()
+{
 	for (auto& objmap : allObj_Update_vec)
 	{
-		switch (_state)
+		for (auto& obj : *objmap)
 		{
-		case ObjState::OS_READY:
-			//if (!obj.second->Ready())
-			if(!Object_Ready(*objmap))
-				return FALSE;
-			break;
-
-		case ObjState::OS_UPDATE:
-			//if (!obj.second->Update(dt))
-			if(!Object_Update(dt, *objmap))
-				return FALSE;
-			break;
-
-		case ObjState::OS_RENDER:
-			//if (!obj.second->Render(dt))
-			if (!Object_Render(dt))//, obj.second))
-				return FALSE;
-			break;
+			OBJECT& pObject = obj.second;
+			if (pObject == nullptr) return FALSE;
+			if (!pObject->Ready())	return FALSE;
 		}
 	}
 
 	return TRUE;
 }
 
-bool Utility_Manager::Object_Ready(OBJMAP& _objmap)
-{
-	OBJECT pObject = nullptr;
-	for (auto& obj : _objmap)
-	{
-		pObject = obj.second;
-
-		if (pObject == nullptr)
-			return FALSE;
-		
-		if (!pObject->Ready())
-			return FALSE;
-	}
-
-	return TRUE;
-}
-
-bool Utility_Manager::Object_Update(const float & dt, OBJMAP& _objmap)
+bool Utility_Manager::Object_Update(const float & dt)
 {
 	OnKeyboardInput(dt);
 	UpdateCamera(dt);
@@ -234,16 +226,14 @@ bool Utility_Manager::Object_Update(const float & dt, OBJMAP& _objmap)
 		CloseHandle(eventHandle);
 	}
 
-	OBJECT pObject = nullptr;
-	for (auto& obj : _objmap)
+	for (auto& objmap : allObj_Update_vec)
 	{
-		pObject = obj.second;
-
-		if (pObject == nullptr)
-			return FALSE;
-
-		if (!pObject->Update(dt))
-			return FALSE;
+		for (auto& obj : *objmap)
+		{
+			OBJECT& pObject = obj.second;
+			if (pObject == nullptr)		return FALSE;
+			if (!pObject->Update(dt))	return FALSE;
+		}
 	}
 
 	AnimateMaterials(dt);
@@ -375,7 +365,7 @@ void Utility_Manager::UpdateMainPassCB(const float & dt)
 	mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / WINSIZE_X, 1.0f / WINSIZE_Y);
 	mMainPassCB.NearZ = 1.0f;
 	mMainPassCB.FarZ = 1000.0f;
-	mMainPassCB.TotalTime = TIME_MGR.Get_TotalTime(L"MainTimer");
+	mMainPassCB.TotalTime = TIME_MGR.Get_TotalTime(TimerType::TIMER_MAIN);
 	mMainPassCB.DeltaTime = dt;
 	mMainPassCB.AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
 	mMainPassCB.Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
