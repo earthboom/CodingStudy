@@ -16,24 +16,36 @@
     <Filter Include="98.Header">
       <UniqueIdentifier>{a0d96aba-44fb-4a21-b49f-4c43439759a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="99.hlsl">
+      <UniqueIdentifier>{ea637a63-5c0c-46df-9851-0a24df86f1c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Time">
+      <UniqueIdentifier>{ed22e881-75e8-4396-ba82-66d4aa1bc61a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Texture">
+      <UniqueIdentifier>{b1dd0140-a73a-42e4-a241-08c9a8e2f19b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.d3dUtil">
+      <UniqueIdentifier>{e0fa2de9-20da-45ec-ad72-968f6b60d5e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.d3dApp">
+      <UniqueIdentifier>{499b5983-065d-48ea-a9be-5d2d86860994}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.FrameResource">
+      <UniqueIdentifier>{25c9cd54-eb15-4591-89ab-dd96f6928749}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07.Geometry">
+      <UniqueIdentifier>{8300c6f4-dd1f-45db-aa58-15b97b7008d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08.MathHelper">
+      <UniqueIdentifier>{2a4c9e1c-d391-4e5d-b91d-3e2967e5268e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09.Object">
+      <UniqueIdentifier>{087f2f07-5dff-4134-9be3-720bdc23ee75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="d3dApp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="d3dUtil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameTimer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MathHelper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="d3dx12.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeometryGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UploadBuffer.h">
@@ -45,43 +57,58 @@
     <ClInclude Include="Include.h">
       <Filter>98.Header</Filter>
     </ClInclude>
-    <ClInclude Include="FrameResource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Waves.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="GameTimer.h">
+      <Filter>02.Time</Filter>
     </ClInclude>
     <ClInclude Include="DDSTextureLoader.h">
-      <Filter>Header Files</Filter>
+      <Filter>03.Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dUtil.h">
+      <Filter>04.d3dUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dApp.h">
+      <Filter>05.d3dApp</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameResource.h">
+      <Filter>06.FrameResource</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryGenerator.h">
+      <Filter>07.Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="MathHelper.h">
+      <Filter>08.MathHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="Waves.h">
+      <Filter>09.Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="d3dApp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="d3dUtil.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameTimer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MathHelper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeometryGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="BlendApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FrameResource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Waves.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GameTimer.cpp">
+      <Filter>02.Time</Filter>
     </ClCompile>
     <ClCompile Include="DDSTextureLoader.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>03.Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dUtil.cpp">
+      <Filter>04.d3dUtil</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dApp.cpp">
+      <Filter>05.d3dApp</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameResource.cpp">
+      <Filter>06.FrameResource</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>07.Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="MathHelper.cpp">
+      <Filter>08.MathHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="Waves.cpp">
+      <Filter>09.Object</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
