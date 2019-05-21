@@ -125,31 +125,33 @@ void Wave::AnimateMaterials(const CTimer& mt)
 
 void Wave::UpdateWaves(const CTimer& mt)
 {
+	COMWAVE& _comWave = UTIL.Get_CPWave();
 	static float t_base = 0.0f;
-	if ((mt.TotalTime() - t_base) >= 0.25f)
+	if ((TIME_MGR.Get_TotalTime(TimerType::TIMER_MAIN) - t_base) >= 0.25f)
 	{
 		t_base += 0.25f;
 
-		int i = MathHelper::Rand(4, UTIL.Get_CPWave()->RowCount() - 5);
-		int j = MathHelper::Rand(4, UTIL.Get_CPWave()->ColumnCount() - 5);
+		int i = MathHelper::Rand(4, _comWave->RowCount() - 5);
+		int j = MathHelper::Rand(4, _comWave->ColumnCount() - 5);
 
 		float r = MathHelper::RandF(0.2f, 0.5f);
 
-		UTIL.Get_CPWave()->Disturb(i, j, r);
+		_comWave->Disturb(i, j, r);
 	}
 
-	UTIL.Get_CPWave()->Update(mt);
+	_comWave->Update(mt.DeltaTime());
 
 	auto currWaveCB = UTIL.Get_CurrFrameResource()->WavesVB.get();
-	for (int i = 0; i < UTIL.Get_CPWave()->VertexCount(); ++i)
+	int vertexcnt = _comWave->VertexCount();
+	for (int i = 0; i < vertexcnt; ++i)
 	{
 		Vertex v;
 
-		v.Pos = UTIL.Get_CPWave()->Position(i);
-		v.Normal = UTIL.Get_CPWave()->Normal(i);
+		v.Pos = _comWave->Position(i);
+		v.Normal = _comWave->Normal(i);
 
-		v.TexC.x = 0.5f + v.Pos.x / UTIL.Get_CPWave()->Width();
-		v.TexC.y = 0.5f - v.Pos.z / UTIL.Get_CPWave()->Depth();
+		v.TexC.x = 0.5f + v.Pos.x / _comWave->Width();
+		v.TexC.y = 0.5f - v.Pos.z / _comWave->Depth();
 
 		currWaveCB->CopyData(i, v);
 	}

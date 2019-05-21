@@ -5,7 +5,7 @@
 ComputeWaves::ComputeWaves(int m, int n, float dx, float dt, float speed, float damping)
 	: mNumRows(m), mNumCols(n)
 	, mVertexCount(m * n)
-	, mTriangleCount((m-1)*(n-1)*2)
+	, mTriangleCount((m - 1) * (n - 1) * 2)
 	, mSpatialStep(dx), mTimeStep(dt)
 {
 	float d = damping * dt + 2.0f;
@@ -70,11 +70,11 @@ float ComputeWaves::Depth(void) const
 	return mNumRows * mSpatialStep;
 }
 
-void ComputeWaves::Update(const CTimer& mt)
+void ComputeWaves::Update(const float& dt)
 {
 	static float t = 0.0f;
 
-	t += mt.DeltaTime();
+	t += dt;
 
 	if (t >= mTimeStep)
 	{
@@ -85,39 +85,39 @@ void ComputeWaves::Update(const CTimer& mt)
 				mPrevSolution[i * mNumCols + j].y =
 					mK1 * mPrevSolution[i * mNumCols + j].y +
 					mK2 * mCurrSolution[i * mNumCols + j].y +
-					mK3 * (mCurrSolution[(i + 1) * mNumCols + j].y +
-						mCurrSolution[(i - 1) * mNumCols + j].y + 
-						mCurrSolution[i * mNumCols + j + 1].y + 
-						mCurrSolution[i * mNumCols + j - 1].y);
+					mK3 * ( mCurrSolution[(i + 1) * mNumCols + j].y +
+							mCurrSolution[(i - 1) * mNumCols + j].y + 
+							mCurrSolution[i * mNumCols + j + 1].y + 
+							mCurrSolution[i * mNumCols + j - 1].y);
+			}
+		});
+
+		std::swap(mPrevSolution, mCurrSolution);
+
+		t = 0.0f;
+
+		concurrency::parallel_for(1, mNumRows - 1, [this](int i)
+		{
+			for (int j = 1; j < mNumCols - 1; ++j)
+			{
+				float l = mCurrSolution[i * mNumCols + j - 1].y;
+				float r = mCurrSolution[i * mNumCols + j + 1].y;
+				float t = mCurrSolution[(i - 1) * mNumCols + j].y;
+				float b = mCurrSolution[(i + 1) * mNumCols + j].y;
+
+				mNormals[i * mNumCols + j].x = -r + 1;
+				mNormals[i * mNumCols + j].y = 2.0f * mSpatialStep;
+				mNormals[i * mNumCols + j].z = b - t;
+
+				DirectX::XMVECTOR n = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&mNormals[i * mNumCols + j]));
+				DirectX::XMStoreFloat3(&mNormals[i * mNumCols + j], n);
+
+				mTangentX[i * mNumCols + j] = DirectX::XMFLOAT3(2.0f * mSpatialStep, r - l, 0.0f);
+				DirectX::XMVECTOR T = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&mTangentX[i * mNumCols + j]));
+				DirectX::XMStoreFloat3(&mTangentX[i * mNumCols + j], T);
 			}
 		});
 	}
-
-	std::swap(mPrevSolution, mCurrSolution);
-
-	t = 0.0f;
-
-	concurrency::parallel_for(1, mNumRows - 1, [this](int i)
-	{
-		for (int j = 1; j < mNumCols - 1; ++j)
-		{
-			float l = mCurrSolution[i * mNumCols + j - 1].y;
-			float r = mCurrSolution[i * mNumCols + j + 1].y;
-			float t = mCurrSolution[(i - 1) * mNumCols + j].y;
-			float b = mCurrSolution[(i + 1) * mNumCols + j].y;
-
-			mNormals[i * mNumCols + j].x = -r + 1;
-			mNormals[i * mNumCols + j].y = 2.0f * mSpatialStep;
-			mNormals[i * mNumCols + j].z = b - t;
-
-			DirectX::XMVECTOR n = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&mNormals[i * mNumCols + j]));
-			DirectX::XMStoreFloat3(&mNormals[i * mNumCols + j], n);
-
-			mTangentX[i * mNumCols + j] = DirectX::XMFLOAT3(2.0f * mSpatialStep, r - l, 0.0f);
-			DirectX::XMVECTOR T = DirectX::XMVector3Normalize(DirectX::XMLoadFloat3(&mTangentX[i * mNumCols + j]));
-			DirectX::XMStoreFloat3(&mTangentX[i * mNumCols + j], T);
-		}
-	});
 }
 
 void ComputeWaves::Disturb(int i, int j, float magnitude)

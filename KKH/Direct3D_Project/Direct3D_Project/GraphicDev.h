@@ -126,4 +126,6 @@ public:
 	//const D3D12_RECT& Get_ScissorRect(void) const { return m_ScissorRect; }
 };
 
-typedef std::shared_ptr<CGraphicDev>	PGRAPHIC;
+typedef std::shared_ptr<CGraphicDev>						PGRAPHIC;
+typedef Microsoft::WRL::ComPtr<ID3D12Device>				DEVICE;
+typedef Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>	COMMANDLIST;

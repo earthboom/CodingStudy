@@ -78,6 +78,8 @@ private:
 	ALLOBJVEC allObj_Update_vec;
 
 private:
+	ObjState	mCurrState;
+
 	DirectX::XMFLOAT4X4 mView;
 	//DirectX::XMFLOAT4X4 mProj;
 
@@ -104,6 +106,8 @@ private:
 	void UpdateCamera(const CTimer& mtt);
 
 public:
+	ObjState& Get_CurrState(void) { return mCurrState; }
+
 	//std::function<Microsoft::WRL::ComPtr<ID3D12PipelineState>&(std::string)> Get_PSOs = [&](std::string str)->Microsoft::WRL::ComPtr<ID3D12PipelineState>& {return mPSOs[str]; };
 	//std::function<Microsoft::WRL::ComPtr<ID3D12RootSignature>&()> Get_RootSignature = [&]()->Microsoft::WRL::ComPtr<ID3D12RootSignature>& {return mRootSignature; };
 	//std::function<Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>&()> Get_SrvDiscriptorHeap = [&]()->Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& {return mSrvDescriptorHeap; };
@@ -141,5 +145,5 @@ public:
 	UINT& Get_CbvSrvDescriptorSize(void){return mCbvSrvDescriptorSize; }
 
 	//std::function<std::unique_ptr<ComputeWaves>&()> Get_CPWave = [&]()->std::unique_ptr<ComputeWaves>& {return mCPWave; };
-	std::unique_ptr<ComputeWaves>& Get_CPWave(void){return mCPWave; }
+	COMWAVE& Get_CPWave(void){return mCPWave; }
 };

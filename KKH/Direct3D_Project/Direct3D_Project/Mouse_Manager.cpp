@@ -37,13 +37,13 @@ void Mouse_Manager::OnMouseMove(WPARAM btnState, int x, int y)
 		{
 			for (auto& objvec : *all)
 			{
-				if (Utility_Manager::ObjState::OS_UPDATE)
-				{
+				//if (UTIL.Get_CurrState() == Utility_Manager::ObjState::OS_UPDATE)
+				//{
 					objvec.second->Get_Theta() += dx;
 
 					objvec.second->Get_Phi() += dy;
 					objvec.second->Get_Phi() = MathHelper::Clamp(objvec.second->Get_Phi(), 0.1f, PI - 0.1f);
-				}
+				//}
 			}
 		}
 	}
@@ -56,11 +56,11 @@ void Mouse_Manager::OnMouseMove(WPARAM btnState, int x, int y)
 		{
 			for (auto& objvec : *all)
 			{
-				if (Utility_Manager::ObjState::OS_UPDATE)
-				{
+				//if (UTIL.Get_CurrState() == Utility_Manager::ObjState::OS_UPDATE)
+				//{
 					objvec.second->Get_Radius() += dx - dy;
 					objvec.second->Get_Radius() = MathHelper::Clamp(objvec.second->Get_Radius(), 5.0f, 150.0f);
-				}
+				//}
 			}
 		}
 	}

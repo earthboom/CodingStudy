@@ -22,7 +22,7 @@ public:
 	const DirectX::XMFLOAT3& TangentX(int i) const { return mTangentX[i]; }
 
 public:
-	void Update(const CTimer& mt);
+	void Update(const float& dt);
 	void Disturb(int i, int j, float magnitude);
 
 private:
@@ -44,3 +44,5 @@ private:
 	std::vector<DirectX::XMFLOAT3> mNormals;
 	std::vector<DirectX::XMFLOAT3> mTangentX;
 };
+
+typedef std::unique_ptr<ComputeWaves> COMWAVE;

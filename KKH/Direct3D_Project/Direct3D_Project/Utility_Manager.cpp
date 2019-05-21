@@ -15,6 +15,7 @@ Utility_Manager::Utility_Manager(void)
 	//, mProj(MathHelper::Identity4x4())
 	, mCurrFrameResource(nullptr), mCurrFrameResourceIndex(0)
 	, mCbvSrvDescriptorSize(0)
+	, mCurrState(OS_END)
 {
 	allObj_Update_vec.push_back(Obj_static_map);
 	allObj_Update_vec.push_back(Obj_dynamic_map);
@@ -174,6 +175,8 @@ bool Utility_Manager::Object_Create(OBJECT obj)
 
 bool Utility_Manager::Object_Cycle(const CTimer& mt, ObjState _state)
 {
+	mCurrState = _state;
+
 	switch (_state)
 	{
 	case ObjState::OS_UPDATE:
@@ -240,52 +243,55 @@ bool Utility_Manager::Object_Update(const CTimer& mt)
 
 bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 {
+	const COMMANDLIST& _commandlist = COM_LIST;
+	const PGRAPHIC& _graphic = GRAPHIC;
+
 	auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
 
 	ThrowIfFailed(cmdListAlloc->Reset());
-	ThrowIfFailed(COM_LIST->Reset(cmdListAlloc.Get(), mPSOs["opaque"].Get()));
+	ThrowIfFailed(_commandlist->Reset(cmdListAlloc.Get(), mPSOs["opaque"].Get()));
 	
-	COM_LIST->RSSetViewports(1, &GRAPHIC->Get_ScreenViewport());
-	COM_LIST->RSSetScissorRects(1, &GRAPHIC->Get_ScissorRect());
+	_commandlist->RSSetViewports(1, &_graphic->Get_ScreenViewport());
+	_commandlist->RSSetScissorRects(1, &_graphic->Get_ScissorRect());
 
-	COM_LIST->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GRAPHIC->Get_CurrentBackBuffer_Resource(),
+	_commandlist->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_graphic->Get_CurrentBackBuffer_Resource(),
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
-	COM_LIST->ClearRenderTargetView(GRAPHIC->Get_CurrentBackBufferView_Handle(), (float*)&mMainPassCB.FogColor, 0, nullptr);
-	COM_LIST->ClearDepthStencilView(GRAPHIC->Get_DepthStencilView_Handle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0.0f, 0.0f, nullptr);
+	_commandlist->ClearRenderTargetView(_graphic->Get_CurrentBackBufferView_Handle(), (float*)&mMainPassCB.FogColor, 0, nullptr);
+	_commandlist->ClearDepthStencilView(_graphic->Get_DepthStencilView_Handle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0.0f, 0.0f, nullptr);
 
-	COM_LIST->OMSetRenderTargets(1, &GRAPHIC->Get_CurrentBackBufferView_Handle(), TRUE, &GRAPHIC->Get_DepthStencilView_Handle());
+	_commandlist->OMSetRenderTargets(1, &_graphic->Get_CurrentBackBufferView_Handle(), TRUE, &_graphic->Get_DepthStencilView_Handle());
 
 	ID3D12DescriptorHeap* descriptorHeaps[] = { mSrvDescriptorHeap.Get() };
-	COM_LIST->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+	_commandlist->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-	COM_LIST->SetGraphicsRootSignature(mRootSignature.Get());
+	_commandlist->SetGraphicsRootSignature(mRootSignature.Get());
 
 	auto passCB = mCurrFrameResource->PassCB->Resource();
-	COM_LIST->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
+	_commandlist->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
 
-	DrawRenderItems(COM_LIST.Get(), mDrawLayer[(int)DrawLayer::DL_OPAUQE]);
+	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_OPAUQE]);
 
-	COM_LIST->SetPipelineState(mPSOs["alphaTested"].Get());
-	DrawRenderItems(COM_LIST.Get(), mDrawLayer[(int)DrawLayer::DL_ALAPHTESTED]);
+	_commandlist->SetPipelineState(mPSOs["alphaTested"].Get());
+	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_ALAPHTESTED]);
 	
-	COM_LIST->SetPipelineState(mPSOs["transparent"].Get());
-	DrawRenderItems(COM_LIST.Get(), mDrawLayer[(int)DrawLayer::DL_TRANSPARENT]);
+	_commandlist->SetPipelineState(mPSOs["transparent"].Get());
+	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_TRANSPARENT]);
 
-	COM_LIST->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GRAPHIC->Get_CurrentBackBuffer_Resource(),
+	_commandlist->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_graphic->Get_CurrentBackBuffer_Resource(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
-	ThrowIfFailed(COM_LIST->Close());
+	ThrowIfFailed(_commandlist->Close());
 
-	ID3D12CommandList* cmdsLists[] = { COM_LIST.Get() };
-	GRAPHIC->Get_CommandQueue()->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+	ID3D12CommandList* cmdsLists[] = { _commandlist.Get() };
+	_graphic->Get_CommandQueue()->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 
 	ThrowIfFailed(GRAPHIC->Get_SwapChain()->Present(0, 0));
-	GRAPHIC->Get_Set_CurrBackBuffer() = (GRAPHIC->Get_Set_CurrBackBuffer() + 1) % GRAPHIC->Get_SwapChainBufferCount();
+	_graphic->Get_Set_CurrBackBuffer() = (_graphic->Get_Set_CurrBackBuffer() + 1) % _graphic->Get_SwapChainBufferCount();
 
-	mCurrFrameResource->Fence = ++GRAPHIC->Get_CurrentFence();
+	mCurrFrameResource->Fence = ++_graphic->Get_CurrentFence();
 
-	GRAPHIC->Get_CommandQueue()->Signal(GRAPHIC->Get_Fence().Get(), GRAPHIC->Get_CurrentFence());
+	_graphic->Get_CommandQueue()->Signal(_graphic->Get_Fence().Get(), _graphic->Get_CurrentFence());
 
 	return TRUE;
 }
