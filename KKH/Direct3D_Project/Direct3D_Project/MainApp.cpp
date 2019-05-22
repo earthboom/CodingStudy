@@ -10,6 +10,8 @@
 #include "Wave.h"
 #include "Texture_Manger.h"
 
+#define KEY_DOWN(vk_code)	(GetAsyncKeyState(vk_code) & 0x0001)
+
 CMainApp::CMainApp(void)
 	: m_fTime(0.0f)
 	//m_LAW(nullptr)

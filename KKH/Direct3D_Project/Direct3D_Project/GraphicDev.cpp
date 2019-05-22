@@ -94,6 +94,8 @@ void CGraphicDev::LogAdapters(void)
 		text += L"\n";
 
 		OutputDebugString(text.c_str());
+		
+		wprintf(text.c_str());
 
 		vecAdapter.push_back(adapter);
 
@@ -122,6 +124,8 @@ void CGraphicDev::LogAdapterOutputs(IDXGIAdapter * adapter)
 		text += L"\n";
 
 		OutputDebugString(text.c_str());
+
+		wprintf(text.c_str());
 
 		LogOutputDisplayModes(output, m_BackBufferFormat);
 
@@ -153,6 +157,8 @@ void CGraphicDev::LogOutputDisplayModes(IDXGIOutput * output, DXGI_FORMAT format
 			L"\n";
 
 		::OutputDebugString(text.c_str());
+
+		wprintf(text.c_str());
 	}
 }
 

@@ -6,7 +6,7 @@ extern HWND	 g_hWnd;
 
 extern DirectX::XMFLOAT3 g_EyePos;
 
-
+extern bool g_bDebugConsole;
 extern bool mIsWireframe;
 
 extern DirectX::XMFLOAT4X4 g_Proj;

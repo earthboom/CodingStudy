@@ -126,8 +126,7 @@ void Box::BuildMaterials(void)
 void Box::BuildRenderItem(void)
 {
 	auto ritem = std::make_unique<RenderItem>();
-	ritem->World = MathHelper::Identity4x4();
-	DirectX::XMStoreFloat4x4(&ritem->TexTransform, DirectX::XMMatrixScaling(3.0f, 2.0f, -9.0f));
+	DirectX::XMStoreFloat4x4(&ritem->TexTransform, DirectX::XMMatrixTranslation(3.0f, 2.0f, -9.0f));
 	ritem->objCBIndex = g_ObjCBcount;
 	ritem->Mat = UTIL.Get_Materials()[m_matName].get();
 	ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();

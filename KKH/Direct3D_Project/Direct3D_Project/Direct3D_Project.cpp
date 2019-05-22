@@ -15,6 +15,7 @@
 
 // Global Variables:
 DirectX::XMFLOAT3 g_EyePos = { 0.0f, 100.0f, -100.0f };
+bool g_bDebugConsole = FALSE;
 bool mIsWireframe = FALSE;
 DirectX::XMFLOAT4X4 g_Proj = MathHelper::Identity4x4();
 
@@ -187,6 +188,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+	case WM_CREATE:
+#if defined(DEBUG) || defined(_DEBUG)
+		AllocConsole();
+		_tfreopen(_T("CONOUT$"), _T("w"), stdout);
+		_tfreopen(_T("CONIN$"), _T("r"), stdin);
+		_tfreopen(_T("CONERR$"), _T("w"), stderr);
+		_tsetlocale(LC_ALL, _T(""));
+#endif
+		break;
+
+	case WM_CLOSE:
+#if defined(DEBUG) || defined(_DEBUG)
+		FreeConsole();
+#endif
+		break;
+
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
