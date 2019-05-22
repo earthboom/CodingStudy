@@ -2,6 +2,7 @@
 // BlendApp.cpp by Frank Luna (C) 2015 All Rights Reserved.
 //***************************************************************************************
 
+#include "stdafx.h"
 #include "d3dApp.h"
 #include "MathHelper.h"
 #include "UploadBuffer.h"

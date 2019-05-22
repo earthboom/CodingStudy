@@ -5,48 +5,151 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
+    <Filter Include="Source Files\Shader">
+      <UniqueIdentifier>{18330eed-57d0-4d47-acff-12f23d371f39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Default">
+      <UniqueIdentifier>{5d5d7f61-8fcc-40aa-83bf-6b35a3c8bbed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Header">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Source Files\Timer">
+      <UniqueIdentifier>{4ff35bfa-0749-4fe7-a2db-13293588d03f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Camera">
+      <UniqueIdentifier>{f612d742-811d-42a4-8ab9-b39ab39c160d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\D3D">
+      <UniqueIdentifier>{d1cb2a34-062d-4bc3-8790-3efc6a4e04eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Object">
+      <UniqueIdentifier>{27c951dd-e8d8-489b-87d8-cb2238b6c329}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Default">
+      <UniqueIdentifier>{f3f7c9ea-e724-481c-ad5b-3b9404f9fc29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FrameResource">
+      <UniqueIdentifier>{c91260eb-e11d-4960-81d6-0b312dce1da8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Geometry">
+      <UniqueIdentifier>{fdc8a8dc-5143-40f1-8b36-cf1a74868726}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Math">
+      <UniqueIdentifier>{3b7b0922-2c21-46b7-bca1-7f28ca4c1581}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Resource.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
     <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
+      <Filter>99.Default</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
+      <Filter>99.Default</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Struct.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Include.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTimer.h">
+      <Filter>Source Files\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Source Files\Camera</Filter>
     </ClInclude>
     <ClInclude Include="DirectXProject.h">
-      <Filter>Header Files</Filter>
+      <Filter>99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dApp.h">
+      <Filter>Source Files\D3D</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dUtil.h">
+      <Filter>Source Files\D3D</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>Source Files\D3D</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>Source Files\D3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Waves.h">
+      <Filter>Source Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="UploadBuffer.h">
+      <Filter>Source Files\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameResource.h">
+      <Filter>Source Files\FrameResource</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryGenerator.h">
+      <Filter>Source Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="MathHelper.h">
+      <Filter>Source Files\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="BlendApp.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTimer.cpp">
+      <Filter>Source Files\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Camera</Filter>
     </ClCompile>
     <ClCompile Include="DirectXProject.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>99.Default</Filter>
     </ClCompile>
+    <ClCompile Include="d3dApp.cpp">
+      <Filter>Source Files\D3D</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dUtil.cpp">
+      <Filter>Source Files\D3D</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>Source Files\D3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Waves.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameResource.cpp">
+      <Filter>Source Files\FrameResource</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="MathHelper.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="DirectXProject.ico">
+      <Filter>99.Default</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>99.Default</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\Default.hlsl">
+      <Filter>Source Files\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LightingUtil.hlsl">
+      <Filter>Source Files\Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DirectXProject.rc">
-      <Filter>Resource Files</Filter>
+      <Filter>99.Default</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="small.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="DirectXProject.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
 </Project>
