@@ -78,6 +78,10 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 	mShaders["opaquePS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", defines, "PS", "ps_5_1");
 	mShaders["alphaTestedPS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
 
+	//mShaders["standardVS"] = d3dutil_Mananger::LoadBinary(L"../Shaders/Default_vs.cso");
+	//mShaders["opaquePS"] = d3dutil_Mananger::LoadBinary(L"../Shaders/Default_ps.cso");
+	//mShaders["alphaTestedPS"] = d3dutil_Mananger::LoadBinary(L"../Shaders/Default_ps.cso");
+
 	mInputLayout =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },

@@ -62,6 +62,23 @@ Microsoft::WRL::ComPtr<ID3D12Resource> d3dutil_Mananger::CreateDefaultBuffer(
 	return defaultBuffer;
 }
 
+Microsoft::WRL::ComPtr<ID3DBlob> d3dutil_Mananger::LoadBinary(const std::wstring& filename)
+{
+	std::ifstream fin(filename, std::ios::binary);
+
+	fin.seekg(0, std::ios_base::end);
+	std::ifstream::pos_type size = (int)fin.tellg();
+	fin.seekg(0, std::ios_base::beg);
+
+	Microsoft::WRL::ComPtr<ID3DBlob> blob;
+	ThrowIfFailed(D3DCreateBlob(size, blob.GetAddressOf()));
+
+	fin.read((char*)blob->GetBufferPointer(), size);
+	fin.close();
+
+	return blob;
+}
+
 Microsoft::WRL::ComPtr<ID3DBlob> d3dutil_Mananger::CompileShader(const std::wstring & filename, const D3D_SHADER_MACRO * defines, const std::string & entrypoint, const std::string & target)
 {
 	UINT compileFlags = 0;
