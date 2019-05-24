@@ -5,13 +5,13 @@
 #include "Include.h"
 #include "Waves.h"
 
-class BlendApp : public D3DApp
+class MainApp : public D3DApp
 {
 public:
-	BlendApp(HINSTANCE hInstance);
-	BlendApp(const BlendApp& rhs) = delete;
-	BlendApp& operator=(const BlendApp& rhs) = delete;
-	~BlendApp();
+	MainApp(HINSTANCE hInstance);
+	MainApp(const MainApp& rhs) = delete;
+	MainApp& operator=(const MainApp& rhs) = delete;
+	~MainApp();
 
 	virtual bool Initialize()override;
 

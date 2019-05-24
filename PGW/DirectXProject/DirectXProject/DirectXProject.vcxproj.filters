@@ -162,4 +162,12 @@
       <Filter>99.Default</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\Default.hlsl">
+      <Filter>Source Files\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LightingUtil.hlsl">
+      <Filter>Source Files\Shader</Filter>
+    </FxCompile>
+  </ItemGroup>
 </Project>

@@ -35,18 +35,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 }
 */
 
-BlendApp::BlendApp(HINSTANCE hInstance)
-    : D3DApp(hInstance)
+MainApp::MainApp(HINSTANCE hInstance)
+: D3DApp(hInstance)
 {
 }
 
-BlendApp::~BlendApp()
+MainApp::~MainApp()
 {
     if(md3dDevice != nullptr)
         FlushCommandQueue();
 }
 
-bool BlendApp::Initialize()
+bool MainApp::Initialize()
 {
     if(!D3DApp::Initialize())
         return false;
@@ -83,7 +83,7 @@ bool BlendApp::Initialize()
     return true;
 }
  
-void BlendApp::OnResize()
+void MainApp::OnResize()
 {
     D3DApp::OnResize();
 
@@ -92,7 +92,7 @@ void BlendApp::OnResize()
     XMStoreFloat4x4(&mProj, P);
 }
 
-void BlendApp::Update(const GameTimer& gt)
+void MainApp::Update(const GameTimer& gt)
 {
     OnKeyboardInput(gt);
 	UpdateCamera(gt);
@@ -118,7 +118,7 @@ void BlendApp::Update(const GameTimer& gt)
     UpdateWaves(gt);
 }
 
-void BlendApp::Draw(const GameTimer& gt)
+void MainApp::Draw(const GameTimer& gt)
 {
     auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
 
@@ -185,7 +185,7 @@ void BlendApp::Draw(const GameTimer& gt)
     mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 }
 
-void BlendApp::OnMouseDown(WPARAM btnState, int x, int y)
+void MainApp::OnMouseDown(WPARAM btnState, int x, int y)
 {
     mLastMousePos.x = x;
     mLastMousePos.y = y;
@@ -193,12 +193,12 @@ void BlendApp::OnMouseDown(WPARAM btnState, int x, int y)
     SetCapture(mhMainWnd);
 }
 
-void BlendApp::OnMouseUp(WPARAM btnState, int x, int y)
+void MainApp::OnMouseUp(WPARAM btnState, int x, int y)
 {
     ReleaseCapture();
 }
 
-void BlendApp::OnMouseMove(WPARAM btnState, int x, int y)
+void MainApp::OnMouseMove(WPARAM btnState, int x, int y)
 {
     if((btnState & MK_LBUTTON) != 0)
     {
@@ -230,11 +230,11 @@ void BlendApp::OnMouseMove(WPARAM btnState, int x, int y)
     mLastMousePos.y = y;
 }
  
-void BlendApp::OnKeyboardInput(const GameTimer& gt)
+void MainApp::OnKeyboardInput(const GameTimer& gt)
 {
 }
  
-void BlendApp::UpdateCamera(const GameTimer& gt)
+void MainApp::UpdateCamera(const GameTimer& gt)
 {
 	// Convert Spherical to Cartesian coordinates.
 	mEyePos.x = mRadius*sinf(mPhi)*cosf(mTheta);
@@ -250,7 +250,7 @@ void BlendApp::UpdateCamera(const GameTimer& gt)
 	XMStoreFloat4x4(&mView, view);
 }
 
-void BlendApp::AnimateMaterials(const GameTimer& gt)
+void MainApp::AnimateMaterials(const GameTimer& gt)
 {
 	// Scroll the water material texture coordinates.
 	auto waterMat = mMaterials["water"].get();
@@ -274,7 +274,7 @@ void BlendApp::AnimateMaterials(const GameTimer& gt)
 	waterMat->NumFramesDirty = gNumFrameResources;
 }
 
-void BlendApp::UpdateObjectCBs(const GameTimer& gt)
+void MainApp::UpdateObjectCBs(const GameTimer& gt)
 {
 	auto currObjectCB = mCurrFrameResource->ObjectCB.get();
 	for(auto& e : mAllRitems)
@@ -298,7 +298,7 @@ void BlendApp::UpdateObjectCBs(const GameTimer& gt)
 	}
 }
 
-void BlendApp::UpdateMaterialCBs(const GameTimer& gt)
+void MainApp::UpdateMaterialCBs(const GameTimer& gt)
 {
 	auto currMaterialCB = mCurrFrameResource->MaterialCB.get();
 	for(auto& e : mMaterials)
@@ -324,7 +324,7 @@ void BlendApp::UpdateMaterialCBs(const GameTimer& gt)
 	}
 }
 
-void BlendApp::UpdateMainPassCB(const GameTimer& gt)
+void MainApp::UpdateMainPassCB(const GameTimer& gt)
 {
 	XMMATRIX view = XMLoadFloat4x4(&mView);
 	XMMATRIX proj = XMLoadFloat4x4(&mProj);
@@ -359,7 +359,7 @@ void BlendApp::UpdateMainPassCB(const GameTimer& gt)
 	currPassCB->CopyData(0, mMainPassCB);
 }
 
-void BlendApp::UpdateWaves(const GameTimer& gt)
+void MainApp::UpdateWaves(const GameTimer& gt)
 {
 	// Every quarter second, generate a random wave.
 	static float t_base = 0.0f;
@@ -399,7 +399,7 @@ void BlendApp::UpdateWaves(const GameTimer& gt)
 	mWavesRitem->Geo->VertexBufferGPU = currWavesVB->Resource();
 }
 
-void BlendApp::LoadTextures()
+void MainApp::LoadTextures()
 {
 	auto grassTex = std::make_unique<Texture>();
 	grassTex->Name = "grassTex";
@@ -427,7 +427,7 @@ void BlendApp::LoadTextures()
 	mTextures[fenceTex->Name] = std::move(fenceTex);
 }
 
-void BlendApp::BuildRootSignature()
+void MainApp::BuildRootSignature()
 {
 	CD3DX12_DESCRIPTOR_RANGE texTable;
 	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
@@ -467,7 +467,7 @@ void BlendApp::BuildRootSignature()
         IID_PPV_ARGS(mRootSignature.GetAddressOf())));
 }
 
-void BlendApp::BuildDescriptorHeaps()
+void MainApp::BuildDescriptorHeaps()
 {
 	//
 	// Create the SRV heap.
@@ -508,7 +508,7 @@ void BlendApp::BuildDescriptorHeaps()
 	md3dDevice->CreateShaderResourceView(fenceTex.Get(), &srvDesc, hDescriptor);
 }
 
-void BlendApp::BuildShadersAndInputLayout()
+void MainApp::BuildShadersAndInputLayout()
 {
 	const D3D_SHADER_MACRO defines[] =
 	{
@@ -535,7 +535,7 @@ void BlendApp::BuildShadersAndInputLayout()
     };
 }
 
-void BlendApp::BuildLandGeometry()
+void MainApp::BuildLandGeometry()
 {
     GeometryGenerator geoGen;
     GeometryGenerator::MeshData grid = geoGen.CreateGrid(160.0f, 160.0f, 50, 50);
@@ -591,7 +591,7 @@ void BlendApp::BuildLandGeometry()
 	mGeometries["landGeo"] = std::move(geo);
 }
 
-void BlendApp::BuildWavesGeometry()
+void MainApp::BuildWavesGeometry()
 {
     std::vector<std::uint16_t> indices(3 * mWaves->TriangleCount()); // 3 indices per face
 	assert(mWaves->VertexCount() < 0x0000ffff);
@@ -647,7 +647,7 @@ void BlendApp::BuildWavesGeometry()
 	mGeometries["waterGeo"] = std::move(geo);
 }
 
-void BlendApp::BuildBoxGeometry()
+void MainApp::BuildBoxGeometry()
 {
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData box = geoGen.CreateBox(8.0f, 8.0f, 8.0f, 3);
@@ -696,7 +696,7 @@ void BlendApp::BuildBoxGeometry()
 	mGeometries["boxGeo"] = std::move(geo);
 }
 
-void BlendApp::BuildPSOs()
+void MainApp::BuildPSOs()
 {
     D3D12_GRAPHICS_PIPELINE_STATE_DESC opaquePsoDesc;
 
@@ -763,7 +763,7 @@ void BlendApp::BuildPSOs()
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&alphaTestedPsoDesc, IID_PPV_ARGS(&mPSOs["alphaTested"])));
 }
 
-void BlendApp::BuildFrameResources()
+void MainApp::BuildFrameResources()
 {
     for(int i = 0; i < gNumFrameResources; ++i)
     {
@@ -772,7 +772,7 @@ void BlendApp::BuildFrameResources()
     }
 }
 
-void BlendApp::BuildMaterials()
+void MainApp::BuildMaterials()
 {
 	auto grass = std::make_unique<Material>();
 	grass->Name = "grass";
@@ -805,7 +805,7 @@ void BlendApp::BuildMaterials()
 	mMaterials["wirefence"] = std::move(wirefence);
 }
 
-void BlendApp::BuildRenderItems()
+void MainApp::BuildRenderItems()
 {
     auto wavesRitem = std::make_unique<RenderItem>();
     wavesRitem->World = MathHelper::Identity4x4();
@@ -852,7 +852,7 @@ void BlendApp::BuildRenderItems()
 	mAllRitems.push_back(std::move(boxRitem));
 }
 
-void BlendApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
+void MainApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
 {
     UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
     UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(MaterialConstants));
@@ -883,7 +883,7 @@ void BlendApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::ve
     }
 }
 
-std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> BlendApp::GetStaticSamplers()
+std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> MainApp::GetStaticSamplers()
 {
 	// Applications usually only need a handful of samplers.  So just define them all up front
 	// and keep them available as part of the root signature.  
@@ -940,12 +940,12 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> BlendApp::GetStaticSamplers()
 		anisotropicWrap, anisotropicClamp };
 }
 
-float BlendApp::GetHillsHeight(float x, float z)const
+float MainApp::GetHillsHeight(float x, float z)const
 {
     return 0.3f*(z*sinf(0.1f*x) + x*cosf(0.1f*z));
 }
 
-XMFLOAT3 BlendApp::GetHillsNormal(float x, float z)const
+XMFLOAT3 MainApp::GetHillsNormal(float x, float z)const
 {
     // n = (-df/dx, 1, -df/dz)
     XMFLOAT3 n(
