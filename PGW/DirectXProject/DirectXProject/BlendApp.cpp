@@ -7,19 +7,9 @@
 #include "MathHelper.h"
 #include "UploadBuffer.h"
 #include "GeometryGenerator.h"
-#include "FrameResource.h"
+#include "Include.h"
 #include "Waves.h"
-//Testing
 
-
-using Microsoft::WRL::ComPtr;
-using namespace DirectX;
-using namespace DirectX::PackedVector;
-
-#pragma comment(lib, "d3dcompiler.lib")
-#pragma comment(lib, "D3D12.lib")
-
-const int gNumFrameResources = 3;
 
 // Lightweight structure stores parameters to draw a shape.  This will
 // vary from app-to-app.
@@ -151,6 +141,7 @@ private:
     POINT mLastMousePos;
 };
 
+/*
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
     PSTR cmdLine, int showCmd)
 {
@@ -173,6 +164,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
         return 0;
     }
 }
+*/
 
 BlendApp::BlendApp(HINSTANCE hInstance)
     : D3DApp(hInstance)
