@@ -153,16 +153,19 @@
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="DirectXProject.h" />
+    <ClInclude Include="Enum.h" />
+    <ClInclude Include="Function.h" />
+    <ClInclude Include="Functor.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="Include.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Macro.h" />
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Struct.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="UploadBuffer.h" />
     <ClInclude Include="Value.h" />
     <ClInclude Include="Waves.h" />
   </ItemGroup>
@@ -175,6 +178,7 @@
     <ClCompile Include="DirectXProject.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

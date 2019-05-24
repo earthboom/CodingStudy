@@ -11,6 +11,9 @@ using namespace DirectX::PackedVector;
 #include "Struct.h"
 #include "Macro.h"
 #include "Value.h"
+#include "Enum.h"
+#include "Function.h"
+#include "Functor.h"
 
 
 

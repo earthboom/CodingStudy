@@ -36,6 +36,9 @@
     <Filter Include="Source Files\Math">
       <UniqueIdentifier>{3b7b0922-2c21-46b7-bca1-7f28ca4c1581}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Input">
+      <UniqueIdentifier>{c3d7af06-cec0-4aac-9478-aa8e00da215a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -74,9 +77,6 @@
     <ClInclude Include="Waves.h">
       <Filter>Source Files\Object</Filter>
     </ClInclude>
-    <ClInclude Include="UploadBuffer.h">
-      <Filter>Source Files\Default</Filter>
-    </ClInclude>
     <ClInclude Include="GeometryGenerator.h">
       <Filter>Source Files\Geometry</Filter>
     </ClInclude>
@@ -91,6 +91,18 @@
     </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>Source Files\Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Enum.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Function.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Functor.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Source Files\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -126,6 +138,9 @@
     </ClCompile>
     <ClCompile Include="MathHelper.cpp">
       <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source Files\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
