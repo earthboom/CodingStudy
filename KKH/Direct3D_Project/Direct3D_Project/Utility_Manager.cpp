@@ -74,11 +74,11 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 	const D3D_SHADER_MACRO defines[] = { "FOG", "1", NULL, NULL };
 	const D3D_SHADER_MACRO alphaTestDefines[] = { "FOG", "1", "ALPHA_TEST", "1", NULL, NULL };
 
-	mShaders["standardVS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", nullptr, "VS", "vs_5_1");
+	//mShaders["standardVS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", nullptr, "VS", "vs_5_1");
 	mShaders["opaquePS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", defines, "PS", "ps_5_1");
 	mShaders["alphaTestedPS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
 
-	//mShaders["standardVS"] = d3dutil_Mananger::LoadBinary(L"../Shaders/Default_vs.cso");
+	mShaders["standardVS"] = d3dutil_Mananger::LoadBinary(L"../Shaders/Default_vs.cso");
 	//mShaders["opaquePS"] = d3dutil_Mananger::LoadBinary(L"../Shaders/Default_ps.cso");
 	//mShaders["alphaTestedPS"] = d3dutil_Mananger::LoadBinary(L"../Shaders/Default_ps.cso");
 

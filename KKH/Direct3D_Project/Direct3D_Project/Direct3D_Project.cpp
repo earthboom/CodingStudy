@@ -202,6 +202,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #if defined(DEBUG) || defined(_DEBUG)
 		FreeConsole();
 #endif
+		PostQuitMessage(0);
 		break;
 
     case WM_COMMAND:
