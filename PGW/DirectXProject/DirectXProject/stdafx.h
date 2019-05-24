@@ -17,5 +17,5 @@
 #include <memory.h>
 #include <tchar.h>
 
-
+#include <dinput.h>
 // reference additional headers your program requires here

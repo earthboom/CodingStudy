@@ -39,6 +39,9 @@
     <Filter Include="Source Files\Input">
       <UniqueIdentifier>{c3d7af06-cec0-4aac-9478-aa8e00da215a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\00.MainApp">
+      <UniqueIdentifier>{82c3b2d7-d2ea-47f6-9119-24e84a496a0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -104,11 +107,11 @@
     <ClInclude Include="Input.h">
       <Filter>Source Files\Input</Filter>
     </ClInclude>
+    <ClInclude Include="MainApp.h">
+      <Filter>Source Files\00.MainApp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BlendApp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>99.Default</Filter>
     </ClCompile>
@@ -141,6 +144,9 @@
     </ClCompile>
     <ClCompile Include="Input.cpp">
       <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="MainApp.cpp">
+      <Filter>Source Files\00.MainApp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

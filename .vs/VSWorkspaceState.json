@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\PGW",
+    "\\PGW\\DirectX12Initialize",
+    "\\PGW\\DirectX12Initialize\\DirectX12Initialize",
+    "\\PGW\\DirectX12Initialize\\x64",
+    "\\PGW\\DirectX12Initialize\\x64\\Debug"
+  ],
+  "SelectedNode": "\\PGW\\DirectX12Initialize\\DirectX12Initialize\\d3dApp.cpp",
+  "PreviewInSolutionExplorer": false
+}
