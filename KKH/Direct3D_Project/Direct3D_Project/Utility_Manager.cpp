@@ -23,6 +23,7 @@ Utility_Manager::Utility_Manager(void)
 
 Utility_Manager::~Utility_Manager(void)
 {
+
 }
 
 void Utility_Manager::BuildRootSignature(void)

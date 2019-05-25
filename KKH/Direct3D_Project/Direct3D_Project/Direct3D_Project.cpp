@@ -250,7 +250,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 	case WM_KEYUP:
 		if (wParam == VK_ESCAPE)
-			PostQuitMessage(0);
+		{
+#if defined(DEBUG) || defined(_DEBUG)
+			FreeConsole();
+#endif
+			DestroyWindow(g_hWnd);
+			//PostQuitMessage(0);
+		}
 		break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
