@@ -82,9 +82,15 @@ void CMainApp::Render_MainApp(const CTimer& mt)
 
 bool CMainApp::LoadTexture(void)
 {
-	if (!TEX.onDDSLoad("grassTex", L"../Texture/grass.dds")) return FALSE;
-	if (!TEX.onDDSLoad("waterTex", L"../Texture/water1.dds")) return FALSE;
-	if (!TEX.onDDSLoad("fenceTex", L"../Texture/WireFence.dds")) return FALSE;
+	if (!TEX.onDDSLoad("grassTex", L"../Texture/grass.dds"))			return FALSE;
+	if (!TEX.onDDSLoad("waterTex", L"../Texture/water1.dds"))			return FALSE;
+	if (!TEX.onDDSLoad("fenceTex", L"../Texture/WireFence.dds"))		return FALSE;
+
+	//Stnecil
+	if (!TEX.onDDSLoad("bircksTex", L"../Texture/bricks3.dds"))			return FALSE;
+	if (!TEX.onDDSLoad("checkboardTex", L"../Texture/checkboard.dds"))	return FALSE;
+	if (!TEX.onDDSLoad("iceTex", L"../Texture/ice.dds"))				return FALSE;
+	if (!TEX.onDDSLoad("white1x1Tex", L"../Texture/white1x1.dds"))		return FALSE;
 
 	return TRUE;
 }

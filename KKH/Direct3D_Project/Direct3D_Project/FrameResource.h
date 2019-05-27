@@ -41,12 +41,23 @@ struct PassConstants
 	Light Lights[MaxLights];
 };
 
-struct Vertex
+typedef struct _Vertex
 {
+	_Vertex(void) {};
+	_Vertex(float x, float y, float z, float nx, float ny, float nz, float u, float v)
+		: Pos(x, y, z), Normal(nx, ny, nz), TexC(u, v) {}
+
+	void operator()(float x, float y, float z, float nx, float ny, float nz, float u, float v)
+	{
+		Pos		= DirectX::XMFLOAT3(x, y, z);
+		Normal	= DirectX::XMFLOAT3(nx, ny, nz);
+		TexC	= DirectX::XMFLOAT2(u, v);
+	}
+
 	DirectX::XMFLOAT3 Pos;
 	DirectX::XMFLOAT3 Normal;
 	DirectX::XMFLOAT2 TexC;
-};
+} VERTEX;
 
 struct FrameResource
 {
@@ -62,7 +73,7 @@ public:
 	std::unique_ptr<UploadBuffer<MaterialConstants>> MaterialCB = nullptr;
 	std::unique_ptr<UploadBuffer<ObjectConstants>> ObjectCB = nullptr;	
 
-	std::unique_ptr<UploadBuffer<Vertex>> WavesVB = nullptr;
+	std::unique_ptr<UploadBuffer<VERTEX>> WavesVB = nullptr;
 
 	UINT64 Fence = 0;
 };

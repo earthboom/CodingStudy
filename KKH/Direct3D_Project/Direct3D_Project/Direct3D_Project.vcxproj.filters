@@ -82,6 +82,9 @@
     <Filter Include="02.Utiltiy\96.ComputeWaves">
       <UniqueIdentifier>{7f989466-384c-45d2-b47c-7b39e4fc90e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utiltiy\03.Object\Surface">
+      <UniqueIdentifier>{bcdbdbbc-a7f8-4ccd-bb57-b65395e81ee9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -171,6 +174,9 @@
     <ClInclude Include="Wave.h">
       <Filter>02.Utiltiy\03.Object\Wave</Filter>
     </ClInclude>
+    <ClInclude Include="Surface.h">
+      <Filter>02.Utiltiy\03.Object\Surface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D_Project.cpp">
@@ -235,6 +241,9 @@
     </ClCompile>
     <ClCompile Include="Wave.cpp">
       <Filter>02.Utiltiy\03.Object\Wave</Filter>
+    </ClCompile>
+    <ClCompile Include="Surface.cpp">
+      <Filter>02.Utiltiy\03.Object\Surface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

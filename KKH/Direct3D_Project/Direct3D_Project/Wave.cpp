@@ -145,7 +145,7 @@ void Wave::UpdateWaves(const CTimer& mt)
 	int vertexcnt = _comWave->VertexCount();
 	for (int i = 0; i < vertexcnt; ++i)
 	{
-		Vertex v;
+		VERTEX v;
 
 		v.Pos = _comWave->Position(i);
 		v.Normal = _comWave->Normal(i);
@@ -183,7 +183,7 @@ void Wave::BuildGeometry(void)
 		}
 	}
 
-	UINT vByteSize = UTIL.Get_CPWave()->VertexCount() * sizeof(Vertex);
+	UINT vByteSize = UTIL.Get_CPWave()->VertexCount() * sizeof(VERTEX);
 	UINT iByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
 	auto geo = std::make_unique<MeshGeometry>();
@@ -197,7 +197,7 @@ void Wave::BuildGeometry(void)
 	
 	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC_DEV.Get(), COM_LIST.Get(), indices.data(), iByteSize, geo->IndexBufferUploader);
 
-	geo->VertexByteStride = sizeof(Vertex);
+	geo->VertexByteStride = sizeof(VERTEX);
 	geo->VertexBufferByteSize = vByteSize;
 	geo->IndexFormat = DXGI_FORMAT_R16_UINT;
 	geo->IndexBufferByteSize = iByteSize;

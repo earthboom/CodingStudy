@@ -2,10 +2,8 @@
 #include "Box.h"
 #include "GeometryGenerator.h"
 #include "FrameResource.h"
-#include "d3dutil_Manager.h"
 #include "Utility_Manager.h"
 #include "Texture_Manger.h"
-#include "Struct.h"
 
 Box::Box(void)
 	: Object()
@@ -64,7 +62,7 @@ void Box::BuildGeometry(void)
 	GeometryGenerator geoBox;
 	GeometryGenerator::MeshData box = geoBox.CreateBox(8.0f, 8.0f, 8.0f, 3);
 
-	std::vector<Vertex> vertices(box.Vertices.size());
+	std::vector<VERTEX> vertices(box.Vertices.size());
 	for (size_t i = 0; i < box.Vertices.size(); ++i)
 	{
 		auto& p = box.Vertices[i].Position;
@@ -73,7 +71,7 @@ void Box::BuildGeometry(void)
 		vertices[i].TexC = box.Vertices[i].TexC;
 	}
 
-	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+	const UINT vbByteSize = (UINT)vertices.size() * sizeof(VERTEX);
 
 	std::vector<std::uint16_t> indices = box.GetIndices16();
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
@@ -93,7 +91,7 @@ void Box::BuildGeometry(void)
 	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC_DEV.Get(),
 		COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
 
-	geo->VertexByteStride = sizeof(Vertex);
+	geo->VertexByteStride = sizeof(VERTEX);
 	geo->VertexBufferByteSize = vbByteSize;
 	geo->IndexFormat = DXGI_FORMAT_R16_UINT;
 	geo->IndexBufferByteSize = ibByteSize;

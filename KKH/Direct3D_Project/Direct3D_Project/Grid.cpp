@@ -97,7 +97,7 @@ void Grid::BuildGeometry(void)
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData grid = geoGen.CreateGrid(160.0f, 160.0f, 50, 50);
 
-	std::vector<Vertex> vertices(grid.Vertices.size());
+	std::vector<VERTEX> vertices(grid.Vertices.size());
 	for (size_t i = 0; i < grid.Vertices.size(); ++i)
 	{
 		auto& p = grid.Vertices[i].Position;
@@ -107,7 +107,7 @@ void Grid::BuildGeometry(void)
 		vertices[i].TexC = grid.Vertices[i].TexC;
 	}
 
-	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+	const UINT vbByteSize = (UINT)vertices.size() * sizeof(VERTEX);
 
 	std::vector<std::uint16_t> indices = grid.GetIndices16();
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
@@ -127,7 +127,7 @@ void Grid::BuildGeometry(void)
 	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), 
 		COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
 
-	geo->VertexByteStride = sizeof(Vertex);
+	geo->VertexByteStride = sizeof(VERTEX);
 	geo->VertexBufferByteSize = vbByteSize;
 	geo->IndexFormat = DXGI_FORMAT_R16_UINT;
 	geo->IndexBufferByteSize = ibByteSize;

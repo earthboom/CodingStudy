@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "LitColumn.h"
 #include "GeometryGenerator.h"
-#include "d3dutil_Manager.h"
 #include "Utility_Manager.h"
 #include "MathHelper.h"
 #include "Timer_Manager.h"
@@ -240,7 +239,7 @@ void LitColumn::BuildShapeGeometry(void)
 
 	auto totalVertexCount =	box.Vertices.size() + grid.Vertices.size() + sphere.Vertices.size() + cylinder.Vertices.size();
 
-	std::vector<Vertex> vertices(totalVertexCount);
+	std::vector<VERTEX> vertices(totalVertexCount);
 
 	UINT k = 0;
 	for (size_t i = 0; i < box.Vertices.size(); ++i, ++k)
@@ -273,7 +272,7 @@ void LitColumn::BuildShapeGeometry(void)
 	indices.insert(indices.end(), std::begin(sphere.GetIndices16()), std::end(sphere.GetIndices16()));
 	indices.insert(indices.end(), std::begin(cylinder.GetIndices16()), std::end(cylinder.GetIndices16()));
 
-	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+	const UINT vbByteSize = (UINT)vertices.size() * sizeof(VERTEX);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
 	auto geo = std::make_unique<MeshGeometry>();
@@ -291,7 +290,7 @@ void LitColumn::BuildShapeGeometry(void)
 	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(),
 		COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
 
-	geo->VertexByteStride = sizeof(Vertex);
+	geo->VertexByteStride = sizeof(VERTEX);
 	geo->VertexBufferByteSize = vbByteSize;
 	geo->IndexFormat = DXGI_FORMAT_R16_UINT;
 	geo->IndexBufferByteSize = ibByteSize;
@@ -321,7 +320,7 @@ void LitColumn::BuildSkullGeometry(void)
 	fin >> ignore >> tcount;
 	fin >> ignore >> ignore >> ignore >> ignore;
 
-	std::vector<Vertex> vertices(vcount);
+	std::vector<VERTEX> vertices(vcount);
 	for (UINT i = 0; i < vcount; ++i)
 	{
 		fin >> vertices[i].Pos.x >> vertices[i].Pos.y >> vertices[i].Pos.z;
@@ -340,7 +339,7 @@ void LitColumn::BuildSkullGeometry(void)
 
 	fin.close();
 
-	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+	const UINT vbByteSize = (UINT)vertices.size() * sizeof(VERTEX);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::int32_t);
 
 	auto geo = std::make_unique<MeshGeometry>();
@@ -355,7 +354,7 @@ void LitColumn::BuildSkullGeometry(void)
 	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), COM_LIST.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
 	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC->Get_Device().Get(), COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
 
-	geo->VertexByteStride = sizeof(Vertex);
+	geo->VertexByteStride = sizeof(VERTEX);
 	geo->VertexBufferByteSize = vbByteSize;
 	geo->IndexFormat = DXGI_FORMAT_R32_UINT;
 	geo->IndexBufferByteSize = ibByteSize;

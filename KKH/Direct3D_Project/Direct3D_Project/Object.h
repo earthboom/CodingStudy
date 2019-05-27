@@ -29,7 +29,7 @@ public:
 	std::string m_matName;
 
 protected:
-	COM_TYPE m_Comtype;
+	COM_TYPE	m_Comtype;
 
 	DirectX::XMFLOAT4X4 mWorld; //= MathHelper::Identity4x4();
 	//DirectX::XMFLOAT4X4 mView; //= MathHelper::Identity4x4();
