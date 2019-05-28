@@ -63,7 +63,7 @@ void Utility_Manager::BuildDescriptorHeaps(void)
 {
 	//Create the SRV heap
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-	srvHeapDesc.NumDescriptors = 5;
+	srvHeapDesc.NumDescriptors = 6;
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	ThrowIfFailed(GRAPHIC_DEV->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSrvDescriptorHeap)));
@@ -341,6 +341,10 @@ bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 	_commandlist->OMSetStencilRef(1);
 	_commandlist->SetPipelineState(mPSOs["markStencilMirrors"].Get());
 	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_MIRROR]);
+
+	_commandlist->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress() + 1 * passCBByteSize);
+	_commandlist->SetPipelineState(mPSOs["drawStencilReflections"].Get());
+	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_REFLECTED]);
 
 	_commandlist->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
 	_commandlist->OMSetStencilRef(0);

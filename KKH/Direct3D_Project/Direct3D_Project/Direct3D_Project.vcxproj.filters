@@ -88,6 +88,9 @@
     <Filter Include="02.Utiltiy\03.Object\Mirror">
       <UniqueIdentifier>{6da5df1e-371d-41fe-8100-65be7fb41b43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utiltiy\03.Object\Skull">
+      <UniqueIdentifier>{01bc611b-f123-4264-bc55-8aa15f8132a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -183,6 +186,9 @@
     <ClInclude Include="Mirror.h">
       <Filter>02.Utiltiy\03.Object\Mirror</Filter>
     </ClInclude>
+    <ClInclude Include="Skull.h">
+      <Filter>02.Utiltiy\03.Object\Skull</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D_Project.cpp">
@@ -253,6 +259,9 @@
     </ClCompile>
     <ClCompile Include="Mirror.cpp">
       <Filter>02.Utiltiy\03.Object\Mirror</Filter>
+    </ClCompile>
+    <ClCompile Include="Skull.cpp">
+      <Filter>02.Utiltiy\03.Object\Skull</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
