@@ -129,9 +129,9 @@ void CMainApp::SettingRoom(void)
 	_vertex =
 	{
 		VERTEX(-3.5f, 0.0f, -10.0f, 0.0f, 1.0f, 0.0f, 0.0f, 4.0f),
-		VERTEX(-3.5f, 0.0f,  0.0f,  0.0f, 1.0f, 0.0f, 0.0f, 4.0f),
+		VERTEX(-3.5f, 0.0f,  0.0f,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f),
 		VERTEX(7.5f,  0.0f,  0.0f,  0.0f, 1.0f, 0.0f, 4.0f, 0.0f),
-		VERTEX(7.5f,  0.0f, -10.0f, 0.0f, 1.0f, 0.0f, 4.0f, 0.0f)
+		VERTEX(7.5f,  0.0f, -10.0f, 0.0f, 1.0f, 0.0f, 4.0f, 4.0f)
 	};
 	Objtemp->Set_Vertex(_vertex);
 	Objtemp->Get_Material().DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);

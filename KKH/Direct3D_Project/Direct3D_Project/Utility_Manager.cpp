@@ -94,7 +94,7 @@ void Utility_Manager::BuildFrameResources(void)
 {
 	for (int i = 0; i < NumFrameResources; ++i)
 	{
-		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC_DEV.Get(), 1, (UINT)mAllRitem.size(), (UINT)mMaterials.size()));// , mCPWave->VertexCount()));
+		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC_DEV.Get(), 2, (UINT)mAllRitem.size(), (UINT)mMaterials.size()));// , mCPWave->VertexCount()));
 	}
 }
 
@@ -323,7 +323,7 @@ bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
 	_commandlist->ClearRenderTargetView(_graphic->Get_CurrentBackBufferView_Handle(), (float*)&mMainPassCB.FogColor, 0, nullptr);
-	_commandlist->ClearDepthStencilView(_graphic->Get_DepthStencilView_Handle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0.0f, 0.0f, nullptr);
+	_commandlist->ClearDepthStencilView(_graphic->Get_DepthStencilView_Handle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	_commandlist->OMSetRenderTargets(1, &_graphic->Get_CurrentBackBufferView_Handle(), TRUE, &_graphic->Get_DepthStencilView_Handle());
 
@@ -352,8 +352,8 @@ bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 	//_commandlist->SetPipelineState(mPSOs["alphaTested"].Get());
 	//DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_ALAPHTESTED]);
 	
-	//_commandlist->SetPipelineState(mPSOs["transparent"].Get());
-	//DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_TRANSPARENT]);
+	_commandlist->SetPipelineState(mPSOs["transparent"].Get());
+	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_TRANSPARENT]);
 
 	_commandlist->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_graphic->Get_CurrentBackBuffer_Resource(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
