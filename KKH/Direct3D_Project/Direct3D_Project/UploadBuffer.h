@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Function.h"
 #include "Graphic_Manager.h"
-#include "d3dutil_Manager.h"
 
 template<typename T>
 class UploadBuffer
@@ -16,7 +14,7 @@ public:
 		//Constant buffer elements needs to be multiples of 256 bytes.
 		//This is because the hardware can only view constant data at m*256 byte offsets and of n*256 byte lengths.
 		if (isConstantBuffer)
-			mElementByteSize = d3dutil_Mananger::CalcConstantBufferByteSize(sizeof(T));
+			mElementByteSize = d3dutil_Manager::CalcConstantBufferByteSize(sizeof(T));
 
 		ThrowIfFailed(GRAPHIC->Get_Device()->CreateCommittedResource(
 			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),

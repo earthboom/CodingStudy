@@ -2,12 +2,13 @@
 #include "MainApp.h"
 #include "Graphic_Manager.h"
 #include "Mouse_Manager.h"
-#include "Function.h"
 #include "Utility_Manager.h"
 #include "Box.h"
 #include "LitColumn.h"
 #include "Grid.h"
 #include "Wave.h"
+#include "Surface.h"
+#include "Mirror.h"
 #include "Texture_Manger.h"
 
 #define KEY_DOWN(vk_code)	(GetAsyncKeyState(vk_code) & 0x0001)
@@ -103,11 +104,93 @@ bool CMainApp::CreateObject(void)
 	g_MatCBcount = 0;
 	g_ObjCBcount = 0;
 
-	if (!UTIL.Object_Create(Grid::Create(Object::COM_TYPE::CT_STATIC, "landGeo", "grid", "grassTex", "grass"))) return FALSE;
-	if (!UTIL.Object_Create(Wave::Create(Object::COM_TYPE::CT_STATIC, "waterGeo", "grid", "waterTex", "water"))) return FALSE;
-	if (!UTIL.Object_Create(Box::Create(Object::COM_TYPE::CT_STATIC, "boxGeo", "box", "fenceTex", "wirefence"))) return FALSE;
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Grid::Create(Object::COM_TYPE::CT_STATIC, "landGeo", "grid", "grassTex", "grass")))) return FALSE;
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Wave::Create(Object::COM_TYPE::CT_STATIC, "waterGeo", "grid", "waterTex", "water")))) return FALSE;
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Box::Create(Object::COM_TYPE::CT_STATIC, "boxGeo", "box", "fenceTex", "wirefence")))) return FALSE;
+
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "floorGeo", "floor", "checkboardTex", "checkertile")))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "wall_1_Geo", "wall", "bircksTex", "bricks")))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "wall_2_Geo", "wall", "bircksTex", "bricks")))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "wall_3_Geo", "wall", "bircksTex", "bricks")))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Mirror::Create(Object::COM_TYPE::CT_STATIC, "mirrorGeo", "mirror", "iceTex", "icemirror")))) return FALSE;
+
+	SettingRoom();
 
 	return TRUE;
+}
+
+void CMainApp::SettingRoom(void)
+{
+	std::array<VERTEX, 4> _vertex;
+	//floor
+	auto Objtemp = std::dynamic_pointer_cast<Surface>(UTIL.Get_Object("floorGeo", Object::COM_TYPE::CT_STATIC));
+	_vertex =
+	{
+		VERTEX(-3.5f, 0.0f, -10.0f, 0.0f, 1.0f, 0.0f, 0.0f, 4.0f),
+		VERTEX(-3.5f, 0.0f,  0.0f,  0.0f, 1.0f, 0.0f, 0.0f, 4.0f),
+		VERTEX(7.5f,  0.0f,  0.0f,  0.0f, 1.0f, 0.0f, 4.0f, 0.0f),
+		VERTEX(7.5f,  0.0f, -10.0f, 0.0f, 1.0f, 0.0f, 4.0f, 0.0f)
+	};
+	Objtemp->Set_Vertex(_vertex);
+	Objtemp->Get_Material().DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	Objtemp->Get_Material().FresnelR0 = DirectX::XMFLOAT3(0.07f, 0.07f, 0.07f);
+	Objtemp->Get_Material().Roughness - 0.3f;
+
+	//Wall_1
+	Objtemp = std::dynamic_pointer_cast<Surface>(UTIL.Get_Object("wall_1_Geo", Object::COM_TYPE::CT_STATIC));
+	_vertex =
+	{
+		VERTEX(-3.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 2.0f),
+		VERTEX(-3.5f, 4.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f),
+		VERTEX(-2.5f, 4.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.5f, 0.0f),
+		VERTEX(-2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.5f, 2.0f)
+	};
+	Objtemp->Set_Vertex(_vertex);
+	Objtemp->Get_Material().DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	Objtemp->Get_Material().FresnelR0 = DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f);
+	Objtemp->Get_Material().Roughness - 0.25f;
+
+	//Wall_2
+	Objtemp = std::dynamic_pointer_cast<Surface>(UTIL.Get_Object("wall_2_Geo", Object::COM_TYPE::CT_STATIC));
+	_vertex =
+	{
+		VERTEX(2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 2.0f),
+		VERTEX(2.5f, 4.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f),
+		VERTEX(7.5f, 4.0f, 0.0f, 0.0f, 0.0f, -1.0f, 2.0f, 0.0f),
+		VERTEX(7.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 2.0f, 2.0f)
+	};
+	Objtemp->Set_Vertex(_vertex);
+	Objtemp->Get_Material().DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	Objtemp->Get_Material().FresnelR0 = DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f);
+	Objtemp->Get_Material().Roughness - 0.25f;
+
+	//Wall_3
+	Objtemp = std::dynamic_pointer_cast<Surface>(UTIL.Get_Object("wall_3_Geo", Object::COM_TYPE::CT_STATIC));
+	_vertex =
+	{
+		VERTEX(-3.5f, 4.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f),
+		VERTEX(-3.5f, 6.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f),
+		VERTEX(7.5f,  6.0f, 0.0f, 0.0f, 0.0f, -1.0f, 6.0f, 0.0f),
+		VERTEX(7.5f,  4.0f, 0.0f, 0.0f, 0.0f, -1.0f, 6.0f, 1.0f)
+	};
+	Objtemp->Set_Vertex(_vertex);
+	Objtemp->Get_Material().DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	Objtemp->Get_Material().FresnelR0 = DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f);
+	Objtemp->Get_Material().Roughness - 0.25f;
+
+	//Mirror
+	auto Objtemp2 = std::dynamic_pointer_cast<Mirror>(UTIL.Get_Object("mirrorGeo", Object::COM_TYPE::CT_STATIC));
+	_vertex =
+	{
+		VERTEX(-3.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f),
+		VERTEX(-3.5f, 4.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f),
+		VERTEX(2.5f,  4.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f),
+		VERTEX(2.5f,  0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f)
+	};
+	Objtemp2->Set_Vertex(_vertex);
+	Objtemp2->Get_Material().DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.3f);
+	Objtemp2->Get_Material().FresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);
+	Objtemp2->Get_Material().Roughness - 0.5f;
 }
 
 

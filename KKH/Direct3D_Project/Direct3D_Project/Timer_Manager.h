@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Timer.h"
-#include "Struct.h"
-#include "Unique_Singleton.h"
 
 #define TIME_MGR	CTimer_Manager::GetInstnace()
 

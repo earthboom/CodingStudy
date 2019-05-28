@@ -2,6 +2,8 @@
 
 #include <DirectXMath.h>
 
+#define MaxLights 16
+
 extern HWND	 g_hWnd;
 
 extern DirectX::XMFLOAT3 g_EyePos;
@@ -23,3 +25,14 @@ const float SCREEN_NEAR = 0.1f;
 const float PI = 3.1415926535897932f;
 
 const int NumFrameResources = 3;
+
+enum class DrawLayer : int
+{
+	DL_OPAUQE = 0,
+	DL_MIRROR,
+	DL_REFLECTED,
+	DL_TRANSPARENT,
+	DL_ALAPHTESTED,
+	DL_SHADOW,
+	DL_END
+};

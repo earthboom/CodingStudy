@@ -2,7 +2,6 @@
 #include "Texture_Manger.h"
 #include "Graphic_Manager.h"
 #include "DDSTextureLoader.h"
-#include "Function.h"
 
 Texture_Manger::Texture_Manger(void)
 {

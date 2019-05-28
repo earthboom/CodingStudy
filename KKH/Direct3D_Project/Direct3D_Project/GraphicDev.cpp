@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "GraphicDev.h"
-#include "Function.h"
 
 CGraphicDev::CGraphicDev(void)
 	: m_Device(nullptr)

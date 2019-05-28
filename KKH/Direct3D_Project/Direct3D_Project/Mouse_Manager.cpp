@@ -2,7 +2,6 @@
 #include "Mouse_Manager.h"
 #include "Utility_Manager.h"
 #include "MathHelper.h"
-#include "Const.h"
 #include "Object.h"
 
 Mouse_Manager::Mouse_Manager(void)

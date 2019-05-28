@@ -21,6 +21,8 @@ private:
 	bool	LoadTexture(void);
 	bool	CreateObject(void);
 	
+	void	SettingRoom(void);
+
 private:
 	//PBOX	m_Box;
 	//SHAPE m_Shape;

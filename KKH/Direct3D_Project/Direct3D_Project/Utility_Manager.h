@@ -1,12 +1,8 @@
 #pragma once
 
-#include "Unique_Singleton.h"
-#include "d3dutil_Manager.h"
 #include "FrameResource.h"
 #include "ComputeWaves.h"
-
 #include "Object.h"
-#include "Struct.h"
 
 #define UTIL Utility_Manager::GetInstnace()
 
@@ -88,9 +84,11 @@ private:
 	//float mRadius;
 
 public:
-	bool Object_Create(OBJECT obj);
+	bool Object_Create(OBJECT& obj);
 	bool Object_Ready(void);
 	bool Object_Cycle(const CTimer& mt, ObjState _state = OS_END);
+
+	OBJECT Get_Object(std::string _key, Object::COM_TYPE _type);
 
 private:
 	bool Object_Update(const CTimer& mt);

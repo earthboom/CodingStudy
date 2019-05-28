@@ -195,6 +195,7 @@
     <ClInclude Include="Grid.h" />
     <ClInclude Include="LitColumn.h" />
     <ClInclude Include="MainApp.h" />
+    <ClInclude Include="Mirror.h" />
     <ClInclude Include="Mouse_Manager.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Resource.h" />
@@ -224,6 +225,7 @@
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="LitColumn.cpp" />
     <ClCompile Include="MainApp.cpp" />
+    <ClCompile Include="Mirror.cpp" />
     <ClCompile Include="Mouse_Manager.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Surface.cpp" />

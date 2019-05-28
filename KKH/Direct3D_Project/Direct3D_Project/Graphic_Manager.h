@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Unique_Singleton.h"
 #include "GraphicDev.h"
 
 #define GRAPHIC_MGR CGraphic_Manager::GetInstnace()

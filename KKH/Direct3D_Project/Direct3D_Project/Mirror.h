@@ -2,14 +2,14 @@
 
 #include "Object.h"
 
-class Surface : public Object
+class Mirror : public Object
 {
 public:
-	explicit Surface(void);
-	Surface(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname);
-	Surface(const Surface&) = delete;
-	Surface& operator=(const Surface&) = delete;
-	~Surface(void);
+	explicit Mirror(void);
+	Mirror(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname);
+	Mirror(const Mirror&) = delete;
+	Mirror& operator=(const Mirror&) = delete;
+	~Mirror(void);
 
 public:
 	virtual bool Ready(void);
@@ -33,8 +33,8 @@ public:
 	void Set_Vertex(std::array<VERTEX, 4>& _vertices) { surface_vt = _vertices; }
 
 public:
-	static std::shared_ptr<Surface> Create(Object::COM_TYPE _type, std::string _name, std::string _submeshname,
+	static std::shared_ptr<Mirror> Create(Object::COM_TYPE _type, std::string _name, std::string _submeshname,
 		std::string _texname, std::string _matname);
 };
 
-typedef std::shared_ptr<Surface> SURFACE;
+typedef std::shared_ptr<Mirror> MIRROR;

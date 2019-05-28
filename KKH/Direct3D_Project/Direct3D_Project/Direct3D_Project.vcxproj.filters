@@ -85,6 +85,9 @@
     <Filter Include="02.Utiltiy\03.Object\Surface">
       <UniqueIdentifier>{bcdbdbbc-a7f8-4ccd-bb57-b65395e81ee9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utiltiy\03.Object\Mirror">
+      <UniqueIdentifier>{6da5df1e-371d-41fe-8100-65be7fb41b43}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -177,6 +180,9 @@
     <ClInclude Include="Surface.h">
       <Filter>02.Utiltiy\03.Object\Surface</Filter>
     </ClInclude>
+    <ClInclude Include="Mirror.h">
+      <Filter>02.Utiltiy\03.Object\Mirror</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D_Project.cpp">
@@ -244,6 +250,9 @@
     </ClCompile>
     <ClCompile Include="Surface.cpp">
       <Filter>02.Utiltiy\03.Object\Surface</Filter>
+    </ClCompile>
+    <ClCompile Include="Mirror.cpp">
+      <Filter>02.Utiltiy\03.Object\Mirror</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

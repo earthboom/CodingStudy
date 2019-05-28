@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Unique_Singleton.h"
 #include "Object.h"
 
 #define MOUSE Mouse_Manager::GetInstnace()

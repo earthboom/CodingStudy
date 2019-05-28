@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Const.h"
-
 class CGraphicDev
 {
 public:

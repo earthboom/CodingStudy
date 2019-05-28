@@ -38,3 +38,8 @@
 #include <unordered_map>
 #include <string>
 #include <cassert>
+
+#include "Unique_Singleton.h"
+#include "Const.h"
+#include "Struct.h"
+#include "Function.h"

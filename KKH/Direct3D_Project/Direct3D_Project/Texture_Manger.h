@@ -1,8 +1,5 @@
 #pragma once
 
-#include "Unique_Singleton.h"
-#include "Struct.h"
-
 #define TEX Texture_Manger::GetInstnace()
 
 class Texture_Manger : public CSingleton<Texture_Manger>

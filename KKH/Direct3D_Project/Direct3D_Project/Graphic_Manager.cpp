@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Graphic_Manager.h"
-#include "Function.h"
 
 CGraphic_Manager::CGraphic_Manager(void)
 	: m_pGraphic(nullptr)

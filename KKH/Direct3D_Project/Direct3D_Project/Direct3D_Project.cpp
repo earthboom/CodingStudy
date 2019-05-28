@@ -8,8 +8,6 @@
 #include "Timer_Manager.h"
 #include "Mouse_Manager.h"
 #include "MathHelper.h"
-#include "Const.h"
-#include "Struct.h"
 
 #define MAX_LOADSTRING 100
 

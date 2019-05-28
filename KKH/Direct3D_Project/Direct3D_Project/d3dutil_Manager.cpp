@@ -1,19 +1,18 @@
 #include "stdafx.h"
 #include "d3dutil_Manager.h"
 #include "Graphic_Manager.h"
-#include "Function.h"
 #include "FrameResource.h"
 
-d3dutil_Mananger::d3dutil_Mananger(void)	
+d3dutil_Manager::d3dutil_Manager(void)
 {
 
 }
 
-d3dutil_Mananger::~d3dutil_Mananger(void)
+d3dutil_Manager::~d3dutil_Manager(void)
 {
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> d3dutil_Mananger::CreateDefaultBuffer(
+Microsoft::WRL::ComPtr<ID3D12Resource> d3dutil_Manager::CreateDefaultBuffer(
 	ID3D12Device * device, 
 	ID3D12GraphicsCommandList * cmdList, 
 	const void * initData, 
@@ -62,7 +61,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> d3dutil_Mananger::CreateDefaultBuffer(
 	return defaultBuffer;
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> d3dutil_Mananger::LoadBinary(const std::wstring& filename)
+Microsoft::WRL::ComPtr<ID3DBlob> d3dutil_Manager::LoadBinary(const std::wstring& filename)
 {
 	std::ifstream fin(filename, std::ios::binary);
 
@@ -79,7 +78,7 @@ Microsoft::WRL::ComPtr<ID3DBlob> d3dutil_Mananger::LoadBinary(const std::wstring
 	return blob;
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> d3dutil_Mananger::CompileShader(const std::wstring & filename, const D3D_SHADER_MACRO * defines, const std::string & entrypoint, const std::string & target)
+Microsoft::WRL::ComPtr<ID3DBlob> d3dutil_Manager::CompileShader(const std::wstring & filename, const D3D_SHADER_MACRO * defines, const std::string & entrypoint, const std::string & target)
 {
 	UINT compileFlags = 0;
 #if defined(DEBUG) || defined(_DEBUG)

@@ -28,8 +28,10 @@ public:
 	std::string m_texName;
 	std::string m_matName;
 
-protected:
+protected:	
 	COM_TYPE	m_Comtype;
+	DrawLayer	m_DrawLayer;
+	Material	m_Material;
 
 	DirectX::XMFLOAT4X4 mWorld; //= MathHelper::Identity4x4();
 	//DirectX::XMFLOAT4X4 mView; //= MathHelper::Identity4x4();
@@ -51,6 +53,9 @@ public:
 	float& Get_Theta(void) { return mTheta; }
 	float& Get_Phi(void) { return mPhi; }
 	float& Get_Radius(void) { return mRadius; }
+
+	Material& Get_Material(void) { return m_Material; }
+	DrawLayer& Get_DrawLayer(void) { return m_DrawLayer; }
 };
 
 typedef std::shared_ptr<Object> OBJECT;

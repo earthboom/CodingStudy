@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Object.h"
 #include "MathHelper.h"
-#include "Const.h"
 
 Object::Object(void)
 	: Component()
@@ -13,6 +12,7 @@ Object::Object(void)
 	, mTheta(1.5f * PI)
 	, mPhi(DirectX::XM_PIDIV4)
 	, mRadius(5.0f)
+	, m_DrawLayer(DrawLayer::DL_END)
 {
 }
 
@@ -26,6 +26,7 @@ Object::Object(COM_TYPE _type, std::string _name, std::string _submeshname, std:
 	, mTheta(1.5f * PI)
 	, mPhi(DirectX::XM_PIDIV4)
 	, mRadius(5.0f)
+	, m_DrawLayer(DrawLayer::DL_END)
 {
 }
 

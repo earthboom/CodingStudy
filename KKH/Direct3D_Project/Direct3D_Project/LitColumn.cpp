@@ -89,8 +89,8 @@ bool LitColumn::Render(const CTimer& mt)
 
 void LitColumn::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const std::vector<RenderItem*>& ritems)
 {
-	UINT objCBByteSize = d3dutil_Mananger::CalcConstantBufferByteSize(sizeof(ObjectConstants));
-	UINT matCBByteSize = d3dutil_Mananger::CalcConstantBufferByteSize(sizeof(MaterialConstants));
+	UINT objCBByteSize = d3dutil_Manager::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+	UINT matCBByteSize = d3dutil_Manager::CalcConstantBufferByteSize(sizeof(MaterialConstants));
 
 	auto objectCB = UTIL.Get_CurrFrameResource()->ObjectCB->Resource();
 	auto matCB = UTIL.Get_CurrFrameResource()->MaterialCB->Resource();

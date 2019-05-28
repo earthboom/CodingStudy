@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Object.h"
-#include "Struct.h"
 
 class LitColumn : public Object
 {

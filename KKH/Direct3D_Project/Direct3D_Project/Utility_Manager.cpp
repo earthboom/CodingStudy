@@ -3,7 +3,6 @@
 #include "Graphic_Manager.h"
 #include "Timer_Manager.h"
 #include "Texture_Manger.h"
-#include "Function.h"
 
 Utility_Manager::Utility_Manager(void)
 	: mRootSignature(nullptr)
@@ -64,7 +63,7 @@ void Utility_Manager::BuildDescriptorHeaps(void)
 {
 	//Create the SRV heap
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-	srvHeapDesc.NumDescriptors = 4;
+	srvHeapDesc.NumDescriptors = 5;
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	ThrowIfFailed(GRAPHIC_DEV->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSrvDescriptorHeap)));
@@ -76,10 +75,10 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 	const D3D_SHADER_MACRO alphaTestDefines[] = { "FOG", "1", "ALPHA_TEST", "1", NULL, NULL };
 
 	//mShaders["standardVS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", nullptr, "VS", "vs_5_1");
-	mShaders["opaquePS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", defines, "PS", "ps_5_1");
-	mShaders["alphaTestedPS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
+	mShaders["opaquePS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", defines, "PS", "ps_5_1");
+	mShaders["alphaTestedPS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
 
-	mShaders["standardVS"] = d3dutil_Mananger::LoadBinary(L"../Shaders/Default_vs.cso");
+	mShaders["standardVS"] = d3dutil_Manager::LoadBinary(L"../Shaders/Default_vs.cso");
 	//mShaders["opaquePS"] = d3dutil_Mananger::LoadBinary(L"../Shaders/Default_ps.cso");
 	//mShaders["alphaTestedPS"] = d3dutil_Mananger::LoadBinary(L"../Shaders/Default_ps.cso");
 
@@ -95,7 +94,7 @@ void Utility_Manager::BuildFrameResources(void)
 {
 	for (int i = 0; i < NumFrameResources; ++i)
 	{
-		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC_DEV.Get(), 1, (UINT)mAllRitem.size(), (UINT)mMaterials.size(), mCPWave->VertexCount()));
+		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC_DEV.Get(), 1, (UINT)mAllRitem.size(), (UINT)mMaterials.size()));// , mCPWave->VertexCount()));
 	}
 }
 
@@ -145,6 +144,60 @@ void Utility_Manager::BuildPSOs(void)
 	transparentPsoDesc.BlendState.RenderTarget[0] = transparencyBlenDesc;
 	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&transparentPsoDesc, IID_PPV_ARGS(&mPSOs["transparent"])));
 
+	//PSO for marking stencil mirros.
+	CD3DX12_BLEND_DESC mirrorBlendState(D3D12_DEFAULT);
+	mirrorBlendState.RenderTarget[0].RenderTargetWriteMask = 0;
+
+	D3D12_DEPTH_STENCIL_DESC mirrorDSS;
+	mirrorDSS.DepthEnable = TRUE;
+	mirrorDSS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+	mirrorDSS.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	mirrorDSS.StencilEnable = TRUE;
+	mirrorDSS.StencilReadMask = 0xff;
+	mirrorDSS.StencilWriteMask = 0xff;
+
+	mirrorDSS.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	mirrorDSS.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	mirrorDSS.FrontFace.StencilPassOp = D3D12_STENCIL_OP_REPLACE;
+	mirrorDSS.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+
+	mirrorDSS.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	mirrorDSS.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	mirrorDSS.BackFace.StencilPassOp = D3D12_STENCIL_OP_REPLACE;
+	mirrorDSS.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC markMirrorsPosDesc = psoDesc;
+	markMirrorsPosDesc.BlendState = mirrorBlendState;
+	markMirrorsPosDesc.DepthStencilState = mirrorDSS;
+	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&markMirrorsPosDesc, IID_PPV_ARGS(&mPSOs["markStencilMirrors"])));
+
+	//PSO for stencil reflections.
+	D3D12_DEPTH_STENCIL_DESC reflectionsDDS;
+	reflectionsDDS.DepthEnable = TRUE;
+	reflectionsDDS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	reflectionsDDS.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	reflectionsDDS.StencilEnable = TRUE;
+	reflectionsDDS.StencilReadMask = 0xff;
+	reflectionsDDS.StencilWriteMask = 0xff;
+
+	reflectionsDDS.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	reflectionsDDS.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	reflectionsDDS.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	reflectionsDDS.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
+
+	reflectionsDDS.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	reflectionsDDS.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	reflectionsDDS.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	reflectionsDDS.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC drawReflectionsPsoDesc = psoDesc;
+	drawReflectionsPsoDesc.DepthStencilState = reflectionsDDS;
+	drawReflectionsPsoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+	drawReflectionsPsoDesc.RasterizerState.FrontCounterClockwise = TRUE;
+	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&drawReflectionsPsoDesc, IID_PPV_ARGS(&mPSOs["drawStencilReflections"])));
+	
+	//PSO for shodow objects
+
 
 	//PSO for alpha tested objects
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC alphaTestedPSoDesc = psoDesc;
@@ -166,7 +219,7 @@ void Utility_Manager::OnResize(void)
 	DirectX::XMStoreFloat4x4(&g_Proj, p);
 }
 
-bool Utility_Manager::Object_Create(OBJECT obj)
+bool Utility_Manager::Object_Create(OBJECT& obj)
 {
 	if (obj == nullptr) return FALSE;
 
@@ -196,6 +249,13 @@ bool Utility_Manager::Object_Cycle(const CTimer& mt, ObjState _state)
 	}
 
 	return TRUE;
+}
+
+OBJECT Utility_Manager::Get_Object(std::string _key, Object::COM_TYPE _type)
+{
+	auto pObj = allObj_Update_vec[(int)_type]->find(_key);
+	if (pObj == allObj_Update_vec[(int)_type]->end()) return nullptr;
+	return pObj->second;
 }
 
 bool Utility_Manager::Object_Ready()
@@ -272,16 +332,24 @@ bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 
 	_commandlist->SetGraphicsRootSignature(mRootSignature.Get());
 
+	UINT passCBByteSize = d3dutil_Manager::CalcConstantBufferByteSize(sizeof(PassConstants));
+
 	auto passCB = mCurrFrameResource->PassCB->Resource();
 	_commandlist->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
-
 	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_OPAUQE]);
 
-	_commandlist->SetPipelineState(mPSOs["alphaTested"].Get());
-	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_ALAPHTESTED]);
+	_commandlist->OMSetStencilRef(1);
+	_commandlist->SetPipelineState(mPSOs["markStencilMirrors"].Get());
+	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_MIRROR]);
+
+	_commandlist->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
+	_commandlist->OMSetStencilRef(0);
+
+	//_commandlist->SetPipelineState(mPSOs["alphaTested"].Get());
+	//DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_ALAPHTESTED]);
 	
-	_commandlist->SetPipelineState(mPSOs["transparent"].Get());
-	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_TRANSPARENT]);
+	//_commandlist->SetPipelineState(mPSOs["transparent"].Get());
+	//DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_TRANSPARENT]);
 
 	_commandlist->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_graphic->Get_CurrentBackBuffer_Resource(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
@@ -382,8 +450,8 @@ void Utility_Manager::UpdateMainPassCB(const CTimer& mt)
 
 void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const std::vector<RenderItem*>& ritems)
 {
-	UINT objCBByteSize = d3dutil_Mananger::CalcConstantBufferByteSize(sizeof(ObjectConstants));
-	UINT matCBByteSize = d3dutil_Mananger::CalcConstantBufferByteSize(sizeof(MaterialConstants));
+	UINT objCBByteSize = d3dutil_Manager::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+	UINT matCBByteSize = d3dutil_Manager::CalcConstantBufferByteSize(sizeof(MaterialConstants));
 
 	auto objectCB = mCurrFrameResource->ObjectCB->Resource();
 	auto matCB = mCurrFrameResource->MaterialCB->Resource();

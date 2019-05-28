@@ -1,27 +1,25 @@
 #include "stdafx.h"
-#include "Surface.h"
+#include "Mirror.h"
+#include "GeometryGenerator.h"
+#include "FrameResource.h"
 #include "Utility_Manager.h"
 #include "Texture_Manger.h"
 
-Surface::Surface(void)
+Mirror::Mirror(void)
 	: Object()
 {
-	for (auto vt : surface_vt)
-		vt(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 }
 
-Surface::Surface(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname)
+Mirror::Mirror(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname)
 	: Object(_type, _name, _submeshname, _texname, _matname)
 {
-	for (auto vt : surface_vt)
-		vt(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 }
 
-Surface::~Surface(void)
+Mirror::~Mirror(void)
 {
 }
 
-bool Surface::Ready(void)
+bool Mirror::Ready(void)
 {
 	BuildDescriptorHeaps();
 	BuildGeometry();
@@ -31,17 +29,17 @@ bool Surface::Ready(void)
 	return TRUE;
 }
 
-bool Surface::Update(const CTimer& mt)
+bool Mirror::Update(const CTimer& mt)
 {
 	return TRUE;
 }
 
-bool Surface::Render(const CTimer& mt)
+bool Mirror::Render(const CTimer& mt)
 {
 	return TRUE;
 }
 
-void Surface::BuildDescriptorHeaps(void)
+void Mirror::BuildDescriptorHeaps(void)
 {
 	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart());
 
@@ -55,10 +53,11 @@ void Surface::BuildDescriptorHeaps(void)
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = -1;
+	//srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 	GRAPHIC_DEV->CreateShaderResourceView(tex.Get(), &srvDesc, hDescriptor);
 }
 
-void Surface::BuildMaterials(void)
+void Mirror::BuildMaterials(void)
 {
 	auto mat = std::make_unique<Material>();
 	mat->Name = m_matName;
@@ -73,7 +72,7 @@ void Surface::BuildMaterials(void)
 	++g_MatCBcount;
 }
 
-void Surface::BuildRenderItem(void)
+void Mirror::BuildRenderItem(void)
 {
 	auto ritem = std::make_unique<RenderItem>();
 	ritem->World = MathHelper::Identity4x4();
@@ -85,15 +84,16 @@ void Surface::BuildRenderItem(void)
 	ritem->IndexCount = ritem->Geo->DrawArgs[m_submeshName].IndexCount;
 	ritem->StartIndexLocation = ritem->Geo->DrawArgs[m_submeshName].StartIndexLocation;
 	ritem->BaseVertexLocation = ritem->Geo->DrawArgs[m_submeshName].BaseVertexLocation;
-
-	UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(ritem.get());
+	
+	UTIL.Get_Drawlayer((int)DrawLayer::DL_MIRROR).push_back(ritem.get());
+	UTIL.Get_Drawlayer((int)DrawLayer::DL_TRANSPARENT).push_back(ritem.get());
 
 	UTIL.Get_Ritemvec().push_back(std::move(ritem));
 
 	++g_ObjCBcount;
 }
 
-void Surface::BuildGeometry(void)
+void Mirror::BuildGeometry(void)
 {
 	std::array<std::uint16_t, 30> indices =
 	{
@@ -134,11 +134,11 @@ void Surface::BuildGeometry(void)
 	UTIL.Get_Geomesh()[geo->Name] = std::move(geo);
 }
 
-std::shared_ptr<Surface> Surface::Create(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname)
+std::shared_ptr<Mirror> Mirror::Create(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname)
 {
-	SURFACE pSurface = std::make_shared<Surface>(_type, _name, _submeshname, _texname, _matname);
+	MIRROR pMirror = std::make_shared<Mirror>(_type, _name, _submeshname, _texname, _matname);
 
-	if (!pSurface) return nullptr;
+	if (!pMirror) return nullptr;
 
-	return pSurface;
+	return pMirror;
 }

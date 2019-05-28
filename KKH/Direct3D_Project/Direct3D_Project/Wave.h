@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Object.h"
-#include "Struct.h"
+
 
 class Wave : public Object
 {
