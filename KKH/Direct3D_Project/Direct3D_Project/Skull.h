@@ -31,6 +31,7 @@ private:
 
 	RenderItem* m_Skull;
 	RenderItem* m_ReflectionSkull;
+	RenderItem* m_ShadowedSkull;
 
 public:
 	static std::shared_ptr<Skull> Create(Object::COM_TYPE _type, std::string _name, std::string _submeshname,

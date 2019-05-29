@@ -184,8 +184,8 @@ void CMainApp::SettingRoom(void)
 	auto Objtemp2 = std::dynamic_pointer_cast<Mirror>(UTIL.Get_Object("mirrorGeo", Object::COM_TYPE::CT_STATIC));
 	_vertex =
 	{
-		VERTEX(-3.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f),
-		VERTEX(-3.5f, 4.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f),
+		VERTEX(-2.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f),
+		VERTEX(-2.5f, 4.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f),
 		VERTEX(2.5f,  4.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f),
 		VERTEX(2.5f,  0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f)
 	};

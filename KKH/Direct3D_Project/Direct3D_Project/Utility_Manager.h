@@ -60,6 +60,7 @@ private:
 	int mCurrFrameResourceIndex;
 
 	PassConstants mMainPassCB;
+	PassConstants mReflectedPassCB;
 
 	std::vector<RenderItem*> mDrawLayer[(int)DrawLayer::DL_END];
 
@@ -97,7 +98,8 @@ private:
 	void UpdateObjectCBs(const CTimer& mt);
 	void UpdateMaterialCBs(const CTimer& mt);
 	void UpdateMainPassCB(const CTimer& mt);
-	
+	void UpdateReflectedPassCB(const CTimer& mt);
+
 	void DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const std::vector<RenderItem*>& ritems);
 
 	void OnKeyboardInput(const CTimer& mt);

@@ -7,6 +7,7 @@ Skull::Skull(void)
 	: Object()
 	, m_Skull(nullptr)
 	, m_ReflectionSkull(nullptr)
+	, m_ShadowedSkull(nullptr)
 	, mSkullTranslation(0.0f, 1.0f, -5.0f)
 {
 }
@@ -15,6 +16,7 @@ Skull::Skull(Object::COM_TYPE _type, std::string _name, std::string _submeshname
 	: Object(_type, _name, _submeshname, _texname, _matname)
 	, m_Skull(nullptr)
 	, m_ReflectionSkull(nullptr)
+	, m_ShadowedSkull(nullptr)
 	, mSkullTranslation(0.0f, 1.0f, -5.0f)
 {
 }
@@ -51,18 +53,28 @@ bool Skull::Update(const CTimer& mt)
 
 	mSkullTranslation.y = MathHelper::Max(mSkullTranslation.y, 0.0f);
 
+	//world mat
 	DirectX::XMMATRIX _rotate = DirectX::XMMatrixRotationY(0.5f * PI);
 	DirectX::XMMATRIX _scale = DirectX::XMMatrixScaling(0.45f, 0.45f, 0.45f);
 	DirectX::XMMATRIX _offset = DirectX::XMMatrixTranslation(mSkullTranslation.x, mSkullTranslation.y, mSkullTranslation.z);
 	DirectX::XMMATRIX _world = _rotate * _scale * _offset;
 	DirectX::XMStoreFloat4x4(&m_Skull->World, _world);
 
+	//reflection world mat
 	DirectX::XMVECTOR _mirrorplane = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	DirectX::XMMATRIX _r = DirectX::XMMatrixReflect(_mirrorplane);
 	DirectX::XMStoreFloat4x4(&m_ReflectionSkull->World, _world * _r);
 
+	//shadow world mat
+	DirectX::XMVECTOR _shadowplane = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	DirectX::XMVECTOR _toMainLight = -DirectX::XMLoadFloat3(&UTIL.Get_MainPassCB().Lights[0].Direction);
+	DirectX::XMMATRIX _s = DirectX::XMMatrixShadow(_shadowplane, _toMainLight);
+	DirectX::XMMATRIX _shadowOffsetY = DirectX::XMMatrixTranslation(0.0f, 0.001f, 0.0f);
+	DirectX::XMStoreFloat4x4(&m_ShadowedSkull->World, _world * _s * _shadowOffsetY);
+
 	m_Skull->NumFramesDirty = NumFrameResources;
 	m_ReflectionSkull->NumFramesDirty = NumFrameResources;
+	m_ShadowedSkull->NumFramesDirty = NumFrameResources;
 
 	return TRUE;
 }
@@ -94,14 +106,23 @@ void Skull::BuildMaterials(void)
 	auto mat = std::make_unique<Material>();
 	mat->Name = m_matName;
 	mat->MatCBIndex = g_MatCBcount;
-	mat->DiffuseSrvHeapIndex = g_MatCBcount;
+	mat->DiffuseSrvHeapIndex = g_MatCBcount++;
 	mat->DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	mat->FresnelR0 = DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f);
 	mat->Roughness = 0.3f;
 
-	UTIL.Get_Materials()[m_matName] = std::move(mat);
+	auto shadowmat = std::make_unique<Material>();
+	shadowmat->Name = "shadow_" + m_matName;
+	shadowmat->MatCBIndex = g_MatCBcount;
+	shadowmat->DiffuseSrvHeapIndex = g_MatCBcount - 1;
+	shadowmat->DiffuseAlbedo = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
+	shadowmat->FresnelR0 = DirectX::XMFLOAT3(0.001f, 0.001f, 0.001f);
+	shadowmat->Roughness = 0.0f;
 
 	++g_MatCBcount;
+
+	UTIL.Get_Materials()[m_matName] = std::move(mat);
+	UTIL.Get_Materials()["shadow_" + m_matName] = std::move(shadowmat);
 }
 
 void Skull::BuildRenderItem(void)
@@ -125,8 +146,16 @@ void Skull::BuildRenderItem(void)
 	m_ReflectionSkull = reflectionRitem.get();
 	UTIL.Get_Drawlayer((int)DrawLayer::DL_REFLECTED).push_back(reflectionRitem.get());
 
+	auto shadowedRitem = std::make_unique<RenderItem>();
+	*shadowedRitem = *ritem;
+	shadowedRitem->objCBIndex = g_ObjCBcount++;
+	shadowedRitem->Mat = UTIL.Get_Materials()["shadow_" + m_matName].get();
+	m_ShadowedSkull = shadowedRitem.get();
+	UTIL.Get_Drawlayer((int)DrawLayer::DL_SHADOW).push_back(shadowedRitem.get());
+
 	UTIL.Get_Ritemvec().push_back(std::move(ritem));
 	UTIL.Get_Ritemvec().push_back(std::move(reflectionRitem));
+	UTIL.Get_Ritemvec().push_back(std::move(shadowedRitem));
 }
 
 void Skull::BuildGeometry(void)

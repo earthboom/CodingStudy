@@ -63,7 +63,7 @@ void Utility_Manager::BuildDescriptorHeaps(void)
 {
 	//Create the SRV heap
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-	srvHeapDesc.NumDescriptors = 6;
+	srvHeapDesc.NumDescriptors = 7;
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	ThrowIfFailed(GRAPHIC_DEV->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSrvDescriptorHeap)));
@@ -197,7 +197,27 @@ void Utility_Manager::BuildPSOs(void)
 	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&drawReflectionsPsoDesc, IID_PPV_ARGS(&mPSOs["drawStencilReflections"])));
 	
 	//PSO for shodow objects
+	D3D12_DEPTH_STENCIL_DESC shadowDSS;
+	shadowDSS.DepthEnable = TRUE;
+	shadowDSS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	shadowDSS.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	shadowDSS.StencilEnable = TRUE;
+	shadowDSS.StencilReadMask = 0xff;
+	shadowDSS.StencilWriteMask = 0xff;
 
+	shadowDSS.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	shadowDSS.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	shadowDSS.FrontFace.StencilPassOp = D3D12_STENCIL_OP_INCR;
+	shadowDSS.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
+
+	shadowDSS.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	shadowDSS.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	shadowDSS.BackFace.StencilPassOp = D3D12_STENCIL_OP_INCR;
+	shadowDSS.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC shadowPsoDesc = transparentPsoDesc;
+	shadowPsoDesc.DepthStencilState = shadowDSS;
+	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&shadowPsoDesc, IID_PPV_ARGS(&mPSOs["shadow"])));
 
 	//PSO for alpha tested objects
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC alphaTestedPSoDesc = psoDesc;
@@ -302,6 +322,7 @@ bool Utility_Manager::Object_Update(const CTimer& mt)
 	UpdateObjectCBs(mt);
 	UpdateMaterialCBs(mt);
 	UpdateMainPassCB(mt);
+	UpdateReflectedPassCB(mt);
 
 	return TRUE;
 }
@@ -354,6 +375,9 @@ bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 	
 	_commandlist->SetPipelineState(mPSOs["transparent"].Get());
 	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_TRANSPARENT]);
+
+	_commandlist->SetPipelineState(mPSOs["shadow"].Get());
+	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_SHADOW]);
 
 	_commandlist->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_graphic->Get_CurrentBackBuffer_Resource(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
@@ -450,6 +474,24 @@ void Utility_Manager::UpdateMainPassCB(const CTimer& mt)
 
 	auto currPassCB = mCurrFrameResource->PassCB.get();
 	currPassCB->CopyData(0, mMainPassCB);
+}
+
+void Utility_Manager::UpdateReflectedPassCB(const CTimer& mt)
+{
+	mReflectedPassCB = mMainPassCB;
+
+	DirectX::XMVECTOR _mirror = DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);	//xy Plane
+	DirectX::XMMATRIX _r = DirectX::XMMatrixReflect(_mirror);
+
+	for (int i = 0; i < 3; ++i)
+	{
+		DirectX::XMVECTOR lightDir = DirectX::XMLoadFloat3(&mMainPassCB.Lights[i].Direction);
+		DirectX::XMVECTOR reflectedLightDir = DirectX::XMVector3TransformNormal(lightDir, _r);
+		DirectX::XMStoreFloat3(&mReflectedPassCB.Lights[i].Direction, reflectedLightDir);
+	}
+
+	auto currPassCB = mCurrFrameResource->PassCB.get();
+	currPassCB->CopyData(1, mReflectedPassCB);
 }
 
 void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const std::vector<RenderItem*>& ritems)
