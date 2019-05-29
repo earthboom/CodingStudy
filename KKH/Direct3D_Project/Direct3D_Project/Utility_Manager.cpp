@@ -153,8 +153,8 @@ void Utility_Manager::BuildPSOs(void)
 	mirrorDSS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 	mirrorDSS.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 	mirrorDSS.StencilEnable = TRUE;
-	mirrorDSS.StencilReadMask = 0xff;
-	mirrorDSS.StencilWriteMask = 0xff;
+	mirrorDSS.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
+	mirrorDSS.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
 
 	mirrorDSS.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
 	mirrorDSS.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
@@ -177,8 +177,8 @@ void Utility_Manager::BuildPSOs(void)
 	reflectionsDDS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	reflectionsDDS.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 	reflectionsDDS.StencilEnable = TRUE;
-	reflectionsDDS.StencilReadMask = 0xff;
-	reflectionsDDS.StencilWriteMask = 0xff;
+	reflectionsDDS.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
+	reflectionsDDS.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
 
 	reflectionsDDS.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
 	reflectionsDDS.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
@@ -202,8 +202,8 @@ void Utility_Manager::BuildPSOs(void)
 	shadowDSS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	shadowDSS.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 	shadowDSS.StencilEnable = TRUE;
-	shadowDSS.StencilReadMask = 0xff;
-	shadowDSS.StencilWriteMask = 0xff;
+	shadowDSS.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
+	shadowDSS.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
 
 	shadowDSS.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
 	shadowDSS.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;

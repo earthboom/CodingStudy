@@ -53,14 +53,14 @@ private:
 	D3D12_VIEWPORT	m_ScreenViewport;
 	D3D12_RECT		m_ScissorRect;
 
-	UINT m_iRtvDescriptiorSize = 0;
-	UINT m_iDsvDescriptiorSize = 0;
-	UINT m_CbvSrvUavDescriptorSize = 0;
+	UINT m_iRtvDescriptiorSize;
+	UINT m_iDsvDescriptiorSize;
+	UINT m_CbvSrvUavDescriptorSize;
 
-	std::wstring mMainWndCaption = L"D3D_App";
-	D3D_DRIVER_TYPE m_DriverType = D3D_DRIVER_TYPE_HARDWARE;
-	DXGI_FORMAT m_BackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
-	DXGI_FORMAT m_DepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	std::wstring mMainWndCaption;
+	D3D_DRIVER_TYPE m_DriverType;
+	DXGI_FORMAT m_BackBufferFormat;
+	DXGI_FORMAT m_DepthStencilFormat;
 
 public:
 	ID3D12Resource* Get_CurrentBackBuffer_Resource(void) const;
