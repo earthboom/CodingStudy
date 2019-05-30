@@ -11,10 +11,6 @@
     <Filter Include="99.Default">
       <UniqueIdentifier>{5d5d7f61-8fcc-40aa-83bf-6b35a3c8bbed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="99.Header">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Source Files\Timer">
       <UniqueIdentifier>{4ff35bfa-0749-4fe7-a2db-13293588d03f}</UniqueIdentifier>
     </Filter>
@@ -42,6 +38,10 @@
     <Filter Include="Source Files\00.MainApp">
       <UniqueIdentifier>{82c3b2d7-d2ea-47f6-9119-24e84a496a0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\99.Header">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -51,10 +51,10 @@
       <Filter>99.Default</Filter>
     </ClInclude>
     <ClInclude Include="Struct.h">
-      <Filter>99.Header</Filter>
+      <Filter>Source Files\99.Header</Filter>
     </ClInclude>
     <ClInclude Include="Include.h">
-      <Filter>99.Header</Filter>
+      <Filter>Source Files\99.Header</Filter>
     </ClInclude>
     <ClInclude Include="GameTimer.h">
       <Filter>Source Files\Timer</Filter>
@@ -87,25 +87,22 @@
       <Filter>Source Files\Math</Filter>
     </ClInclude>
     <ClInclude Include="Macro.h">
-      <Filter>99.Header</Filter>
+      <Filter>Source Files\99.Header</Filter>
     </ClInclude>
     <ClInclude Include="Value.h">
-      <Filter>99.Header</Filter>
+      <Filter>Source Files\99.Header</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>Source Files\Default</Filter>
     </ClInclude>
     <ClInclude Include="Enum.h">
-      <Filter>99.Header</Filter>
+      <Filter>Source Files\99.Header</Filter>
     </ClInclude>
     <ClInclude Include="Function.h">
-      <Filter>99.Header</Filter>
+      <Filter>Source Files\99.Header</Filter>
     </ClInclude>
     <ClInclude Include="Functor.h">
-      <Filter>99.Header</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Source Files\Input</Filter>
+      <Filter>Source Files\99.Header</Filter>
     </ClInclude>
     <ClInclude Include="MainApp.h">
       <Filter>Source Files\00.MainApp</Filter>
@@ -142,9 +139,6 @@
     <ClCompile Include="MathHelper.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
     <ClCompile Include="MainApp.cpp">
       <Filter>Source Files\00.MainApp</Filter>
     </ClCompile>
@@ -161,13 +155,5 @@
     <ResourceCompile Include="DirectXProject.rc">
       <Filter>99.Default</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Shaders\Default.hlsl">
-      <Filter>Source Files\Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\LightingUtil.hlsl">
-      <Filter>Source Files\Shader</Filter>
-    </FxCompile>
   </ItemGroup>
 </Project>

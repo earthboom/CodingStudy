@@ -30,15 +30,14 @@ private:
 	void UpdateObjectCBs(const GameTimer& gt);
 	void UpdateMaterialCBs(const GameTimer& gt);
 	void UpdateMainPassCB(const GameTimer& gt);
-	void UpdateWaves(const GameTimer& gt);
+	void UpdateReflectedPassCB(const GameTimer& gt);
 
 	void LoadTextures();
 	void BuildRootSignature();
 	void BuildDescriptorHeaps();
 	void BuildShadersAndInputLayout();
-	void BuildLandGeometry();
-	void BuildWavesGeometry();
-	void BuildBoxGeometry();
+	void BuildRoomGeometry();
+	void BuildSkullGeometry();
 	void BuildPSOs();
 	void BuildFrameResources();
 	void BuildMaterials();
@@ -46,9 +45,6 @@ private:
 	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems);
 
 	std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
-
-	float GetHillsHeight(float x, float z)const;
-	XMFLOAT3 GetHillsNormal(float x, float z)const;
 
 private:
 
@@ -70,7 +66,10 @@ private:
 
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
-	RenderItem* mWavesRitem = nullptr;
+	// Cache render items of interest.
+	RenderItem* mSkullRitem = nullptr;
+	RenderItem* mReflectedSkullRitem = nullptr;
+	RenderItem* mShadowedSkullRitem = nullptr;
 
 	// List of all the render items.
 	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
@@ -78,17 +77,18 @@ private:
 	// Render items divided by PSO.
 	std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];
 
-	std::unique_ptr<Waves> mWaves;
-
 	PassConstants mMainPassCB;
+	PassConstants mReflectedPassCB;
+
+	XMFLOAT3 mSkullTranslation = { 0.0f, 1.0f, -5.0f };
 
 	XMFLOAT3 mEyePos = { 0.0f, 0.0f, 0.0f };
 	XMFLOAT4X4 mView = MathHelper::Identity4x4();
 	XMFLOAT4X4 mProj = MathHelper::Identity4x4();
 
-	float mTheta = 1.5f*XM_PI;
-	float mPhi = XM_PIDIV2 - 0.1f;
-	float mRadius = 50.0f;
+	float mTheta = 1.24f*XM_PI;
+	float mPhi = 0.42f*XM_PI;
+	float mRadius = 12.0f;
 
 	POINT mLastMousePos;
 };

@@ -45,18 +45,22 @@ struct PassConstants
 
 struct Vertex
 {
+	Vertex() = default;
+	Vertex(float x, float y, float z, float nx, float ny, float nz, float u, float v) :
+		Pos(x, y, z),
+		Normal(nx, ny, nz),
+		TexC(u, v) {}
+
 	DirectX::XMFLOAT3 Pos;
 	DirectX::XMFLOAT3 Normal;
 	DirectX::XMFLOAT2 TexC;
 };
 
-// Stores the resources needed for the CPU to build the command lists
-// for a frame.  
 struct FrameResource
 {
 public:
 
-	FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT materialCount, UINT waveVertCount)
+	FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT materialCount)
 	{
 		ThrowIfFailed(device->CreateCommandAllocator(
 			D3D12_COMMAND_LIST_TYPE_DIRECT,
@@ -66,16 +70,10 @@ public:
 		PassCB = std::make_unique<UploadBuffer<PassConstants>>(device, passCount, true);
 		MaterialCB = std::make_unique<UploadBuffer<MaterialConstants>>(device, materialCount, true);
 		ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(device, objectCount, true);
-
-		WavesVB = std::make_unique<UploadBuffer<Vertex>>(device, waveVertCount, false);
 	}
-	
 	FrameResource(const FrameResource& rhs) = delete;
 	FrameResource& operator=(const FrameResource& rhs) = delete;
-	~FrameResource()
-	{
-
-	}
+	~FrameResource() {}
 
 	// We cannot reset the allocator until the GPU is done processing the commands.
 	// So each frame needs their own allocator.
@@ -88,10 +86,6 @@ public:
 	std::unique_ptr<UploadBuffer<MaterialConstants>> MaterialCB = nullptr;
 	std::unique_ptr<UploadBuffer<ObjectConstants>> ObjectCB = nullptr;
 
-	// We cannot update a dynamic vertex buffer until the GPU is done processing
-	// the commands that reference it.  So each frame needs their own.
-	std::unique_ptr<UploadBuffer<Vertex>> WavesVB = nullptr;
-
 	// Fence value to mark commands up to this fence point.  This lets us
 	// check if these frame resources are still in use by the GPU.
 	UINT64 Fence = 0;
@@ -102,11 +96,11 @@ public:
 struct RenderItem
 {
 	RenderItem() = default;
- 
-    // World matrix of the shape that describes the object's local space
-    // relative to the world space, which defines the position, orientation,
-    // and scale of the object in the world.
-    XMFLOAT4X4 World = MathHelper::Identity4x4();
+
+	// World matrix of the shape that describes the object's local space
+	// relative to the world space, which defines the position, orientation,
+	// and scale of the object in the world.
+	XMFLOAT4X4 World = MathHelper::Identity4x4();
 
 	XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();
 
@@ -122,13 +116,14 @@ struct RenderItem
 	Material* Mat = nullptr;
 	MeshGeometry* Geo = nullptr;
 
-    // Primitive topology.
-    D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	// Primitive topology.
+	D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-    // DrawIndexedInstanced parameters.
-    UINT IndexCount = 0;
-    UINT StartIndexLocation = 0;
-    int BaseVertexLocation = 0;
+	// DrawIndexedInstanced parameters.
+	UINT IndexCount = 0;
+	UINT StartIndexLocation = 0;
+	int BaseVertexLocation = 0;
 };
+
 
 #endif // Struct_h__
