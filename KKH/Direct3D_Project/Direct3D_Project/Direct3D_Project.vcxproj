@@ -255,6 +255,7 @@
     <FxCompile Include="..\Shaders\color.hlsl" />
     <FxCompile Include="..\Shaders\Default.hlsl" />
     <FxCompile Include="..\Shaders\LightingUtil.hlsl" />
+    <FxCompile Include="..\Shaders\TreeSprite.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
