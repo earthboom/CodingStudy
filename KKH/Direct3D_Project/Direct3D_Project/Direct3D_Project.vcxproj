@@ -182,6 +182,7 @@
   <ItemGroup>
     <ClInclude Include="..\Common\DDSTextureLoader.h" />
     <ClInclude Include="..\Common\MathHelper.h" />
+    <ClInclude Include="Billboard.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Const.h" />
@@ -215,6 +216,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Common\DDSTextureLoader.cpp" />
+    <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="d3dutil_Manager.cpp" />

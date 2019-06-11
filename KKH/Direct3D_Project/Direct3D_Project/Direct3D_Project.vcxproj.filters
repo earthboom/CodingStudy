@@ -91,6 +91,9 @@
     <Filter Include="02.Utiltiy\03.Object\Skull">
       <UniqueIdentifier>{01bc611b-f123-4264-bc55-8aa15f8132a9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utiltiy\03.Object\BIllboard">
+      <UniqueIdentifier>{741218c5-40bf-497c-9f6f-0519adf6ecb1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -189,6 +192,9 @@
     <ClInclude Include="Skull.h">
       <Filter>02.Utiltiy\03.Object\Skull</Filter>
     </ClInclude>
+    <ClInclude Include="Billboard.h">
+      <Filter>02.Utiltiy\03.Object\BIllboard</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D_Project.cpp">
@@ -262,6 +268,9 @@
     </ClCompile>
     <ClCompile Include="Skull.cpp">
       <Filter>02.Utiltiy\03.Object\Skull</Filter>
+    </ClCompile>
+    <ClCompile Include="Billboard.cpp">
+      <Filter>02.Utiltiy\03.Object\BIllboard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
