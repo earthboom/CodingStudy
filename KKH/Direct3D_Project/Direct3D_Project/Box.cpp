@@ -133,7 +133,7 @@ void Box::BuildRenderItem(void)
 	ritem->StartIndexLocation = ritem->Geo->DrawArgs[m_submeshName].StartIndexLocation;
 	ritem->BaseVertexLocation = ritem->Geo->DrawArgs[m_submeshName].BaseVertexLocation;
 
-	UTIL.Get_Drawlayer((int)DrawLayer::DL_ALAPHTESTED).push_back(ritem.get());
+	UTIL.Get_Drawlayer((int)DrawLayer::DL_ALPHATESTED).push_back(ritem.get());
 
 	UTIL.Get_Ritemvec().push_back(std::move(ritem));
 

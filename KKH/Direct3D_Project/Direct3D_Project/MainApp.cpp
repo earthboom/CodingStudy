@@ -94,6 +94,9 @@ bool CMainApp::LoadTexture(void)
 	if (!TEX.onDDSLoad("iceTex", L"../Texture/ice.dds"))				return FALSE;
 	if (!TEX.onDDSLoad("white1x1Tex", L"../Texture/white1x1.dds"))		return FALSE;
 
+	//Billboard
+	if (!TEX.onDDSLoad("treeArrayTex", L"../Texture/treeArray2.dds"))	return FALSE;
+
 	return TRUE;
 }
 

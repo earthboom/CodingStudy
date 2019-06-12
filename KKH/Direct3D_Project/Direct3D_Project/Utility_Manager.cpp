@@ -74,11 +74,15 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 	const D3D_SHADER_MACRO defines[] = { "FOG", "1", NULL, NULL };
 	const D3D_SHADER_MACRO alphaTestDefines[] = { "FOG", "1", "ALPHA_TEST", "1", NULL, NULL };
 
-	//mShaders["standardVS"] = d3dutil_Mananger::CompileShader(L"../Shaders/Default.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["standardVS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", nullptr, "VS", "vs_5_1");
 	mShaders["opaquePS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", defines, "PS", "ps_5_1");
 	mShaders["alphaTestedPS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
 
-	mShaders["standardVS"] = d3dutil_Manager::LoadBinary(L"../Shaders/Default_vs.cso");
+	mShaders["treeSpriteVS"] = d3dutil_Manager::CompileShader(L"../Shaders/TreeSprite.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["treeSpriteGS"] = d3dutil_Manager::CompileShader(L"../Shaders/TreeSprite.hlsl", nullptr, "GS", "gs_5_1");
+	mShaders["treeSpritePS"] = d3dutil_Manager::CompileShader(L"../Shaders/TreeSprite.hlsl", alphaTestDefines, "PS", "ps_5_1");
+
+	//mShaders["standardVS"] = d3dutil_Manager::LoadBinary(L"../Shaders/Default_vs.cso");
 	//mShaders["opaquePS"] = d3dutil_Mananger::LoadBinary(L"../Shaders/Default_ps.cso");
 	//mShaders["alphaTestedPS"] = d3dutil_Mananger::LoadBinary(L"../Shaders/Default_ps.cso");
 
@@ -87,6 +91,12 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+	};
+
+	mTreeSpriteInputLayout =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
 	};
 }
 
@@ -227,6 +237,23 @@ void Utility_Manager::BuildPSOs(void)
 
 	alphaTestedPSoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&alphaTestedPSoDesc, IID_PPV_ARGS(&mPSOs["alphaTested"])));
+
+	//PSO for tree sprite
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC treeSpritePsoDesc = psoDesc;
+	treeSpritePsoDesc.VS =
+	{	reinterpret_cast<BYTE*>(mShaders["treeSprtieVS"]->GetBufferPointer()), mShaders["treeSpriteVS"]->GetBufferSize()	};
+
+	treeSpritePsoDesc.GS =
+	{	reinterpret_cast<BYTE*>(mShaders["treeSprtieGS"]->GetBufferPointer()), mShaders["treeSpriteGS"]->GetBufferSize()	};
+
+	treeSpritePsoDesc.PS =
+	{	reinterpret_cast<BYTE*>(mShaders["treeSprtiePS"]->GetBufferPointer()), mShaders["treeSpritePS"]->GetBufferSize()	};
+
+	treeSpritePsoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+	treeSpritePsoDesc.InputLayout = { mTreeSpriteInputLayout.data(), (UINT)mTreeSpriteInputLayout.size() };
+	treeSpritePsoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
+	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&treeSpritePsoDesc, IID_PPV_ARGS(&mPSOs["treeSprite"])));
 
 	//D3D12_GRAPHICS_PIPELINE_STATE_DESC opaqueWireframePsoDesc = psoDesc;
 	//opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
@@ -371,7 +398,7 @@ bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 	_commandlist->OMSetStencilRef(0);
 
 	//_commandlist->SetPipelineState(mPSOs["alphaTested"].Get());
-	//DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_ALAPHTESTED]);
+	//DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_ALPHATESTED]);
 	
 	_commandlist->SetPipelineState(mPSOs["transparent"].Get());
 	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_TRANSPARENT]);

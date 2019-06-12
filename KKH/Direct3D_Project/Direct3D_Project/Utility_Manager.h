@@ -41,6 +41,7 @@ private:
 	MAP_PSO mPSOs;
 
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
+	std::vector<D3D12_INPUT_ELEMENT_DESC> mTreeSpriteInputLayout;
 
 	typedef std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> GEOMESH;
 	GEOMESH	mGeometries;

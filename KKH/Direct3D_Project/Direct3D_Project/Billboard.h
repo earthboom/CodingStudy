@@ -26,6 +26,9 @@ private:
 private:
 	void BuildGeometry(void);
 
+private:
+	float GetHillsHeight(float x, float z) const;
+
 public:
 	static std::shared_ptr<Billboard> Create(Object::COM_TYPE _type, std::string _name, std::string _submeshname,
 		std::string _texname, std::string _matname);
