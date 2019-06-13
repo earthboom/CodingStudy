@@ -10,6 +10,7 @@
 #include "Surface.h"
 #include "Mirror.h"
 #include "Skull.h"
+#include "Billboard.h"
 #include "Texture_Manger.h"
 
 #define KEY_DOWN(vk_code)	(GetAsyncKeyState(vk_code) & 0x0001)
@@ -108,18 +109,20 @@ bool CMainApp::CreateObject(void)
 	g_MatCBcount = 0;
 	g_ObjCBcount = 0;
 
-	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Grid::Create(Object::COM_TYPE::CT_STATIC, "landGeo", "grid", "grassTex", "grass")))) return FALSE;
-	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Wave::Create(Object::COM_TYPE::CT_STATIC, "waterGeo", "grid", "waterTex", "water")))) return FALSE;
-	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Box::Create(Object::COM_TYPE::CT_STATIC, "boxGeo", "box", "fenceTex", "wirefence")))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Grid::Create(Object::COM_TYPE::CT_STATIC, "landGeo", "grid", "grassTex", "grass")))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Wave::Create(Object::COM_TYPE::CT_STATIC, "waterGeo", "grid", "waterTex", "water")))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Box::Create(Object::COM_TYPE::CT_STATIC, "boxGeo", "box", "fenceTex", "wirefence")))) return FALSE;
 
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "floorGeo", "floor", "checkboardTex", "checkertile")))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "wall_1_Geo", "wall", "bircksTex", "bricks1")))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "wall_2_Geo", "wall", "bircksTex", "bricks2")))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "wall_3_Geo", "wall", "bircksTex", "bricks3")))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Mirror::Create(Object::COM_TYPE::CT_STATIC, "mirrorGeo", "mirror", "iceTex", "icemirror")))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skullGeo", "skull", "white1x1Tex", "whiteskull")))) return FALSE;
+	//Billboard
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Billboard::Create(Object::COM_TYPE::CT_STATIC, "TreeGeo", "Tree", "treeArrayTex", "treearray")))) return FALSE;
 
-	SettingRoom();
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "floorGeo", "floor", "checkboardTex", "checkertile")))) return FALSE;
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "wall_1_Geo", "wall", "bircksTex", "bricks1")))) return FALSE;
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "wall_2_Geo", "wall", "bircksTex", "bricks2")))) return FALSE;
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "wall_3_Geo", "wall", "bircksTex", "bricks3")))) return FALSE;
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Mirror::Create(Object::COM_TYPE::CT_STATIC, "mirrorGeo", "mirror", "iceTex", "icemirror")))) return FALSE;
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skullGeo", "skull", "white1x1Tex", "whiteskull")))) return FALSE;
+	//SettingRoom();
 
 	return TRUE;
 }

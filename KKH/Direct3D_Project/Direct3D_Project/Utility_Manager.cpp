@@ -104,7 +104,8 @@ void Utility_Manager::BuildFrameResources(void)
 {
 	for (int i = 0; i < NumFrameResources; ++i)
 	{
-		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC_DEV.Get(), 2, (UINT)mAllRitem.size(), (UINT)mMaterials.size()));// , mCPWave->VertexCount()));
+		//mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC_DEV.Get(), 2, (UINT)mAllRitem.size(), (UINT)mMaterials.size()));
+		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC_DEV.Get(), 2, (UINT)mAllRitem.size(), (UINT)mMaterials.size(), mCPWave->VertexCount()));
 	}
 }
 
@@ -241,13 +242,13 @@ void Utility_Manager::BuildPSOs(void)
 	//PSO for tree sprite
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC treeSpritePsoDesc = psoDesc;
 	treeSpritePsoDesc.VS =
-	{	reinterpret_cast<BYTE*>(mShaders["treeSprtieVS"]->GetBufferPointer()), mShaders["treeSpriteVS"]->GetBufferSize()	};
+	{	reinterpret_cast<BYTE*>(mShaders["treeSpriteVS"]->GetBufferPointer()), mShaders["treeSpriteVS"]->GetBufferSize()	};
 
 	treeSpritePsoDesc.GS =
-	{	reinterpret_cast<BYTE*>(mShaders["treeSprtieGS"]->GetBufferPointer()), mShaders["treeSpriteGS"]->GetBufferSize()	};
+	{	reinterpret_cast<BYTE*>(mShaders["treeSpriteGS"]->GetBufferPointer()), mShaders["treeSpriteGS"]->GetBufferSize()	};
 
 	treeSpritePsoDesc.PS =
-	{	reinterpret_cast<BYTE*>(mShaders["treeSprtiePS"]->GetBufferPointer()), mShaders["treeSpritePS"]->GetBufferSize()	};
+	{	reinterpret_cast<BYTE*>(mShaders["treeSpritePS"]->GetBufferPointer()), mShaders["treeSpritePS"]->GetBufferSize()	};
 
 	treeSpritePsoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
 	treeSpritePsoDesc.InputLayout = { mTreeSpriteInputLayout.data(), (UINT)mTreeSpriteInputLayout.size() };
@@ -397,9 +398,12 @@ bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 	_commandlist->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
 	_commandlist->OMSetStencilRef(0);
 
-	//_commandlist->SetPipelineState(mPSOs["alphaTested"].Get());
-	//DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_ALPHATESTED]);
+	_commandlist->SetPipelineState(mPSOs["alphaTested"].Get());
+	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_ALPHATESTED]);
 	
+	_commandlist->SetPipelineState(mPSOs["treeSprite"].Get());
+	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_ALPHATESTED_TREESPRITE]);
+
 	_commandlist->SetPipelineState(mPSOs["transparent"].Get());
 	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_TRANSPARENT]);
 

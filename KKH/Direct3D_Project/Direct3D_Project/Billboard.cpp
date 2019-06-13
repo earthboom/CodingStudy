@@ -6,10 +6,12 @@
 #include "Texture_Manger.h"
 
 Billboard::Billboard(void)
+	: Object()
 {
 }
 
 Billboard::Billboard(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname)
+	: Object(_type, _name, _submeshname, _texname, _matname)
 {
 }
 
@@ -134,7 +136,7 @@ void Billboard::BuildGeometry(void)
 	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC_DEV.Get(),
 		COM_LIST.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
 
-	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC_DEV.Get(),
+	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC_DEV.Get(),
 		COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
 
 	geo->VertexByteStride = sizeof(TreeSpriteVertex);
