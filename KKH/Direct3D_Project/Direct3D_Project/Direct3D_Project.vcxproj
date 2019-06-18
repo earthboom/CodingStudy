@@ -254,6 +254,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Shaders\Blur.hlsl" />
     <FxCompile Include="..\Shaders\color.hlsl" />
     <FxCompile Include="..\Shaders\Default.hlsl" />
     <FxCompile Include="..\Shaders\LightingUtil.hlsl" />
