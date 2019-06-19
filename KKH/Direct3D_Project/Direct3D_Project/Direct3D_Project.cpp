@@ -13,8 +13,11 @@
 
 // Global Variables:
 DirectX::XMFLOAT3 g_EyePos = { 0.0f, 100.0f, -100.0f };
+
 bool g_bDebugConsole = FALSE;
 bool mIsWireframe = FALSE;
+bool g_ScreenBlur = FALSE;
+
 DirectX::XMFLOAT4X4 g_Proj = MathHelper::Identity4x4();
 
 short g_MatCBcount = 0;

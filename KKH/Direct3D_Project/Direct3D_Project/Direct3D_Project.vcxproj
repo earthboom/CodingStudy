@@ -183,6 +183,7 @@
     <ClInclude Include="..\Common\DDSTextureLoader.h" />
     <ClInclude Include="..\Common\MathHelper.h" />
     <ClInclude Include="Billboard.h" />
+    <ClInclude Include="BlurFilter.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Const.h" />
@@ -217,6 +218,7 @@
   <ItemGroup>
     <ClCompile Include="..\Common\DDSTextureLoader.cpp" />
     <ClCompile Include="Billboard.cpp" />
+    <ClCompile Include="BlurFilter.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="d3dutil_Manager.cpp" />

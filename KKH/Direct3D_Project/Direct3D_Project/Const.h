@@ -10,6 +10,7 @@ extern DirectX::XMFLOAT3 g_EyePos;
 
 extern bool g_bDebugConsole;
 extern bool mIsWireframe;
+extern bool g_ScreenBlur;
 
 extern DirectX::XMFLOAT4X4 g_Proj;
 

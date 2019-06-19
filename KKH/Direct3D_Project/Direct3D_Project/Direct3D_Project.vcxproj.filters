@@ -94,6 +94,9 @@
     <Filter Include="02.Utiltiy\03.Object\BIllboard">
       <UniqueIdentifier>{741218c5-40bf-497c-9f6f-0519adf6ecb1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utiltiy\94.BlurFilter">
+      <UniqueIdentifier>{b1b4a00b-fae7-42c3-b200-eee1c56eabf8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -195,6 +198,9 @@
     <ClInclude Include="Billboard.h">
       <Filter>02.Utiltiy\03.Object\BIllboard</Filter>
     </ClInclude>
+    <ClInclude Include="BlurFilter.h">
+      <Filter>02.Utiltiy\94.BlurFilter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D_Project.cpp">
@@ -271,6 +277,9 @@
     </ClCompile>
     <ClCompile Include="Billboard.cpp">
       <Filter>02.Utiltiy\03.Object\BIllboard</Filter>
+    </ClCompile>
+    <ClCompile Include="BlurFilter.cpp">
+      <Filter>02.Utiltiy\94.BlurFilter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

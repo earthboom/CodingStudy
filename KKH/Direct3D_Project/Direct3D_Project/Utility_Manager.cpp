@@ -265,6 +265,11 @@ void Utility_Manager::OnResize(void)
 {
 	DirectX::XMMATRIX p = DirectX::XMMatrixPerspectiveFovLH(0.25f * PI, AspectRatio(), 1.0f, 1000.0f);
 	DirectX::XMStoreFloat4x4(&g_Proj, p);
+
+	if (g_ScreenBlur)
+	{
+
+	}
 }
 
 bool Utility_Manager::Object_Create(OBJECT& obj)
