@@ -93,7 +93,7 @@ void Utility_Manager::BuildPostProcessRootSignature(void)
 
 	ThrowIfFailed(GRAPHIC->Get_Device()->CreateRootSignature(
 		0, serializedRootSig->GetBufferPointer(),
-		serializedRootSig->GetBufferSize(), IID_PPV_ARGS(mRootSignature.GetAddressOf())));
+		serializedRootSig->GetBufferSize(), IID_PPV_ARGS(mPostProcessRootSignature.GetAddressOf())));
 }
 
 void Utility_Manager::BuildDescriptorHeaps(void)

@@ -2,7 +2,7 @@
 #include "BlurFilter.h"
 
 BlurFilter::BlurFilter(void)
-	: MaxBlurRadius(0)
+	: MaxBlurRadius(5)
 	, m_pDevice(nullptr)
 	, mWidth(0), mHeight(0)
 	, mFormat(DXGI_FORMAT_UNKNOWN)
@@ -14,7 +14,7 @@ BlurFilter::BlurFilter(void)
 }
 
 BlurFilter::BlurFilter(ID3D12Device* device, UINT width, UINT height, DXGI_FORMAT format)
-	: MaxBlurRadius(0)
+	: MaxBlurRadius(5)
 	, m_pDevice(device)
 	, mWidth(width), mHeight(height)
 	, mFormat(format)

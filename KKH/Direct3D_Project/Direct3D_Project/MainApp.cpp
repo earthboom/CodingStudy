@@ -21,6 +21,7 @@ CMainApp::CMainApp(void)
 	//,m_Shape(nullptr)
 	//,m_Box(nullptr)
 {
+	g_ScreenBlur = TRUE;
 }
 
 CMainApp::~CMainApp(void)
@@ -38,7 +39,9 @@ bool CMainApp::Ready_MainApp(void)
 
 	UTIL.Get_CbvSrvDescriptorSize() = GRAPHIC_DEV->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-	LoadTexture();	
+	LoadTexture();		
+	
+	UTIL.OnResize();
 
 	UTIL.UtilityInitialize();
 	UTIL.BuildRootSignature();
@@ -52,9 +55,7 @@ bool CMainApp::Ready_MainApp(void)
 	UTIL.UtilityDecriptor();
 	UTIL.BuildFrameResources();
 	UTIL.BuildPSOs();
-
-	UTIL.OnResize();
-
+	
 	//m_LAW = LandAndWave::Create();
 	//m_LAW->OnResize();
 
