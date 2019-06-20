@@ -5,7 +5,7 @@
 #include "Texture_Manger.h"
 
 Utility_Manager::Utility_Manager(void)
-	: mRootSignature(nullptr)
+	: mRootSignature(nullptr), mPostProcessRootSignature(nullptr)
 	, mSrvDescriptorHeap(nullptr)
 	, Obj_static_map(new OBJMAP)
 	, Obj_dynamic_map(new OBJMAP)
@@ -23,6 +23,11 @@ Utility_Manager::Utility_Manager(void)
 Utility_Manager::~Utility_Manager(void)
 {
 
+}
+
+void Utility_Manager::UtilityInitialize(void)
+{
+	mBlurFilter = std::make_unique<BlurFilter>(GRAPHIC_DEV.Get(), WINSIZE_X, WINSIZE_Y, DXGI_FORMAT_R8G8B8A8_UNORM);
 }
 
 void Utility_Manager::BuildRootSignature(void)
@@ -59,11 +64,46 @@ void Utility_Manager::BuildRootSignature(void)
 		serializedRootSig->GetBufferSize(), IID_PPV_ARGS(mRootSignature.GetAddressOf())));
 }
 
+void Utility_Manager::BuildPostProcessRootSignature(void)
+{
+	CD3DX12_DESCRIPTOR_RANGE srvTable;
+	srvTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+
+	CD3DX12_DESCRIPTOR_RANGE uavTable;
+	uavTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0);
+
+	CD3DX12_ROOT_PARAMETER slotRootParameter[3];
+
+	slotRootParameter[0].InitAsConstants(12, 0);
+	slotRootParameter[1].InitAsDescriptorTable(1, &srvTable);
+	slotRootParameter[2].InitAsDescriptorTable(1, &uavTable);
+
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(3, slotRootParameter, 0, nullptr,
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+	Microsoft::WRL::ComPtr<ID3DBlob> serializedRootSig = nullptr;
+	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+	HRESULT hr = D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1,
+		serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());
+
+	if (errorBlob != nullptr)
+		::OutputDebugStringA((char*)errorBlob->GetBufferPointer());
+
+	ThrowIfFailed(hr);
+
+	ThrowIfFailed(GRAPHIC->Get_Device()->CreateRootSignature(
+		0, serializedRootSig->GetBufferPointer(),
+		serializedRootSig->GetBufferSize(), IID_PPV_ARGS(mRootSignature.GetAddressOf())));
+}
+
 void Utility_Manager::BuildDescriptorHeaps(void)
 {
+	const int textureDescriptorCount = 3;
+	const int blurDescriptorCount = 4;
+
 	//Create the SRV heap
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-	srvHeapDesc.NumDescriptors = 7;
+	srvHeapDesc.NumDescriptors = textureDescriptorCount + blurDescriptorCount;//7;
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	ThrowIfFailed(GRAPHIC_DEV->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSrvDescriptorHeap)));
@@ -86,6 +126,10 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 	//mShaders["opaquePS"] = d3dutil_Mananger::LoadBinary(L"../Shaders/Default_ps.cso");
 	//mShaders["alphaTestedPS"] = d3dutil_Mananger::LoadBinary(L"../Shaders/Default_ps.cso");
 
+	// Blur  =================
+	mShaders["horzBlurCS"] = d3dutil_Manager::CompileShader(L"../Shaders/Blur.hlsl", nullptr, "HorzBlurCS", "cs_5_1");
+	mShaders["vertBlurCS"] = d3dutil_Manager::CompileShader(L"../Shaders/Blur.hlsl", nullptr, "VertBlurCS", "cs_5_1");
+
 	mInputLayout =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -98,6 +142,14 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
 	};
+}
+
+void Utility_Manager::UtilityDecriptor(void)
+{
+	mBlurFilter->BuildDescriptors(
+		CD3DX12_CPU_DESCRIPTOR_HANDLE(mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), g_MatCBcount, mCbvSrvDescriptorSize),
+		CD3DX12_GPU_DESCRIPTOR_HANDLE(mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart(), g_MatCBcount, mCbvSrvDescriptorSize),
+		mCbvSrvDescriptorSize);
 }
 
 void Utility_Manager::BuildFrameResources(void)
@@ -256,6 +308,23 @@ void Utility_Manager::BuildPSOs(void)
 
 	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&treeSpritePsoDesc, IID_PPV_ARGS(&mPSOs["treeSprite"])));
 
+
+	//blur================
+	D3D12_COMPUTE_PIPELINE_STATE_DESC horzBlurPSO = {};
+	horzBlurPSO.pRootSignature = mPostProcessRootSignature.Get();
+	horzBlurPSO.CS =
+	{ reinterpret_cast<BYTE*>(mShaders["horzBlurCS"]->GetBufferPointer()), mShaders["horzBlurCS"]->GetBufferSize() };
+	horzBlurPSO.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+	ThrowIfFailed(GRAPHIC_DEV->CreateComputePipelineState(&horzBlurPSO, IID_PPV_ARGS(&mPSOs["horzBlur"])));
+
+
+	D3D12_COMPUTE_PIPELINE_STATE_DESC vertBlurPSO = {};
+	vertBlurPSO.pRootSignature = mPostProcessRootSignature.Get();
+	vertBlurPSO.CS =
+	{ reinterpret_cast<BYTE*>(mShaders["vertBlurCS"]->GetBufferPointer()), mShaders["vertBlurCS"]->GetBufferSize() };
+	vertBlurPSO.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+	ThrowIfFailed(GRAPHIC_DEV->CreateComputePipelineState(&vertBlurPSO, IID_PPV_ARGS(&mPSOs["vertBlur"])));
+
 	//D3D12_GRAPHICS_PIPELINE_STATE_DESC opaqueWireframePsoDesc = psoDesc;
 	//opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
 	//ThrowIfFailed(GRAPHIC->Get_Device()->CreateGraphicsPipelineState(&opaqueWireframePsoDesc, IID_PPV_ARGS(&mPSOs["opaque_wireframe"])));
@@ -268,7 +337,8 @@ void Utility_Manager::OnResize(void)
 
 	if (g_ScreenBlur)
 	{
-
+		if (mBlurFilter != nullptr)
+			mBlurFilter->OnResize(WINSIZE_X, WINSIZE_Y);
 	}
 }
 
@@ -415,15 +485,24 @@ bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 	_commandlist->SetPipelineState(mPSOs["shadow"].Get());
 	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_SHADOW]);
 
+
+	mBlurFilter->Execute(_commandlist.Get(), mPostProcessRootSignature.Get(),
+		mPSOs["horzBlur"].Get(), mPSOs["vertBlur"].Get(), _graphic->Get_CurrentBackBuffer_Resource(), 4);
+
 	_commandlist->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_graphic->Get_CurrentBackBuffer_Resource(),
-		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+		D3D12_RESOURCE_STATE_COPY_SOURCE, D3D12_RESOURCE_STATE_COPY_DEST));
+
+	_commandlist->CopyResource(_graphic->Get_CurrentBackBuffer_Resource(), mBlurFilter->Output());
+
+	_commandlist->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_graphic->Get_CurrentBackBuffer_Resource(),
+		D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PRESENT));
 
 	ThrowIfFailed(_commandlist->Close());
 
 	ID3D12CommandList* cmdsLists[] = { _commandlist.Get() };
 	_graphic->Get_CommandQueue()->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 
-	ThrowIfFailed(GRAPHIC->Get_SwapChain()->Present(0, 0));
+	ThrowIfFailed(_graphic->Get_SwapChain()->Present(0, 0));
 	_graphic->Get_Set_CurrBackBuffer() = (_graphic->Get_Set_CurrBackBuffer() + 1) % _graphic->Get_SwapChainBufferCount();
 
 	mCurrFrameResource->Fence = ++_graphic->Get_CurrentFence();

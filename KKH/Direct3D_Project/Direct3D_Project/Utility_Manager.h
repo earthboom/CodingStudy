@@ -3,6 +3,7 @@
 #include "FrameResource.h"
 #include "ComputeWaves.h"
 #include "Object.h"
+#include "BlurFilter.h"
 
 #define UTIL Utility_Manager::GetInstnace()
 
@@ -18,10 +19,13 @@ public:
 	~Utility_Manager(void);
 
 public:
+	void UtilityInitialize(void);
 	void BuildRootSignature(void);
+	void BuildPostProcessRootSignature(void);
 	void BuildDescriptorHeaps(void);
 	void BuildShadersAndInputLayer(void);
 
+	void UtilityDecriptor(void);
 	void BuildFrameResources(void);
 	void BuildPSOs(void);
 
@@ -32,6 +36,7 @@ private:
 	UINT mCbvSrvDescriptorSize;
 
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature;
+	Microsoft::WRL::ComPtr<ID3D12RootSignature> mPostProcessRootSignature;
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap;
 
@@ -67,6 +72,8 @@ private:
 
 	std::unique_ptr<ComputeWaves> mCPWave;
 
+	std::unique_ptr<BlurFilter> mBlurFilter;
+
 private:
 	typedef std::map<std::string, OBJECT> OBJMAP;
 	OBJMAP* Obj_static_map;
@@ -79,11 +86,6 @@ private:
 	ObjState	mCurrState;
 
 	DirectX::XMFLOAT4X4 mView;
-	//DirectX::XMFLOAT4X4 mProj;
-
-	//float mTheta;
-	//float mPhi;
-	//float mRadius;
 
 public:
 	bool Object_Create(OBJECT& obj);

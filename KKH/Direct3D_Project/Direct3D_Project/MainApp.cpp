@@ -40,13 +40,16 @@ bool CMainApp::Ready_MainApp(void)
 
 	LoadTexture();	
 
+	UTIL.UtilityInitialize();
 	UTIL.BuildRootSignature();
+	UTIL.BuildPostProcessRootSignature();
 	UTIL.BuildDescriptorHeaps();
 	UTIL.BuildShadersAndInputLayer();
 
 	CreateObject();
 	if (!UTIL.Object_Ready()) return FALSE;
 
+	UTIL.UtilityDecriptor();
 	UTIL.BuildFrameResources();
 	UTIL.BuildPSOs();
 
