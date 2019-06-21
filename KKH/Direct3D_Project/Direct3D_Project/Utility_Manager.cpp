@@ -59,7 +59,7 @@ void Utility_Manager::BuildRootSignature(void)
 
 	ThrowIfFailed(hr);
 
-	ThrowIfFailed(GRAPHIC->Get_Device()->CreateRootSignature(
+	ThrowIfFailed(GRAPHIC_DEV->CreateRootSignature(
 		0, serializedRootSig->GetBufferPointer(), 
 		serializedRootSig->GetBufferSize(), IID_PPV_ARGS(mRootSignature.GetAddressOf())));
 }
@@ -91,14 +91,14 @@ void Utility_Manager::BuildPostProcessRootSignature(void)
 
 	ThrowIfFailed(hr);
 
-	ThrowIfFailed(GRAPHIC->Get_Device()->CreateRootSignature(
+	ThrowIfFailed(GRAPHIC_DEV->CreateRootSignature(
 		0, serializedRootSig->GetBufferPointer(),
 		serializedRootSig->GetBufferSize(), IID_PPV_ARGS(mPostProcessRootSignature.GetAddressOf())));
 }
 
 void Utility_Manager::BuildDescriptorHeaps(void)
 {
-	const int textureDescriptorCount = 3;
+	const int textureDescriptorCount = 4;
 	const int blurDescriptorCount = 4;
 
 	//Create the SRV heap
