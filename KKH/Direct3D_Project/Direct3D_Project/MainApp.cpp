@@ -113,12 +113,17 @@ bool CMainApp::CreateObject(void)
 	g_MatCBcount = 0;
 	g_ObjCBcount = 0;
 
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Grid::Create(Object::COM_TYPE::CT_STATIC, "landGeo", "grid", "grassTex", "grass")))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Wave::Create(Object::COM_TYPE::CT_STATIC, "waterGeo", "grid", "waterTex", "water")))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Box::Create(Object::COM_TYPE::CT_STATIC, "boxGeo", "box", "fenceTex", "wirefence")))) return FALSE;
+
+
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Grid::Create(Object::COM_TYPE::CT_STATIC, "landGeo", "grid", "grassTex", "grass")))) return FALSE;
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Wave::Create(Object::COM_TYPE::CT_STATIC, "waterGeo", "grid", "waterTex", "water")))) return FALSE;
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Box::Create(Object::COM_TYPE::CT_STATIC, "boxGeo", "box", "fenceTex", "wirefence")))) return FALSE;
 
 	//Billboard
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Billboard::Create(Object::COM_TYPE::CT_STATIC, "TreeGeo", "Tree", "treeArrayTex", "treearray")))) return FALSE;
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Billboard::Create(Object::COM_TYPE::CT_STATIC, "TreeGeo", "Tree", "treeArrayTex", "treearray")))) return FALSE;
+
+
+
 
 	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "floorGeo", "floor", "checkboardTex", "checkertile")))) return FALSE;
 	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "wall_1_Geo", "wall", "bircksTex", "bricks1")))) return FALSE;
@@ -127,6 +132,12 @@ bool CMainApp::CreateObject(void)
 	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Mirror::Create(Object::COM_TYPE::CT_STATIC, "mirrorGeo", "mirror", "iceTex", "icemirror")))) return FALSE;
 	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skullGeo", "skull", "white1x1Tex", "whiteskull")))) return FALSE;
 	//SettingRoom();
+
+
+
+	//Tessellation
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "quadpatchGeo", "quadpatch", "bircksTex", "quadMat")))) return FALSE;
+	SettingTessllation();
 
 	return TRUE;
 }
@@ -203,6 +214,24 @@ void CMainApp::SettingRoom(void)
 	Objtemp2->Get_Material().DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.3f);
 	Objtemp2->Get_Material().FresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);
 	Objtemp2->Get_Material().Roughness = 0.5f;
+}
+
+void CMainApp::SettingTessllation(void)
+{
+	std::array<VERTEX, 4> _vertex;
+	auto Objtemp = std::dynamic_pointer_cast<Surface>(UTIL.Get_Object("quadpatchGeo", Object::COM_TYPE::CT_STATIC));
+	_vertex =
+	{
+		VERTEX(-10.0f, 0.0f, 10.0f,  0.0f, 0.0f, 0.0f, 0.0f, 0.0f),
+		VERTEX(10.0f,  0.0f, 10.0f,  0.0f, 0.0f, 0.0f, 0.0f, 0.0f),
+		VERTEX(-10.0f, 0.0f, -10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f),
+		VERTEX(10.0f,  0.0f, -10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)
+	};
+	Objtemp->Set_Vertex(_vertex);
+	Objtemp->Get_Material().DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	Objtemp->Get_Material().FresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);
+	Objtemp->Get_Material().Roughness = 0.5f;
+	Objtemp->Set_SurfaceType(Surface::SURFACE_TYPE::ST_DEFAULT);
 }
 
 

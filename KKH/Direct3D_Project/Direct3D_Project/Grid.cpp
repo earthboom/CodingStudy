@@ -41,9 +41,7 @@ bool Grid::Render(const CTimer& mt)
 
 void Grid::BuildDescriptorHeaps(void)
 {
-	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart());
-
-	hDescriptor.Offset(g_MatCBcount, UTIL.Get_CbvSrvDescriptorSize());
+	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart(), g_MatCBcount, UTIL.Get_CbvSrvDescriptorSize());
 
 	auto tex = TEX.Get_Textures()[m_texName]->Resource;
 

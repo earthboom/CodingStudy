@@ -22,6 +22,7 @@ private:
 	bool	CreateObject(void);
 	
 	void	SettingRoom(void);
+	void	SettingTessllation(void);
 
 private:
 	//PBOX	m_Box;

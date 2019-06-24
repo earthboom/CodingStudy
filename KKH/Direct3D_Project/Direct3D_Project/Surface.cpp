@@ -5,6 +5,7 @@
 
 Surface::Surface(void)
 	: Object()
+	, m_surfaceType(ST_DEFAULT)
 {
 	for (auto vt : surface_vt)
 		vt(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
@@ -12,6 +13,7 @@ Surface::Surface(void)
 
 Surface::Surface(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname)
 	: Object(_type, _name, _submeshname, _texname, _matname)
+	, m_surfaceType(ST_DEFAULT)
 {
 	for (auto vt : surface_vt)
 		vt(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
@@ -24,7 +26,17 @@ Surface::~Surface(void)
 bool Surface::Ready(void)
 {
 	BuildDescriptorHeaps();
-	BuildGeometry();
+	
+	switch (m_surfaceType)
+	{
+	case ST_DEFAULT:
+		BuildGeometry();
+		break;
+
+	case ST_BASIC_TESELL:
+		break;
+	}
+	
 	BuildMaterials();
 	BuildRenderItem();
 
@@ -43,9 +55,7 @@ bool Surface::Render(const CTimer& mt)
 
 void Surface::BuildDescriptorHeaps(void)
 {
-	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart());
-
-	hDescriptor.Offset(g_MatCBcount, UTIL.Get_CbvSrvDescriptorSize());
+	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart(), g_MatCBcount, UTIL.Get_CbvSrvDescriptorSize());
 
 	auto tex = TEX.Get_Textures()[m_texName]->Resource;
 
@@ -130,6 +140,43 @@ void Surface::BuildGeometry(void)
 	geo->IndexBufferByteSize = ibByteSize;
 
 	geo->DrawArgs[m_submeshName] = submesh;
+
+	UTIL.Get_Geomesh()[geo->Name] = std::move(geo);
+}
+
+void Surface::BuildGeometry_1(void)
+{
+	std::array<std::uint16_t, 4> indices = { 0, 1, 2, 3 };
+
+	const UINT vbByteSize = (UINT)surface_vt.size() * sizeof(VERTEX);
+	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+
+	auto geo = std::make_unique<MeshGeometry>();
+	geo->Name = m_Name;
+
+	ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
+	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), surface_vt.data(), vbByteSize);
+
+	ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
+	CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC_DEV.Get(),
+		COM_LIST.Get(), surface_vt.data(), vbByteSize, geo->VertexBufferUploader);
+
+	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC_DEV.Get(),
+		COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
+
+	geo->VertexByteStride = sizeof(XMFLOAT3);
+	geo->VertexBufferByteSize = vbByteSize;
+	geo->IndexFormat = DXGI_FORMAT_R16_UINT;
+	geo->IndexBufferByteSize = ibByteSize;
+
+	SubmeshGeometry quadSubmesh;
+	quadSubmesh.IndexCount = 4;
+	quadSubmesh.StartIndexLocation = 0;
+	quadSubmesh.BaseVertexLocation = 0;
+
+	geo->DrawArgs[m_submeshName] = quadSubmesh;
 
 	UTIL.Get_Geomesh()[geo->Name] = std::move(geo);
 }
