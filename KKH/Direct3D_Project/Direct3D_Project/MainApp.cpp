@@ -231,7 +231,7 @@ void CMainApp::SettingTessllation(void)
 	Objtemp->Get_Material().DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	Objtemp->Get_Material().FresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);
 	Objtemp->Get_Material().Roughness = 0.5f;
-	Objtemp->Set_SurfaceType(Surface::SURFACE_TYPE::ST_DEFAULT);
+	Objtemp->Set_SurfaceType(Surface::SURFACE_TYPE::ST_BASIC_TESELL);
 }
 
 

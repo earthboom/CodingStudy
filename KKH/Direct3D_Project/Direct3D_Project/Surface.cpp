@@ -34,6 +34,7 @@ bool Surface::Ready(void)
 		break;
 
 	case ST_BASIC_TESELL:
+		BuildGeometry_1();
 		break;
 	}
 	
@@ -91,7 +92,18 @@ void Surface::BuildRenderItem(void)
 	ritem->objCBIndex = g_ObjCBcount;
 	ritem->Mat = UTIL.Get_Materials()[m_matName].get();
 	ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
-	ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+	switch (m_surfaceType)
+	{
+	case ST_DEFAULT:
+		ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		break;
+
+	case ST_BASIC_TESELL:
+		ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST;
+		break;
+	}
+
 	ritem->IndexCount = ritem->Geo->DrawArgs[m_submeshName].IndexCount;
 	ritem->StartIndexLocation = ritem->Geo->DrawArgs[m_submeshName].StartIndexLocation;
 	ritem->BaseVertexLocation = ritem->Geo->DrawArgs[m_submeshName].BaseVertexLocation;

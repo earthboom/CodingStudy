@@ -311,5 +311,8 @@
     <FxCompile Include="..\Shaders\Blur.hlsl">
       <Filter>02.Utiltiy\99.hlsl</Filter>
     </FxCompile>
+    <FxCompile Include="..\Shaders\Tessellation.hlsl">
+      <Filter>02.Utiltiy\99.hlsl</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -114,34 +114,53 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 	const D3D_SHADER_MACRO defines[] = { "FOG", "1", NULL, NULL };
 	const D3D_SHADER_MACRO alphaTestDefines[] = { "FOG", "1", "ALPHA_TEST", "1", NULL, NULL };
 
-	mShaders["standardVS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", nullptr, "VS", "vs_5_1");
-	mShaders["opaquePS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", defines, "PS", "ps_5_1");
-	mShaders["alphaTestedPS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", alphaTestDefines, "PS", "ps_5_1");
+	////===== [ Standard ] ======
+	//mShaders["standardVS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", nullptr, "VS", "vs_5_0");
+	//mShaders["opaquePS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", defines, "PS", "ps_5_0");
+	//mShaders["alphaTestedPS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", alphaTestDefines, "PS", "ps_5_0");
+	////=========================
 
-	mShaders["treeSpriteVS"] = d3dutil_Manager::CompileShader(L"../Shaders/TreeSprite.hlsl", nullptr, "VS", "vs_5_1");
-	mShaders["treeSpriteGS"] = d3dutil_Manager::CompileShader(L"../Shaders/TreeSprite.hlsl", nullptr, "GS", "gs_5_1");
-	mShaders["treeSpritePS"] = d3dutil_Manager::CompileShader(L"../Shaders/TreeSprite.hlsl", alphaTestDefines, "PS", "ps_5_1");
+	////==== [ GS ] ================
+	//mShaders["treeSpriteVS"] = d3dutil_Manager::CompileShader(L"../Shaders/TreeSprite.hlsl", nullptr, "VS", "vs_5_0");
+	//mShaders["treeSpriteGS"] = d3dutil_Manager::CompileShader(L"../Shaders/TreeSprite.hlsl", nullptr, "GS", "gs_5_0");
+	//mShaders["treeSpritePS"] = d3dutil_Manager::CompileShader(L"../Shaders/TreeSprite.hlsl", alphaTestDefines, "PS", "ps_5_0");
+	////========================
 
 	//mShaders["standardVS"] = d3dutil_Manager::LoadBinary(L"../Shaders/Default_vs.cso");
 	//mShaders["opaquePS"] = d3dutil_Mananger::LoadBinary(L"../Shaders/Default_ps.cso");
 	//mShaders["alphaTestedPS"] = d3dutil_Mananger::LoadBinary(L"../Shaders/Default_ps.cso");
 
-	// Blur  =================
-	mShaders["horzBlurCS"] = d3dutil_Manager::CompileShader(L"../Shaders/Blur.hlsl", nullptr, "HorzBlurCS", "cs_5_1");
-	mShaders["vertBlurCS"] = d3dutil_Manager::CompileShader(L"../Shaders/Blur.hlsl", nullptr, "VertBlurCS", "cs_5_1");
+	////==== [ CS (Blur) ] =================
+	//mShaders["horzBlurCS"] = d3dutil_Manager::CompileShader(L"../Shaders/Blur.hlsl", nullptr, "HorzBlurCS", "cs_5_0");
+	//mShaders["vertBlurCS"] = d3dutil_Manager::CompileShader(L"../Shaders/Blur.hlsl", nullptr, "VertBlurCS", "cs_5_0");
+	////====================================
 
+	//==== [ Tessellation Stage ] =======
+	mShaders["tessVS"] = d3dutil_Manager::CompileShader(L"../Shaders/Tessellation.hlsl", nullptr, "VS", "vs_5_0");
+	mShaders["tessHS"] = d3dutil_Manager::CompileShader(L"../Shaders/Tessellation.hlsl", nullptr, "HS", "hs_5_0");
+	mShaders["tessDS"] = d3dutil_Manager::CompileShader(L"../Shaders/Tessellation.hlsl", nullptr, "DS", "ds_5_0");
+	mShaders["tessPS"] = d3dutil_Manager::CompileShader(L"../Shaders/Tessellation.hlsl", nullptr, "PS", "ps_5_0");
+	//===================================
+
+	//mInputLayout =
+	//{
+	//	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+	//	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+	//	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+	//};
+
+	//==== [ Tessellation Stage ] ======
 	mInputLayout =
 	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
 	};
+	//==================================
 
-	mTreeSpriteInputLayout =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
-	};
+	//mTreeSpriteInputLayout =
+	//{
+	//	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+	//	{ "SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+	//};
 }
 
 void Utility_Manager::UtilityDecriptor(void)
@@ -156,8 +175,8 @@ void Utility_Manager::BuildFrameResources(void)
 {
 	for (int i = 0; i < NumFrameResources; ++i)
 	{
-		//mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC_DEV.Get(), 2, (UINT)mAllRitem.size(), (UINT)mMaterials.size()));
-		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC_DEV.Get(), 2, (UINT)mAllRitem.size(), (UINT)mMaterials.size(), mCPWave->VertexCount()));
+		mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC_DEV.Get(), 2, (UINT)mAllRitem.size(), (UINT)mMaterials.size()));
+		//mFrameResources.push_back(std::make_unique<FrameResource>(GRAPHIC_DEV.Get(), 2, (UINT)mAllRitem.size(), (UINT)mMaterials.size(), mCPWave->VertexCount()));
 	}
 }
 
@@ -169,17 +188,27 @@ void Utility_Manager::BuildPSOs(void)
 	psoDesc.InputLayout = { mInputLayout.data(), (UINT)mInputLayout.size() };
 	psoDesc.pRootSignature = mRootSignature.Get();
 
-	psoDesc.VS =
-	{ reinterpret_cast<BYTE*>(mShaders["standardVS"]->GetBufferPointer()), mShaders["standardVS"]->GetBufferSize() };
+	////===== [ Standard ] ======
+	//psoDesc.VS = { reinterpret_cast<BYTE*>(mShaders["standardVS"]->GetBufferPointer()), mShaders["standardVS"]->GetBufferSize() };
+	//psoDesc.PS = { reinterpret_cast<BYTE*>(mShaders["opaquePS"]->GetBufferPointer()), mShaders["opaquePS"]->GetBufferSize() };
+	////=========================
 
-	psoDesc.PS =
-	{ reinterpret_cast<BYTE*>(mShaders["opaquePS"]->GetBufferPointer()), mShaders["opaquePS"]->GetBufferSize() };
+
+	//==== [ Tessellation Stage ] =======
+	psoDesc.VS = { reinterpret_cast<BYTE*>(mShaders["tessVS"]->GetBufferPointer()), mShaders["tessVS"]->GetBufferSize() };
+	psoDesc.HS = { reinterpret_cast<BYTE*>(mShaders["tessHS"]->GetBufferPointer()), mShaders["tessHS"]->GetBufferSize() };
+	psoDesc.DS = { reinterpret_cast<BYTE*>(mShaders["tessDS"]->GetBufferPointer()), mShaders["tessDS"]->GetBufferSize() };
+	psoDesc.PS = { reinterpret_cast<BYTE*>(mShaders["tessPS"]->GetBufferPointer()), mShaders["tessPS"]->GetBufferSize() };
+	//===================================
+
 
 	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;	//(tessellation option)
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	psoDesc.SampleMask = UINT_MAX;
-	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	//psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;	//(tessellation option)
 	psoDesc.NumRenderTargets = 1;
 	psoDesc.RTVFormats[0] = GRAPHIC->Get_BackBufferFormat();
 	psoDesc.SampleDesc.Count = GRAPHIC->Get_4xMsaaState() ? 4 : 1;
@@ -189,141 +218,146 @@ void Utility_Manager::BuildPSOs(void)
 	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
 
 
-	//PSO for transparent objects
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC transparentPsoDesc = psoDesc;
+	////PSO for transparent objects
+	//D3D12_GRAPHICS_PIPELINE_STATE_DESC transparentPsoDesc = psoDesc;
 
-	D3D12_RENDER_TARGET_BLEND_DESC transparencyBlenDesc;
-	transparencyBlenDesc.BlendEnable = TRUE;
-	transparencyBlenDesc.LogicOpEnable = FALSE;
-	transparencyBlenDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
-	transparencyBlenDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-	transparencyBlenDesc.BlendOp = D3D12_BLEND_OP_ADD;
-	transparencyBlenDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
-	transparencyBlenDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
-	transparencyBlenDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
-	transparencyBlenDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
-	transparencyBlenDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	//D3D12_RENDER_TARGET_BLEND_DESC transparencyBlenDesc;
+	//transparencyBlenDesc.BlendEnable = TRUE;
+	//transparencyBlenDesc.LogicOpEnable = FALSE;
+	//transparencyBlenDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	//transparencyBlenDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	//transparencyBlenDesc.BlendOp = D3D12_BLEND_OP_ADD;
+	//transparencyBlenDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+	//transparencyBlenDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+	//transparencyBlenDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	//transparencyBlenDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
+	//transparencyBlenDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
-	transparentPsoDesc.BlendState.RenderTarget[0] = transparencyBlenDesc;
-	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&transparentPsoDesc, IID_PPV_ARGS(&mPSOs["transparent"])));
+	//transparentPsoDesc.BlendState.RenderTarget[0] = transparencyBlenDesc;
+	//ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&transparentPsoDesc, IID_PPV_ARGS(&mPSOs["transparent"])));
 
-	//PSO for marking stencil mirros.
-	CD3DX12_BLEND_DESC mirrorBlendState(D3D12_DEFAULT);
-	mirrorBlendState.RenderTarget[0].RenderTargetWriteMask = 0;
+	////PSO for marking stencil mirros.
+	//CD3DX12_BLEND_DESC mirrorBlendState(D3D12_DEFAULT);
+	//mirrorBlendState.RenderTarget[0].RenderTargetWriteMask = 0;
 
-	D3D12_DEPTH_STENCIL_DESC mirrorDSS;
-	mirrorDSS.DepthEnable = TRUE;
-	mirrorDSS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
-	mirrorDSS.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-	mirrorDSS.StencilEnable = TRUE;
-	mirrorDSS.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
-	mirrorDSS.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
+	//D3D12_DEPTH_STENCIL_DESC mirrorDSS;
+	//mirrorDSS.DepthEnable = TRUE;
+	//mirrorDSS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+	//mirrorDSS.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	//mirrorDSS.StencilEnable = TRUE;
+	//mirrorDSS.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
+	//mirrorDSS.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
 
-	mirrorDSS.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
-	mirrorDSS.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-	mirrorDSS.FrontFace.StencilPassOp = D3D12_STENCIL_OP_REPLACE;
-	mirrorDSS.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+	//mirrorDSS.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	//mirrorDSS.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	//mirrorDSS.FrontFace.StencilPassOp = D3D12_STENCIL_OP_REPLACE;
+	//mirrorDSS.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 
-	mirrorDSS.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
-	mirrorDSS.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-	mirrorDSS.BackFace.StencilPassOp = D3D12_STENCIL_OP_REPLACE;
-	mirrorDSS.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+	//mirrorDSS.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	//mirrorDSS.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	//mirrorDSS.BackFace.StencilPassOp = D3D12_STENCIL_OP_REPLACE;
+	//mirrorDSS.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC markMirrorsPosDesc = psoDesc;
-	markMirrorsPosDesc.BlendState = mirrorBlendState;
-	markMirrorsPosDesc.DepthStencilState = mirrorDSS;
-	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&markMirrorsPosDesc, IID_PPV_ARGS(&mPSOs["markStencilMirrors"])));
+	//D3D12_GRAPHICS_PIPELINE_STATE_DESC markMirrorsPosDesc = psoDesc;
+	//markMirrorsPosDesc.BlendState = mirrorBlendState;
+	//markMirrorsPosDesc.DepthStencilState = mirrorDSS;
+	//ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&markMirrorsPosDesc, IID_PPV_ARGS(&mPSOs["markStencilMirrors"])));
 
-	//PSO for stencil reflections.
-	D3D12_DEPTH_STENCIL_DESC reflectionsDDS;
-	reflectionsDDS.DepthEnable = TRUE;
-	reflectionsDDS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	reflectionsDDS.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-	reflectionsDDS.StencilEnable = TRUE;
-	reflectionsDDS.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
-	reflectionsDDS.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
+	////PSO for stencil reflections.
+	//D3D12_DEPTH_STENCIL_DESC reflectionsDDS;
+	//reflectionsDDS.DepthEnable = TRUE;
+	//reflectionsDDS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	//reflectionsDDS.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	//reflectionsDDS.StencilEnable = TRUE;
+	//reflectionsDDS.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
+	//reflectionsDDS.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
 
-	reflectionsDDS.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
-	reflectionsDDS.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-	reflectionsDDS.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
-	reflectionsDDS.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
+	//reflectionsDDS.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	//reflectionsDDS.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	//reflectionsDDS.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	//reflectionsDDS.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
 
-	reflectionsDDS.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
-	reflectionsDDS.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-	reflectionsDDS.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
-	reflectionsDDS.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
+	//reflectionsDDS.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	//reflectionsDDS.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	//reflectionsDDS.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	//reflectionsDDS.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
 
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC drawReflectionsPsoDesc = psoDesc;
-	drawReflectionsPsoDesc.DepthStencilState = reflectionsDDS;
-	drawReflectionsPsoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
-	drawReflectionsPsoDesc.RasterizerState.FrontCounterClockwise = TRUE;
-	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&drawReflectionsPsoDesc, IID_PPV_ARGS(&mPSOs["drawStencilReflections"])));
-	
-	//PSO for shodow objects
-	D3D12_DEPTH_STENCIL_DESC shadowDSS;
-	shadowDSS.DepthEnable = TRUE;
-	shadowDSS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	shadowDSS.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-	shadowDSS.StencilEnable = TRUE;
-	shadowDSS.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
-	shadowDSS.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
+	//D3D12_GRAPHICS_PIPELINE_STATE_DESC drawReflectionsPsoDesc = psoDesc;
+	//drawReflectionsPsoDesc.DepthStencilState = reflectionsDDS;
+	//drawReflectionsPsoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+	//drawReflectionsPsoDesc.RasterizerState.FrontCounterClockwise = TRUE;
+	//ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&drawReflectionsPsoDesc, IID_PPV_ARGS(&mPSOs["drawStencilReflections"])));
+	//
+	////PSO for shodow objects
+	//D3D12_DEPTH_STENCIL_DESC shadowDSS;
+	//shadowDSS.DepthEnable = TRUE;
+	//shadowDSS.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	//shadowDSS.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	//shadowDSS.StencilEnable = TRUE;
+	//shadowDSS.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
+	//shadowDSS.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
 
-	shadowDSS.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
-	shadowDSS.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-	shadowDSS.FrontFace.StencilPassOp = D3D12_STENCIL_OP_INCR;
-	shadowDSS.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
+	//shadowDSS.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	//shadowDSS.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	//shadowDSS.FrontFace.StencilPassOp = D3D12_STENCIL_OP_INCR;
+	//shadowDSS.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
 
-	shadowDSS.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
-	shadowDSS.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-	shadowDSS.BackFace.StencilPassOp = D3D12_STENCIL_OP_INCR;
-	shadowDSS.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
+	//shadowDSS.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	//shadowDSS.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	//shadowDSS.BackFace.StencilPassOp = D3D12_STENCIL_OP_INCR;
+	//shadowDSS.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
 
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC shadowPsoDesc = transparentPsoDesc;
-	shadowPsoDesc.DepthStencilState = shadowDSS;
-	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&shadowPsoDesc, IID_PPV_ARGS(&mPSOs["shadow"])));
+	//D3D12_GRAPHICS_PIPELINE_STATE_DESC shadowPsoDesc = transparentPsoDesc;
+	//shadowPsoDesc.DepthStencilState = shadowDSS;
+	//ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&shadowPsoDesc, IID_PPV_ARGS(&mPSOs["shadow"])));
 
 	//PSO for alpha tested objects
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC alphaTestedPSoDesc = psoDesc;
+	//D3D12_GRAPHICS_PIPELINE_STATE_DESC alphaTestedPSoDesc = psoDesc;
 
-	alphaTestedPSoDesc.PS = 
-	{	reinterpret_cast<BYTE*>(mShaders["alphaTestedPS"]->GetBufferPointer()), mShaders["alphaTestedPS"]->GetBufferSize()	};
+	//alphaTestedPSoDesc.PS = 
+	//{	reinterpret_cast<BYTE*>(mShaders["alphaTestedPS"]->GetBufferPointer()), mShaders["alphaTestedPS"]->GetBufferSize()	};
 
-	alphaTestedPSoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&alphaTestedPSoDesc, IID_PPV_ARGS(&mPSOs["alphaTested"])));
+	//alphaTestedPSoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+	//ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&alphaTestedPSoDesc, IID_PPV_ARGS(&mPSOs["alphaTested"])));
+
+
 
 	//PSO for tree sprite
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC treeSpritePsoDesc = psoDesc;
-	treeSpritePsoDesc.VS =
-	{	reinterpret_cast<BYTE*>(mShaders["treeSpriteVS"]->GetBufferPointer()), mShaders["treeSpriteVS"]->GetBufferSize()	};
+	//D3D12_GRAPHICS_PIPELINE_STATE_DESC treeSpritePsoDesc = psoDesc;
+	//treeSpritePsoDesc.VS =
+	//{	reinterpret_cast<BYTE*>(mShaders["treeSpriteVS"]->GetBufferPointer()), mShaders["treeSpriteVS"]->GetBufferSize()	};
 
-	treeSpritePsoDesc.GS =
-	{	reinterpret_cast<BYTE*>(mShaders["treeSpriteGS"]->GetBufferPointer()), mShaders["treeSpriteGS"]->GetBufferSize()	};
+	//treeSpritePsoDesc.GS =
+	//{	reinterpret_cast<BYTE*>(mShaders["treeSpriteGS"]->GetBufferPointer()), mShaders["treeSpriteGS"]->GetBufferSize()	};
 
-	treeSpritePsoDesc.PS =
-	{	reinterpret_cast<BYTE*>(mShaders["treeSpritePS"]->GetBufferPointer()), mShaders["treeSpritePS"]->GetBufferSize()	};
+	//treeSpritePsoDesc.PS =
+	//{	reinterpret_cast<BYTE*>(mShaders["treeSpritePS"]->GetBufferPointer()), mShaders["treeSpritePS"]->GetBufferSize()	};
 
-	treeSpritePsoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
-	treeSpritePsoDesc.InputLayout = { mTreeSpriteInputLayout.data(), (UINT)mTreeSpriteInputLayout.size() };
-	treeSpritePsoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+	//treeSpritePsoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+	//treeSpritePsoDesc.InputLayout = { mTreeSpriteInputLayout.data(), (UINT)mTreeSpriteInputLayout.size() };
+	//treeSpritePsoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
-	ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&treeSpritePsoDesc, IID_PPV_ARGS(&mPSOs["treeSprite"])));
+	//ThrowIfFailed(GRAPHIC_DEV->CreateGraphicsPipelineState(&treeSpritePsoDesc, IID_PPV_ARGS(&mPSOs["treeSprite"])));
 
 
 	//blur================
-	D3D12_COMPUTE_PIPELINE_STATE_DESC horzBlurPSO = {};
-	horzBlurPSO.pRootSignature = mPostProcessRootSignature.Get();
-	horzBlurPSO.CS =
-	{ reinterpret_cast<BYTE*>(mShaders["horzBlurCS"]->GetBufferPointer()), mShaders["horzBlurCS"]->GetBufferSize() };
-	horzBlurPSO.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
-	ThrowIfFailed(GRAPHIC_DEV->CreateComputePipelineState(&horzBlurPSO, IID_PPV_ARGS(&mPSOs["horzBlur"])));
+	//D3D12_COMPUTE_PIPELINE_STATE_DESC horzBlurPSO = {};
+	//horzBlurPSO.pRootSignature = mPostProcessRootSignature.Get();
+	//horzBlurPSO.CS =
+	//{ reinterpret_cast<BYTE*>(mShaders["horzBlurCS"]->GetBufferPointer()), mShaders["horzBlurCS"]->GetBufferSize() };
+	//horzBlurPSO.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+	//ThrowIfFailed(GRAPHIC_DEV->CreateComputePipelineState(&horzBlurPSO, IID_PPV_ARGS(&mPSOs["horzBlur"])));
 
 
-	D3D12_COMPUTE_PIPELINE_STATE_DESC vertBlurPSO = {};
-	vertBlurPSO.pRootSignature = mPostProcessRootSignature.Get();
-	vertBlurPSO.CS =
-	{ reinterpret_cast<BYTE*>(mShaders["vertBlurCS"]->GetBufferPointer()), mShaders["vertBlurCS"]->GetBufferSize() };
-	vertBlurPSO.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
-	ThrowIfFailed(GRAPHIC_DEV->CreateComputePipelineState(&vertBlurPSO, IID_PPV_ARGS(&mPSOs["vertBlur"])));
+	//D3D12_COMPUTE_PIPELINE_STATE_DESC vertBlurPSO = {};
+	//vertBlurPSO.pRootSignature = mPostProcessRootSignature.Get();
+	//vertBlurPSO.CS =
+	//{ reinterpret_cast<BYTE*>(mShaders["vertBlurCS"]->GetBufferPointer()), mShaders["vertBlurCS"]->GetBufferSize() };
+	//vertBlurPSO.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+	//ThrowIfFailed(GRAPHIC_DEV->CreateComputePipelineState(&vertBlurPSO, IID_PPV_ARGS(&mPSOs["vertBlur"])));
+
+
+
 
 	//D3D12_GRAPHICS_PIPELINE_STATE_DESC opaqueWireframePsoDesc = psoDesc;
 	//opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
@@ -462,40 +496,43 @@ bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 	_commandlist->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
 	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_OPAUQE]);
 
-	_commandlist->OMSetStencilRef(1);
-	_commandlist->SetPipelineState(mPSOs["markStencilMirrors"].Get());
-	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_MIRROR]);
+	//_commandlist->OMSetStencilRef(1);
+	//_commandlist->SetPipelineState(mPSOs["markStencilMirrors"].Get());
+	//DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_MIRROR]);
 
-	_commandlist->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress() + 1 * passCBByteSize);
-	_commandlist->SetPipelineState(mPSOs["drawStencilReflections"].Get());
-	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_REFLECTED]);
+	//_commandlist->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress() + 1 * passCBByteSize);
+	//_commandlist->SetPipelineState(mPSOs["drawStencilReflections"].Get());
+	//DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_REFLECTED]);
 
-	_commandlist->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
-	_commandlist->OMSetStencilRef(0);
+	//_commandlist->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
+	//_commandlist->OMSetStencilRef(0);
 
-	_commandlist->SetPipelineState(mPSOs["alphaTested"].Get());
-	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_ALPHATESTED]);
-	
-	_commandlist->SetPipelineState(mPSOs["treeSprite"].Get());
-	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_ALPHATESTED_TREESPRITE]);
+	//_commandlist->SetPipelineState(mPSOs["alphaTested"].Get());
+	//DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_ALPHATESTED]);
+	//
+	//_commandlist->SetPipelineState(mPSOs["treeSprite"].Get());
+	//DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_ALPHATESTED_TREESPRITE]);
 
-	_commandlist->SetPipelineState(mPSOs["transparent"].Get());
-	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_TRANSPARENT]);
+	//_commandlist->SetPipelineState(mPSOs["transparent"].Get());
+	//DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_TRANSPARENT]);
 
-	_commandlist->SetPipelineState(mPSOs["shadow"].Get());
-	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_SHADOW]);
+	//_commandlist->SetPipelineState(mPSOs["shadow"].Get());
+	//DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_SHADOW]);
 
 
-	mBlurFilter->Execute(_commandlist.Get(), mPostProcessRootSignature.Get(),
-		mPSOs["horzBlur"].Get(), mPSOs["vertBlur"].Get(), _graphic->Get_CurrentBackBuffer_Resource(), 4);
+	//mBlurFilter->Execute(_commandlist.Get(), mPostProcessRootSignature.Get(),
+	//	mPSOs["horzBlur"].Get(), mPSOs["vertBlur"].Get(), _graphic->Get_CurrentBackBuffer_Resource(), 4);
+
+	//_commandlist->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_graphic->Get_CurrentBackBuffer_Resource(),
+	//	D3D12_RESOURCE_STATE_COPY_SOURCE, D3D12_RESOURCE_STATE_COPY_DEST));
+
+	//_commandlist->CopyResource(_graphic->Get_CurrentBackBuffer_Resource(), mBlurFilter->Output());
+
+	//_commandlist->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_graphic->Get_CurrentBackBuffer_Resource(),
+	//	D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PRESENT));
 
 	_commandlist->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_graphic->Get_CurrentBackBuffer_Resource(),
-		D3D12_RESOURCE_STATE_COPY_SOURCE, D3D12_RESOURCE_STATE_COPY_DEST));
-
-	_commandlist->CopyResource(_graphic->Get_CurrentBackBuffer_Resource(), mBlurFilter->Output());
-
-	_commandlist->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_graphic->Get_CurrentBackBuffer_Resource(),
-		D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PRESENT));
+		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
 	ThrowIfFailed(_commandlist->Close());
 
