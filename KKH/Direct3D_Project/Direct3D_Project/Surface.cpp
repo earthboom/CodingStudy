@@ -158,22 +158,31 @@ void Surface::BuildGeometry(void)
 
 void Surface::BuildGeometry_1(void)
 {
+	std::array<XMFLOAT3, 4> vertices =
+	{
+		XMFLOAT3(-10.0f, 0.0f, 10.0f),
+		XMFLOAT3(10.0f,  0.0f, 10.0f),
+		XMFLOAT3(-10.0f, 0.0f, -10.0f),
+		XMFLOAT3(10.0f,  0.0f, -10.0f),
+	};
+
 	std::array<std::uint16_t, 4> indices = { 0, 1, 2, 3 };
 
-	const UINT vbByteSize = (UINT)surface_vt.size() * sizeof(VERTEX);
+	//const UINT vbByteSize = (UINT)surface_vt.size() * sizeof(VERTEX);
+	const UINT vbByteSize = (UINT)vertices.size() * sizeof(VERTEX);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
 	auto geo = std::make_unique<MeshGeometry>();
 	geo->Name = m_Name;
 
 	ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
-	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), surface_vt.data(), vbByteSize);
+	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
 
 	ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
 	CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
 	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC_DEV.Get(),
-		COM_LIST.Get(), surface_vt.data(), vbByteSize, geo->VertexBufferUploader);
+		COM_LIST.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
 
 	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC_DEV.Get(),
 		COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);

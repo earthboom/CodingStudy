@@ -12,7 +12,7 @@
 #define MAX_LOADSTRING 100
 
 // Global Variables:
-DirectX::XMFLOAT3 g_EyePos = { 0.0f, 100.0f, -100.0f };
+DirectX::XMFLOAT3 g_EyePos = { 0.0f, 0.0f, 0.0f };
 
 bool g_bDebugConsole = FALSE;
 bool mIsWireframe = FALSE;
