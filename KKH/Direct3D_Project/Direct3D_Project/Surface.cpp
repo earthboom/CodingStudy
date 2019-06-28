@@ -33,9 +33,12 @@ bool Surface::Ready(void)
 		BuildGeometry();
 		break;
 
-	case ST_BASIC_TESELL:
+	case ST_BASIC_TESSELL:
 		BuildGeometry_1();
 		break;
+
+	case ST_BAZIER_TESSELL:
+		BuildGeometry_2();
 	}
 	
 	BuildMaterials();
@@ -98,10 +101,13 @@ void Surface::BuildRenderItem(void)
 	case ST_DEFAULT:
 		ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		break;
-
-	case ST_BASIC_TESELL:
+		
+	case ST_BASIC_TESSELL:
 		ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST;
 		break;
+
+	case ST_BAZIER_TESSELL:
+		ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_16_CONTROL_POINT_PATCHLIST;
 	}
 
 	ritem->IndexCount = ritem->Geo->DrawArgs[m_submeshName].IndexCount;
@@ -194,6 +200,76 @@ void Surface::BuildGeometry_1(void)
 
 	SubmeshGeometry quadSubmesh;
 	quadSubmesh.IndexCount = 4;
+	quadSubmesh.StartIndexLocation = 0;
+	quadSubmesh.BaseVertexLocation = 0;
+
+	geo->DrawArgs[m_submeshName] = quadSubmesh;
+
+	UTIL.Get_Geomesh()[geo->Name] = std::move(geo);
+}
+
+void Surface::BuildGeometry_2(void)
+{
+	std::array<XMFLOAT3, 16> vertices =
+	{
+		//Row 0
+		XMFLOAT3(-10.0f, -10.0f, 15.0f),
+		XMFLOAT3(-5.0f,  0.0f,   15.0f),
+		XMFLOAT3(5.0f,   0.0f,   15.0f),
+		XMFLOAT3(10.0f,  0.0f,   15.0f),
+
+		//Row 2
+		XMFLOAT3(-15.0f, 0.0f,  5.0f),
+		XMFLOAT3(-5.0f,  0.0f,  5.0f),
+		XMFLOAT3(5.0f,   20.0f, 5.0f),
+		XMFLOAT3(15.0f,  0.0f,  5.0f),
+
+		//Row 3
+		XMFLOAT3(-15.0f, 0.0f,  -5.0f),
+		XMFLOAT3(-5.0f,  0.0f,  -5.0f),
+		XMFLOAT3(5.0f,   0.0f,  -5.0f),
+		XMFLOAT3(15.0f,  0.0f,  -5.0f),
+
+		//Row 4
+		XMFLOAT3(-10.0f, 10.0f, -15.0f),
+		XMFLOAT3(-5.0f,  0.0f,  -15.0f),
+		XMFLOAT3(5.0f,   0.0f,  -15.0f),
+		XMFLOAT3(25.0f,  10.0f, -15.0f),
+	};
+
+	std::array<std::uint16_t, 16> indices = 
+	{ 
+		0, 1, 2, 3,
+		4, 5, 6, 7,
+		8, 9, 10, 11, 
+		12, 13, 14, 15,
+	};
+
+	const UINT vbByteSize = (UINT)vertices.size() * sizeof(VERTEX);
+	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+
+	auto geo = std::make_unique<MeshGeometry>();
+	geo->Name = m_Name;
+
+	ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
+	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+
+	ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
+	CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC_DEV.Get(),
+		COM_LIST.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
+
+	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(GRAPHIC_DEV.Get(),
+		COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
+
+	geo->VertexByteStride = sizeof(XMFLOAT3);
+	geo->VertexBufferByteSize = vbByteSize;
+	geo->IndexFormat = DXGI_FORMAT_R16_UINT;
+	geo->IndexBufferByteSize = ibByteSize;
+
+	SubmeshGeometry quadSubmesh;
+	quadSubmesh.IndexCount = (UINT)indices.size();
 	quadSubmesh.StartIndexLocation = 0;
 	quadSubmesh.BaseVertexLocation = 0;
 

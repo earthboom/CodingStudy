@@ -218,20 +218,12 @@ void CMainApp::SettingRoom(void)
 
 void CMainApp::SettingTessllation(void)
 {
-	//std::array<VERTEX, 4> _vertex;
 	auto Objtemp = std::dynamic_pointer_cast<Surface>(UTIL.Get_Object("quadpatchGeo", Object::COM_TYPE::CT_STATIC));
-	//_vertex =
-	//{
-	//	VERTEX(-10.0f, 0.0f, 10.0f,  0.0f, 0.0f, 0.0f, 0.0f, 0.0f),
-	//	VERTEX(10.0f,  0.0f, 10.0f,  0.0f, 0.0f, 0.0f, 0.0f, 0.0f),
-	//	VERTEX(-10.0f, 0.0f, -10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f),
-	//	VERTEX(10.0f,  0.0f, -10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)
-	//};
-	//Objtemp->Set_Vertex(_vertex);
 	Objtemp->Get_Material().DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	Objtemp->Get_Material().FresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);
 	Objtemp->Get_Material().Roughness = 0.5f;
-	Objtemp->Set_SurfaceType(Surface::SURFACE_TYPE::ST_BASIC_TESELL);
+	//Objtemp->Set_SurfaceType(Surface::SURFACE_TYPE::ST_BASIC_TESSELL);
+	Objtemp->Set_SurfaceType(Surface::SURFACE_TYPE::ST_BAZIER_TESSELL);
 }
 
 

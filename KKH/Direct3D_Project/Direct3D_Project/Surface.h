@@ -8,7 +8,8 @@ public:
 	enum SURFACE_TYPE
 	{
 		ST_DEFAULT,
-		ST_BASIC_TESELL,
+		ST_BASIC_TESSELL,
+		ST_BAZIER_TESSELL
 	};
 
 public:
@@ -33,6 +34,7 @@ private:
 private:
 	void BuildGeometry(void);
 	void BuildGeometry_1(void);
+	void BuildGeometry_2(void);
 
 private:
 	std::array<VERTEX, 4> surface_vt;
