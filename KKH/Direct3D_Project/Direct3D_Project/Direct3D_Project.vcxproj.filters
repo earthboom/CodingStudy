@@ -97,6 +97,9 @@
     <Filter Include="02.Utiltiy\94.BlurFilter">
       <UniqueIdentifier>{b1b4a00b-fae7-42c3-b200-eee1c56eabf8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.System\02.Camera">
+      <UniqueIdentifier>{3881abc0-fde0-483f-a7e7-c385ee3c8617}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -201,6 +204,9 @@
     <ClInclude Include="BlurFilter.h">
       <Filter>02.Utiltiy\94.BlurFilter</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>01.System\02.Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D_Project.cpp">
@@ -280,6 +286,9 @@
     </ClCompile>
     <ClCompile Include="BlurFilter.cpp">
       <Filter>02.Utiltiy\94.BlurFilter</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>01.System\02.Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
