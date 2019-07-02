@@ -26,63 +26,64 @@ XMVECTOR Camera::GetPosition(void) const
 	return XMLoadFloat3(&mPosition);
 }
 
-XMFLOAT3 Camera::GetPosition3(void) const
+XMFLOAT3 Camera::GetPosition3f(void) const
 {
 	return mPosition;
 }
 
 void Camera::SetPosition(float x, float y, float z)
 {
+	mPosition = XMFLOAT3(x, y, z);
 }
 
 void Camera::SetPosition(const XMFLOAT3& v)
 {
-	
+	mPosition = v;
 }
 
 XMVECTOR Camera::GetRight(void) const
 {
-	return XMVECTOR();
+	return XMLoadFloat3(&mRight);
 }
 
 XMFLOAT3 Camera::GetRight3f(void) const
 {
-	return XMFLOAT3();
+	return mRight;
 }
 
 XMVECTOR Camera::GetUp(void) const
 {
-	return XMVECTOR();
+	return XMLoadFloat3(&mUp);
 }
 
 XMFLOAT3 Camera::GetUp3f(void) const
 {
-	return XMFLOAT3();
+	return mUp;
 }
 
 XMVECTOR Camera::GetLook(void) const
 {
-	return XMVECTOR();
+	return XMLoadFloat3(&mLook);
 }
 
 XMFLOAT3 Camera::GetLook3f(void) const
 {
-	return XMFLOAT3();
+	return mLook;
 }
 
 float Camera::GetNearZ(void) const
 {
-	return 0.0f;
+	return mNearZ;
 }
 
 float Camera::GetFarZ(void) const
 {
-	return 0.0f;
+	return mFarZ;
 }
 
 float Camera::GetAspect(void) const
 {
-	return 0.0f;
+	return mAspect;
 }
 
 float Camera::GetFovY(void) const
@@ -129,43 +130,65 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf)
 
 	XMMATRIX P = XMMatrixPerspectiveFovLH(mFovY, mAspect, mNearZ, mFarZ);
 	XMStoreFloat4x4(&mProj, P);
+	XMStoreFloat4x4(&g_Proj, P);
 }
 
 void Camera::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 {
+	XMVECTOR L = XMVector3Normalize(XMVectorSubtract(target, pos));
+	XMVECTOR R = XMVector3Normalize(XMVector3Cross(worldUp, L));
+	XMVECTOR U = XMVector3Cross(L, R);
+
+	XMStoreFloat3(&mPosition, pos);
+	XMStoreFloat3(&mLook, L);
+	XMStoreFloat3(&mRight, R);
+	XMStoreFloat3(&mUp, U);
+
+	mViewDirty = TRUE;
 }
 
 void Camera::LookAt(XMFLOAT3& pos, XMFLOAT3& target, XMFLOAT3& worldUp)
 {
+	XMVECTOR P = XMLoadFloat3(&pos);
+	XMVECTOR T = XMLoadFloat3(&target);
+	XMVECTOR U = XMLoadFloat3(&worldUp);
+
+	LookAt(P, T, U);
+
+	mViewDirty = TRUE;
 }
 
 XMMATRIX Camera::GetView(void) const
 {
-	return XMMATRIX();
+	assert(!mViewDirty);
+	return XMLoadFloat4x4(&mView);
 }
 
 XMMATRIX Camera::GetProj(void) const
 {
-	return XMMATRIX();
+	return XMLoadFloat4x4(&mProj);
 }
 
 XMFLOAT4X4 Camera::GetView4x4f(void) const
 {
-	return XMFLOAT4X4();
+	assert(!mViewDirty);
+	return mView;
 }
 
 XMFLOAT4X4 Camera::GetProj4x4f(void) const
 {
-	return XMFLOAT4X4();
+	return mProj;
 }
 
 void Camera::Strafe(float d)
 {
 	//mPosition += d * mRight
 	XMVECTOR s = XMVectorReplicate(d);
-	XMVECTOR r = XMLoadFloat3(&mUp);
+	XMVECTOR r = XMLoadFloat3(&mRight);
 	XMVECTOR p = XMLoadFloat3(&mPosition);
 	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, r, p));
+
+	mViewDirty = TRUE;
 }
 
 void Camera::Walk(float d)
@@ -175,6 +198,8 @@ void Camera::Walk(float d)
 	XMVECTOR l = XMLoadFloat3(&mLook);
 	XMVECTOR p = XMLoadFloat3(&mPosition);
 	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, l, p));
+
+	mViewDirty = TRUE;
 }
 
 void Camera::Pitch(float angle)
@@ -185,6 +210,8 @@ void Camera::Pitch(float angle)
 	XMStoreFloat3(&mUp, XMVector3TransformNormal(XMLoadFloat3(&mUp), R));
 
 	XMStoreFloat3(&mLook, XMVector3TransformNormal(XMLoadFloat3(&mLook), R));
+
+	mViewDirty = TRUE;
 }
 
 void Camera::RotateY(float angle)
@@ -195,6 +222,8 @@ void Camera::RotateY(float angle)
 	XMStoreFloat3(&mRight, XMVector3TransformNormal(XMLoadFloat3(&mRight), R));
 	XMStoreFloat3(&mUp, XMVector3TransformNormal(XMLoadFloat3(&mUp), R));
 	XMStoreFloat3(&mLook, XMVector3TransformNormal(XMLoadFloat3(&mLook), R));
+
+	mViewDirty = TRUE;
 }
 
 void Camera::UpdateViewMatrix(void)
@@ -202,10 +231,43 @@ void Camera::UpdateViewMatrix(void)
 	if (mViewDirty)
 	{
 		XMVECTOR R = XMLoadFloat3(&mRight);
-		XMVECTOR U = XMLoadFloat3(&mLook);
-		XMVECTOR L = XMLoadFloat3(&mUp);
+		XMVECTOR U = XMLoadFloat3(&mUp);
+		XMVECTOR L = XMLoadFloat3(&mLook);
 		XMVECTOR P = XMLoadFloat3(&mPosition);
 
+		L = XMVector3Normalize(L);
+		U = XMVector3Normalize(XMVector3Cross(L, R));
 
+		R = XMVector3Cross(U, L);
+
+		float x = -XMVectorGetX(XMVector3Dot(P, R));
+		float y = -XMVectorGetX(XMVector3Dot(P, U));
+		float z = -XMVectorGetX(XMVector3Dot(P, L));
+
+		XMStoreFloat3(&mRight, R);
+		XMStoreFloat3(&mUp, U);
+		XMStoreFloat3(&mLook, L);
+
+		mView(0, 0) = mRight.x;
+		mView(1, 0) = mRight.y;
+		mView(2, 0) = mRight.z;
+		mView(3, 0) = x;
+
+		mView(0, 1) = mUp.x;
+		mView(1, 1) = mUp.y;
+		mView(2, 1) = mUp.z;
+		mView(3, 1) = y;
+
+		mView(0, 2) = mLook.x;
+		mView(1, 2) = mLook.y;
+		mView(2, 2) = mLook.z;
+		mView(3, 2) = z;
+
+		mView(0, 3) = 0.0f;
+		mView(1, 3) = 0.0f;
+		mView(2, 3) = 0.0f;
+		mView(3, 3) = 1.0f;
+
+		mViewDirty = FALSE;
 	}
 }

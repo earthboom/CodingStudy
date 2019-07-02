@@ -186,6 +186,7 @@
     <ClInclude Include="BlurFilter.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Camera_Manager.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Const.h" />
     <ClInclude Include="d3dutil_Manager.h" />
@@ -222,6 +223,7 @@
     <ClCompile Include="BlurFilter.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Camera_Manager.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="d3dutil_Manager.cpp" />
     <ClCompile Include="Direct3D_Project.cpp" />

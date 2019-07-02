@@ -10,7 +10,7 @@ public:
 
 	//Getting or Setting method of world space camera position
 	XMVECTOR GetPosition(void)const;
-	XMFLOAT3 GetPosition3(void)const;
+	XMFLOAT3 GetPosition3f(void)const;
 	void SetPosition(float x, float y, float z);
 	void SetPosition(const XMFLOAT3& v);
 
@@ -81,3 +81,5 @@ private:
 	XMFLOAT4X4 mView;
 	XMFLOAT4X4 mProj;
 };
+
+typedef std::unique_ptr<Camera> PCAM;

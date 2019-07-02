@@ -12,6 +12,7 @@
 #include "Skull.h"
 #include "Billboard.h"
 #include "Texture_Manger.h"
+#include "Camera_Manager.h"
 
 #define KEY_DOWN(vk_code)	(GetAsyncKeyState(vk_code) & 0x0001)
 
@@ -38,6 +39,10 @@ bool CMainApp::Ready_MainApp(void)
 	ThrowIfFailed(COM_LIST->Reset(GRAPHIC->Get_CommandAllocator().Get(), nullptr));
 
 	UTIL.Get_CbvSrvDescriptorSize() = GRAPHIC_DEV->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+	//Camera
+	CAM_MGR.CreateCamera();
+	CURR_CAM->SetPosition(0.0f, 2.0f, -15.0f);
 
 	LoadTexture();		
 	
@@ -77,6 +82,22 @@ bool CMainApp::Ready_MainApp(void)
 
 int CMainApp::Update_MainApp(const CTimer& mt)
 {
+	float dt = mt.DeltaTime();
+
+	if (GetAsyncKeyState('W') & 0x8000)
+		CURR_CAM->Walk(10.0f * dt);
+
+	if (GetAsyncKeyState('S') & 0x8000)
+		CURR_CAM->Walk(-10.0f * dt);
+
+	if (GetAsyncKeyState('A') & 0x8000)
+		CURR_CAM->Strafe(-10.0f * dt);
+
+	if (GetAsyncKeyState('D') & 0x8000)
+		CURR_CAM->Strafe(10.0f * dt);
+
+	CURR_CAM->UpdateViewMatrix();
+
 	if (!UTIL.Object_Cycle(mt, Utility_Manager::OS_UPDATE)) return 0;
 
 	return 1;

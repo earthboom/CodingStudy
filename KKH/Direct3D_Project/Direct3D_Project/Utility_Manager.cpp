@@ -3,6 +3,7 @@
 #include "Graphic_Manager.h"
 #include "Timer_Manager.h"
 #include "Texture_Manger.h"
+#include "Camera_Manager.h"
 
 Utility_Manager::Utility_Manager(void)
 	: mRootSignature(nullptr), mPostProcessRootSignature(nullptr)
@@ -372,8 +373,10 @@ void Utility_Manager::BuildPSOs(void)
 
 void Utility_Manager::OnResize(void)
 {
-	DirectX::XMMATRIX p = DirectX::XMMatrixPerspectiveFovLH(0.25f * PI, AspectRatio(), 1.0f, 1000.0f);
-	DirectX::XMStoreFloat4x4(&g_Proj, p);
+	//DirectX::XMMATRIX p = DirectX::XMMatrixPerspectiveFovLH(0.25f * PI, AspectRatio(), 1.0f, 1000.0f);
+	//DirectX::XMStoreFloat4x4(&g_Proj, p);
+
+	CURR_CAM->SetLens(0.25f * PI, AspectRatio(), 1.0f, 1000.0f);
 
 	if (g_ScreenBlur)
 	{
@@ -439,7 +442,7 @@ bool Utility_Manager::Object_Ready()
 bool Utility_Manager::Object_Update(const CTimer& mt)
 {
 	OnKeyboardInput(mt);
-	UpdateCamera(mt);
+	//UpdateCamera(mt);
 
 	mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % NumFrameResources;
 	mCurrFrameResource = UTIL.Get_Frameres()[mCurrFrameResourceIndex].get();
@@ -601,7 +604,7 @@ void Utility_Manager::UpdateMaterialCBs(const CTimer& mt)
 
 void Utility_Manager::UpdateMainPassCB(const CTimer& mt)
 {
-	XMMATRIX view = XMLoadFloat4x4(&mView);
+	XMMATRIX view = CURR_CAM->GetView();//XMLoadFloat4x4(&mView);
 	XMMATRIX proj = XMLoadFloat4x4(&g_Proj);
 
 	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
@@ -615,7 +618,7 @@ void Utility_Manager::UpdateMainPassCB(const CTimer& mt)
 	XMStoreFloat4x4(&mMainPassCB.InvProj, XMMatrixTranspose(invProj));
 	XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));
 	XMStoreFloat4x4(&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
-	mMainPassCB.EyePosW = g_EyePos;
+	mMainPassCB.EyePosW = CURR_CAM->GetPosition3f();//g_EyePos;
 	mMainPassCB.RenderTargetSize = XMFLOAT2((float)WINSIZE_X, (float)WINSIZE_Y);
 	mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / WINSIZE_X, 1.0f / WINSIZE_Y);
 	mMainPassCB.NearZ = 1.0f;

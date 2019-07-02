@@ -100,6 +100,9 @@
     <Filter Include="01.System\02.Camera">
       <UniqueIdentifier>{3881abc0-fde0-483f-a7e7-c385ee3c8617}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.System\02.Camera\Manager">
+      <UniqueIdentifier>{340af807-2903-4f93-8ee4-e7109e8c31af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -207,6 +210,9 @@
     <ClInclude Include="Camera.h">
       <Filter>01.System\02.Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Camera_Manager.h">
+      <Filter>01.System\02.Camera\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D_Project.cpp">
@@ -289,6 +295,9 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>01.System\02.Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera_Manager.cpp">
+      <Filter>01.System\02.Camera\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
