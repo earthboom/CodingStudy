@@ -12,6 +12,7 @@ Camera::Camera(void)
 	, mFovY(0.0f)
 	, mNearWindowHeight(0.0f)
 	, mFarWindowHeight(0.0f)
+	, mViewDirty(FALSE)
 	, mView(MathHelper::Identity4x4())
 	, mProj(MathHelper::Identity4x4())
 {
@@ -34,11 +35,13 @@ XMFLOAT3 Camera::GetPosition3f(void) const
 void Camera::SetPosition(float x, float y, float z)
 {
 	mPosition = XMFLOAT3(x, y, z);
+	mViewDirty = TRUE;
 }
 
 void Camera::SetPosition(const XMFLOAT3& v)
 {
 	mPosition = v;
+	mViewDirty = TRUE;
 }
 
 XMVECTOR Camera::GetRight(void) const

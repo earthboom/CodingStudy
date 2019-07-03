@@ -132,7 +132,7 @@
       <ShaderType>Effect</ShaderType>
     </FxCompile>
     <FxCompile>
-      <ShaderModel>5.0</ShaderModel>
+      <ShaderModel>5.1</ShaderModel>
       <EntryPointName>main</EntryPointName>
     </FxCompile>
   </ItemDefinitionGroup>

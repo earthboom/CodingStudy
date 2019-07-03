@@ -34,14 +34,20 @@ void Utility_Manager::UtilityInitialize(void)
 void Utility_Manager::BuildRootSignature(void)
 {
 	CD3DX12_DESCRIPTOR_RANGE texTable;
-	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	//texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 4, 0, 0);
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[4];
 
-	slotRootParameter[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
-	slotRootParameter[1].InitAsConstantBufferView(0);
-	slotRootParameter[2].InitAsConstantBufferView(1);
-	slotRootParameter[3].InitAsConstantBufferView(2);
+	//slotRootParameter[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
+	//slotRootParameter[1].InitAsConstantBufferView(0);
+	//slotRootParameter[2].InitAsConstantBufferView(1);
+	//slotRootParameter[3].InitAsConstantBufferView(2);
+
+	slotRootParameter[0].InitAsConstantBufferView(0);
+	slotRootParameter[1].InitAsConstantBufferView(1);
+	slotRootParameter[2].InitAsShaderResourceView(0, 1);
+	slotRootParameter[3].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
 
 	auto staticSamplers = GetStaticSamplers();
 
@@ -116,8 +122,8 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 	const D3D_SHADER_MACRO alphaTestDefines[] = { "FOG", "1", "ALPHA_TEST", "1", NULL, NULL };
 
 	////===== [ Standard ] ======
-	//mShaders["standardVS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", nullptr, "VS", "vs_5_0");
-	//mShaders["opaquePS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", defines, "PS", "ps_5_0");
+	mShaders["standardVS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["opaquePS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", defines, "PS", "ps_5_1");
 	//mShaders["alphaTestedPS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", alphaTestDefines, "PS", "ps_5_0");
 	////=========================
 
@@ -143,10 +149,10 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 	//mShaders["tessPS"] = d3dutil_Manager::CompileShader(L"../Shaders/Tessellation.hlsl", nullptr, "PS", "ps_5_0");
 
 	//Bazier
-	mShaders["tessVS"] = d3dutil_Manager::CompileShader(L"../Shaders/BezierTessellation.hlsl", nullptr, "VS", "vs_5_0");
-	mShaders["tessHS"] = d3dutil_Manager::CompileShader(L"../Shaders/BezierTessellation.hlsl", nullptr, "HS", "hs_5_0");
-	mShaders["tessDS"] = d3dutil_Manager::CompileShader(L"../Shaders/BezierTessellation.hlsl", nullptr, "DS", "ds_5_0");
-	mShaders["tessPS"] = d3dutil_Manager::CompileShader(L"../Shaders/BezierTessellation.hlsl", nullptr, "PS", "ps_5_0");
+	//mShaders["tessVS"] = d3dutil_Manager::CompileShader(L"../Shaders/BezierTessellation.hlsl", nullptr, "VS", "vs_5_0");
+	//mShaders["tessHS"] = d3dutil_Manager::CompileShader(L"../Shaders/BezierTessellation.hlsl", nullptr, "HS", "hs_5_0");
+	//mShaders["tessDS"] = d3dutil_Manager::CompileShader(L"../Shaders/BezierTessellation.hlsl", nullptr, "DS", "ds_5_0");
+	//mShaders["tessPS"] = d3dutil_Manager::CompileShader(L"../Shaders/BezierTessellation.hlsl", nullptr, "PS", "ps_5_0");
 	//===================================
 
 	//mInputLayout =
@@ -196,26 +202,26 @@ void Utility_Manager::BuildPSOs(void)
 	psoDesc.pRootSignature = mRootSignature.Get();
 
 	////===== [ Standard ] ======
-	//psoDesc.VS = { reinterpret_cast<BYTE*>(mShaders["standardVS"]->GetBufferPointer()), mShaders["standardVS"]->GetBufferSize() };
-	//psoDesc.PS = { reinterpret_cast<BYTE*>(mShaders["opaquePS"]->GetBufferPointer()), mShaders["opaquePS"]->GetBufferSize() };
+	psoDesc.VS = { reinterpret_cast<BYTE*>(mShaders["standardVS"]->GetBufferPointer()), mShaders["standardVS"]->GetBufferSize() };
+	psoDesc.PS = { reinterpret_cast<BYTE*>(mShaders["opaquePS"]->GetBufferPointer()), mShaders["opaquePS"]->GetBufferSize() };
 	////=========================
 
 
 	//==== [ Tessellation Stage ] =======
-	psoDesc.VS = { reinterpret_cast<BYTE*>(mShaders["tessVS"]->GetBufferPointer()), mShaders["tessVS"]->GetBufferSize() };
-	psoDesc.HS = { reinterpret_cast<BYTE*>(mShaders["tessHS"]->GetBufferPointer()), mShaders["tessHS"]->GetBufferSize() };
-	psoDesc.DS = { reinterpret_cast<BYTE*>(mShaders["tessDS"]->GetBufferPointer()), mShaders["tessDS"]->GetBufferSize() };
-	psoDesc.PS = { reinterpret_cast<BYTE*>(mShaders["tessPS"]->GetBufferPointer()), mShaders["tessPS"]->GetBufferSize() };
+	//psoDesc.VS = { reinterpret_cast<BYTE*>(mShaders["tessVS"]->GetBufferPointer()), mShaders["tessVS"]->GetBufferSize() };
+	//psoDesc.HS = { reinterpret_cast<BYTE*>(mShaders["tessHS"]->GetBufferPointer()), mShaders["tessHS"]->GetBufferSize() };
+	//psoDesc.DS = { reinterpret_cast<BYTE*>(mShaders["tessDS"]->GetBufferPointer()), mShaders["tessDS"]->GetBufferSize() };
+	//psoDesc.PS = { reinterpret_cast<BYTE*>(mShaders["tessPS"]->GetBufferPointer()), mShaders["tessPS"]->GetBufferSize() };
 	//===================================
 
 
 	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-	psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;	//(tessellation option)
+	//psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;	//(tessellation option)
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	psoDesc.SampleMask = UINT_MAX;
-	//psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;	//(tessellation option)
+	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	//psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;	//(tessellation option)
 	psoDesc.NumRenderTargets = 1;
 	psoDesc.RTVFormats[0] = GRAPHIC->Get_BackBufferFormat();
 	psoDesc.SampleDesc.Count = GRAPHIC->Get_4xMsaaState() ? 4 : 1;
@@ -502,7 +508,13 @@ bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 	UINT passCBByteSize = d3dutil_Manager::CalcConstantBufferByteSize(sizeof(PassConstants));
 
 	auto passCB = mCurrFrameResource->PassCB->Resource();
-	_commandlist->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
+	_commandlist->SetGraphicsRootConstantBufferView(1, passCB->GetGPUVirtualAddress());
+
+	auto matBuffer = mCurrFrameResource->MaterialBuffer->Resource();
+	_commandlist->SetGraphicsRootConstantBufferView(2, matBuffer->GetGPUVirtualAddress());
+
+	_commandlist->SetGraphicsRootDescriptorTable(3, mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+
 	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_OPAUQE]);
 
 	//_commandlist->OMSetStencilRef(1);
@@ -581,7 +593,7 @@ void Utility_Manager::UpdateObjectCBs(const CTimer& mt)
 
 void Utility_Manager::UpdateMaterialCBs(const CTimer& mt)
 {
-	auto currMaterialCB = mCurrFrameResource->MaterialCB.get();
+	auto currMaterialCB = mCurrFrameResource->MaterialBuffer.get();//MaterialCB.get();
 	for (auto& e : mMaterials)
 	{
 		Material* mat = e.second.get();
@@ -589,13 +601,15 @@ void Utility_Manager::UpdateMaterialCBs(const CTimer& mt)
 		{
 			DirectX::XMMATRIX matTransform = DirectX::XMLoadFloat4x4(&mat->MatTransform);
 
-			MaterialConstants matConstants;
-			matConstants.DiffuseAlbedo = mat->DiffuseAlbedo;
-			matConstants.FresnelR0 = mat->FresnelR0;
-			matConstants.Roughness = mat->Roughness;
-			DirectX::XMStoreFloat4x4(&matConstants.MatTransform, DirectX::XMMatrixTranspose(matTransform));
+			//MaterialConstants matConstants;
+			MaterialData matData;
+			matData.DiffuseAlbedo = mat->DiffuseAlbedo;
+			matData.FresnelR0 = mat->FresnelR0;
+			matData.Roughness = mat->Roughness;
+			DirectX::XMStoreFloat4x4(&matData.MatTransform, DirectX::XMMatrixTranspose(matTransform));
+			matData.DiffuseMapIndex = mat->DiffuseSrvHeapIndex;
 
-			currMaterialCB->CopyData(mat->MatCBIndex, matConstants);
+			currMaterialCB->CopyData(mat->MatCBIndex, matData);
 
 			mat->NumFrameDirty--;
 		}
@@ -661,7 +675,7 @@ void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const
 	UINT matCBByteSize = d3dutil_Manager::CalcConstantBufferByteSize(sizeof(MaterialConstants));
 
 	auto objectCB = mCurrFrameResource->ObjectCB->Resource();
-	auto matCB = mCurrFrameResource->MaterialCB->Resource();
+	auto matCB = mCurrFrameResource->MaterialBuffer->Resource();//MaterialCB->Resource();
 
 	// For each render item...
 	for (size_t i = 0; i < ritems.size(); ++i)

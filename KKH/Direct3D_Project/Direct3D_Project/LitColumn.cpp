@@ -93,7 +93,7 @@ void LitColumn::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const std::
 	UINT matCBByteSize = d3dutil_Manager::CalcConstantBufferByteSize(sizeof(MaterialConstants));
 
 	auto objectCB = UTIL.Get_CurrFrameResource()->ObjectCB->Resource();
-	auto matCB = UTIL.Get_CurrFrameResource()->MaterialCB->Resource();
+	auto matCB = UTIL.Get_CurrFrameResource()->MaterialBuffer->Resource();//MaterialCB->Resource();
 
 	// For each render item...
 	for (size_t i = 0; i < ritems.size(); ++i)
@@ -141,25 +141,25 @@ void LitColumn::UpdateObjectCBs(const float & dt)
 
 void LitColumn::UpdateMaterialCBs(const float & dt)
 {
-	auto currMaterialCB = UTIL.Get_CurrFrameResource()->MaterialCB.get();
-	for (auto& e : UTIL.Get_Materials())
-	{
-		Material* mat = e.second.get();
-		if (mat->NumFrameDirty > 0)
-		{
-			DirectX::XMMATRIX matTransform = DirectX::XMLoadFloat4x4(&mat->MatTransform);
+	//auto currMaterialCB = UTIL.Get_CurrFrameResource()->MaterialCB.get();
+	//for (auto& e : UTIL.Get_Materials())
+	//{
+	//	Material* mat = e.second.get();
+	//	if (mat->NumFrameDirty > 0)
+	//	{
+	//		DirectX::XMMATRIX matTransform = DirectX::XMLoadFloat4x4(&mat->MatTransform);
 
-			MaterialConstants matConstants;
-			matConstants.DiffuseAlbedo = mat->DiffuseAlbedo;
-			matConstants.FresnelR0 = mat->FresnelR0;
-			matConstants.Roughness = mat->Roughness;
-			DirectX::XMStoreFloat4x4(&matConstants.MatTransform, DirectX::XMMatrixTranspose(matTransform));
+	//		MaterialConstants matConstants;
+	//		matConstants.DiffuseAlbedo = mat->DiffuseAlbedo;
+	//		matConstants.FresnelR0 = mat->FresnelR0;
+	//		matConstants.Roughness = mat->Roughness;
+	//		DirectX::XMStoreFloat4x4(&matConstants.MatTransform, DirectX::XMMatrixTranspose(matTransform));
 
-			currMaterialCB->CopyData(mat->MatCBIndex, matConstants);
+	//		currMaterialCB->CopyData(mat->MatCBIndex, matConstants);
 
-			mat->NumFrameDirty--;
-		}
-	}
+	//		mat->NumFrameDirty--;
+	//	}
+	//}
 }
 
 void LitColumn::UpdateMainPassCB(const float & dt)

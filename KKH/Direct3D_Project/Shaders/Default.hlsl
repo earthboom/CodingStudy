@@ -15,7 +15,25 @@
 
 #include "LightingUtil.hlsl"
 
-Texture2D gDiffuseMap : register(t0);
+//Dynamic indexing
+struct MaterialData
+{
+	float4 DiffseAlbedo;
+	float3 FresnelR0;
+	float Roughness;
+	float4x4 MatTransform;
+	uint DiffuseMapIndex;
+	uint MatPad0;
+	uint MatPad1;
+	uint MatPad2;
+};
+
+Texture2D gDiffuseMap[4] : register(t0);
+
+StructuredBuffer<MaterialData> gMaterialData : register(t0, space1);
+//==============================
+
+//Texture2D gDiffuseMap : register(t0);
 
 SamplerState gsamPointWrap			:	register(s0);
 SamplerState gsamPointClamp			:	register(s1);
@@ -28,6 +46,10 @@ cbuffer cbPerObject : register(b0)
 {
 	float4x4 gWorld;
 	float4x4 gTexTransform;
+	uint gMaterialIndex;
+	uint gObjPad0;
+	uint gObjPad1;
+	uint gObjPad2;
 };
 
 cbuffer cbPass : register(b1)
@@ -83,6 +105,9 @@ VertexOut VS(VertexIn vin)
 {
 	VertexOut vout = (VertexOut)0.0f;
 
+	//Taking Material data
+	MaterialData matData = gMaterialData[gMaterialIndex];
+
 	float4 posW = mul(float4(vin.PosL, 1.0f), gWorld);
 	vout.PosW = posW.xyz;
 
@@ -91,14 +116,22 @@ VertexOut VS(VertexIn vin)
 	vout.PosH = mul(posW, gViewProj);
 
 	float4 texC = mul(float4(vin.TexC, 0.0f, 1.0f), gTexTransform);
-	vout.TexC = mul(texC, gMatTransform).xy;
+	vout.TexC = mul(texC, matData.MatTransform).xy;
 
 	return vout;
 }
 
 float4 PS(VertexOut pin) : SV_Target
 {
-	float4 diffuseAlbedo = gDiffuseMap.Sample(gsamAnisotropicWrap, pin.TexC) * gDiffuseAlbedo;
+	//Taking Material data
+	MaterialData matData = gMaterialData[gMaterialIndex];
+	float4 diffuseAlbedo = matData.DiffuseAlbedo;
+	float3 fresnelR0 = matData.FresnelR0;
+	float roughness = matData.Roughness;
+	uint diffuseTexIndex = matData.DiffuseMapIndex;
+
+	//float4 diffuseAlbedo = gDiffuseMap.Sample(gsamAnisotropicWrap, pin.TexC) * gDiffuseAlbedo;
+	diffuseAlbedo *= gDiffuseMap[diffuseTexIndex].Sample(gsamLinearWrap, pin.TexC);
 
 #ifdef ALPHA_TEST
 	clip(diffuseAlbedo.a - 0.1f);
