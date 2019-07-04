@@ -78,9 +78,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <ExecutablePath>C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\um;../Shaders/;../Models/;../Common/;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17763.0\um\x64;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>C:\Program Files (x86)\Windows Kits\10\bin\10.0.18362.0\x64;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um;../Shaders/;../Models/;../Common/;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\um\x64;$(LibraryPath)</LibraryPath>
+    <ExcludePath>$(ExcludePath)</ExcludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -119,7 +120,6 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
     </ClCompile>
@@ -189,6 +189,7 @@
     <ClInclude Include="Camera_Manager.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Const.h" />
+    <ClInclude Include="Cylinder.h" />
     <ClInclude Include="d3dutil_Manager.h" />
     <ClInclude Include="Direct3D_Project.h" />
     <ClInclude Include="FrameResource.h" />
@@ -204,6 +205,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Skull.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Struct.h" />
@@ -225,6 +227,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Camera_Manager.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="d3dutil_Manager.cpp" />
     <ClCompile Include="Direct3D_Project.cpp" />
     <ClCompile Include="FrameResource.cpp" />
@@ -238,6 +241,7 @@
     <ClCompile Include="Mouse_Manager.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Skull.cpp" />
+    <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -258,15 +262,6 @@
   <ItemGroup>
     <Image Include="Direct3D_Project.ico" />
     <Image Include="small.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\Shaders\BezierTessellation.hlsl" />
-    <FxCompile Include="..\Shaders\Blur.hlsl" />
-    <FxCompile Include="..\Shaders\color.hlsl" />
-    <FxCompile Include="..\Shaders\Default.hlsl" />
-    <FxCompile Include="..\Shaders\LightingUtil.hlsl" />
-    <FxCompile Include="..\Shaders\Tessellation.hlsl" />
-    <FxCompile Include="..\Shaders\TreeSprite.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

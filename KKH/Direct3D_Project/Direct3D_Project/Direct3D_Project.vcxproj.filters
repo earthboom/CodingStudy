@@ -103,6 +103,12 @@
     <Filter Include="01.System\02.Camera\Manager">
       <UniqueIdentifier>{340af807-2903-4f93-8ee4-e7109e8c31af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utiltiy\03.Object\Sphere">
+      <UniqueIdentifier>{f6ab743a-ebda-4f3d-b577-1f150ebac367}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\03.Object\Cylinder">
+      <UniqueIdentifier>{734d7838-a2e1-48ef-966c-9ae049658fb3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -213,6 +219,12 @@
     <ClInclude Include="Camera_Manager.h">
       <Filter>01.System\02.Camera\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>02.Utiltiy\03.Object\Sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="Cylinder.h">
+      <Filter>02.Utiltiy\03.Object\Cylinder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Direct3D_Project.cpp">
@@ -299,6 +311,12 @@
     <ClCompile Include="Camera_Manager.cpp">
       <Filter>01.System\02.Camera\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>02.Utiltiy\03.Object\Sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="Cylinder.cpp">
+      <Filter>02.Utiltiy\03.Object\Cylinder</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -312,28 +330,5 @@
     <ResourceCompile Include="Direct3D_Project.rc">
       <Filter>00.Client\99.Default</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\Shaders\color.hlsl">
-      <Filter>02.Utiltiy\99.hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Shaders\Default.hlsl">
-      <Filter>02.Utiltiy\99.hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Shaders\LightingUtil.hlsl">
-      <Filter>02.Utiltiy\99.hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Shaders\TreeSprite.hlsl">
-      <Filter>02.Utiltiy\99.hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Shaders\Blur.hlsl">
-      <Filter>02.Utiltiy\99.hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Shaders\Tessellation.hlsl">
-      <Filter>02.Utiltiy\99.hlsl</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Shaders\BezierTessellation.hlsl">
-      <Filter>02.Utiltiy\99.hlsl</Filter>
-    </FxCompile>
   </ItemGroup>
 </Project>
