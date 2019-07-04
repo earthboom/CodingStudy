@@ -10,6 +10,10 @@ struct ObjectConstants
 {
 	DirectX::XMFLOAT4X4 World = MathHelper::Identity4x4();
 	DirectX::XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();
+	UINT     MaterialIndex;
+	UINT     ObjPad0;
+	UINT     ObjPad1;
+	UINT     ObjPad2;
 };
 
 struct PassConstants
@@ -31,11 +35,6 @@ struct PassConstants
 
 	DirectX::XMFLOAT4 AmbientLight = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-	DirectX::XMFLOAT4 FogColor = { 0.7f, 0.7f, 0.7f, 1.0f };
-	float gFogStart = 5.0f;
-	float gFogRange = 150.0f;
-	DirectX::XMFLOAT2 cbPerObjectPad2;
-
 	// Indices [0, NUM_DIR_LIGHTS) are directional lights;
 	// indices [NUM_DIR_LIGHTS, NUM_DIR_LIGHTS+NUM_POINT_LIGHTS) are point lights;
 	// indices [NUM_DIR_LIGHTS+NUM_POINT_LIGHTS, NUM_DIR_LIGHTS+NUM_POINT_LIGHT+NUM_SPOT_LIGHTS)
@@ -43,19 +42,30 @@ struct PassConstants
 	Light Lights[MaxLights];
 };
 
+struct MaterialData
+{
+	DirectX::XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
+	DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
+	float Roughness = 64.0f;
+
+	// Used in texture mapping.
+	DirectX::XMFLOAT4X4 MatTransform = MathHelper::Identity4x4();
+
+	UINT DiffuseMapIndex = 0;
+	UINT MaterialPad0;
+	UINT MaterialPad1;
+	UINT MaterialPad2;
+};
+
 struct Vertex
 {
-	Vertex() = default;
-	Vertex(float x, float y, float z, float nx, float ny, float nz, float u, float v) :
-		Pos(x, y, z),
-		Normal(nx, ny, nz),
-		TexC(u, v) {}
-
 	DirectX::XMFLOAT3 Pos;
 	DirectX::XMFLOAT3 Normal;
 	DirectX::XMFLOAT2 TexC;
 };
 
+// Stores the resources needed for the CPU to build the command lists
+// for a frame.  
 struct FrameResource
 {
 public:
@@ -66,14 +76,14 @@ public:
 			D3D12_COMMAND_LIST_TYPE_DIRECT,
 			IID_PPV_ARGS(CmdListAlloc.GetAddressOf())));
 
-		//  FrameCB = std::make_unique<UploadBuffer<FrameConstants>>(device, 1, true);
 		PassCB = std::make_unique<UploadBuffer<PassConstants>>(device, passCount, true);
-		MaterialCB = std::make_unique<UploadBuffer<MaterialConstants>>(device, materialCount, true);
+		MaterialBuffer = std::make_unique<UploadBuffer<MaterialData>>(device, materialCount, false);
 		ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(device, objectCount, true);
 	}
 	FrameResource(const FrameResource& rhs) = delete;
 	FrameResource& operator=(const FrameResource& rhs) = delete;
 	~FrameResource() {}
+
 
 	// We cannot reset the allocator until the GPU is done processing the commands.
 	// So each frame needs their own allocator.
@@ -81,10 +91,10 @@ public:
 
 	// We cannot update a cbuffer until the GPU is done processing the commands
 	// that reference it.  So each frame needs their own cbuffers.
-   // std::unique_ptr<UploadBuffer<FrameConstants>> FrameCB = nullptr;
 	std::unique_ptr<UploadBuffer<PassConstants>> PassCB = nullptr;
-	std::unique_ptr<UploadBuffer<MaterialConstants>> MaterialCB = nullptr;
 	std::unique_ptr<UploadBuffer<ObjectConstants>> ObjectCB = nullptr;
+
+	std::unique_ptr<UploadBuffer<MaterialData>> MaterialBuffer = nullptr;
 
 	// Fence value to mark commands up to this fence point.  This lets us
 	// check if these frame resources are still in use by the GPU.
@@ -96,6 +106,7 @@ public:
 struct RenderItem
 {
 	RenderItem() = default;
+	RenderItem(const RenderItem& rhs) = delete;
 
 	// World matrix of the shape that describes the object's local space
 	// relative to the world space, which defines the position, orientation,

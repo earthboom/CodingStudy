@@ -4,6 +4,7 @@
 #include "d3dApp.h"
 #include "Include.h"
 #include "Waves.h"
+#include "Camera.h"
 
 class MainApp : public D3DApp
 {
@@ -25,19 +26,16 @@ private:
 	virtual void OnMouseMove(WPARAM btnState, int x, int y)override;
 
 	void OnKeyboardInput(const GameTimer& gt);
-	void UpdateCamera(const GameTimer& gt);
 	void AnimateMaterials(const GameTimer& gt);
 	void UpdateObjectCBs(const GameTimer& gt);
-	void UpdateMaterialCBs(const GameTimer& gt);
+	void UpdateMaterialBuffer(const GameTimer& gt);
 	void UpdateMainPassCB(const GameTimer& gt);
-	void UpdateReflectedPassCB(const GameTimer& gt);
 
 	void LoadTextures();
 	void BuildRootSignature();
 	void BuildDescriptorHeaps();
 	void BuildShadersAndInputLayout();
-	void BuildRoomGeometry();
-	void BuildSkullGeometry();
+	void BuildShapeGeometry();
 	void BuildPSOs();
 	void BuildFrameResources();
 	void BuildMaterials();
@@ -66,29 +64,15 @@ private:
 
 	std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
-	// Cache render items of interest.
-	RenderItem* mSkullRitem = nullptr;
-	RenderItem* mReflectedSkullRitem = nullptr;
-	RenderItem* mShadowedSkullRitem = nullptr;
-
 	// List of all the render items.
 	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
 	// Render items divided by PSO.
-	std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];
+	std::vector<RenderItem*> mOpaqueRitems;
 
 	PassConstants mMainPassCB;
-	PassConstants mReflectedPassCB;
 
-	XMFLOAT3 mSkullTranslation = { 0.0f, 1.0f, -5.0f };
-
-	XMFLOAT3 mEyePos = { 0.0f, 0.0f, 0.0f };
-	XMFLOAT4X4 mView = MathHelper::Identity4x4();
-	XMFLOAT4X4 mProj = MathHelper::Identity4x4();
-
-	float mTheta = 1.24f*XM_PI;
-	float mPhi = 0.42f*XM_PI;
-	float mRadius = 12.0f;
+	Camera mCamera;
 
 	POINT mLastMousePos;
 };

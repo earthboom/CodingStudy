@@ -59,9 +59,6 @@
     <ClInclude Include="GameTimer.h">
       <Filter>Source Files\Timer</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Source Files\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="DirectXProject.h">
       <Filter>99.Default</Filter>
     </ClInclude>
@@ -107,6 +104,9 @@
     <ClInclude Include="MainApp.h">
       <Filter>Source Files\00.MainApp</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Source Files\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -114,9 +114,6 @@
     </ClCompile>
     <ClCompile Include="GameTimer.cpp">
       <Filter>Source Files\Timer</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files\Camera</Filter>
     </ClCompile>
     <ClCompile Include="DirectXProject.cpp">
       <Filter>99.Default</Filter>
@@ -141,6 +138,9 @@
     </ClCompile>
     <ClCompile Include="MainApp.cpp">
       <Filter>Source Files\00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
