@@ -27,7 +27,7 @@ private:
 
 	void OnKeyboardInput(const GameTimer& gt);
 	void AnimateMaterials(const GameTimer& gt);
-	void UpdateObjectCBs(const GameTimer& gt);
+	void UpdateInstanceData(const GameTimer& gt);
 	void UpdateMaterialBuffer(const GameTimer& gt);
 	void UpdateMainPassCB(const GameTimer& gt);
 
@@ -35,7 +35,7 @@ private:
 	void BuildRootSignature();
 	void BuildDescriptorHeaps();
 	void BuildShadersAndInputLayout();
-	void BuildShapeGeometry();
+	void BuildSkullGeometry();
 	void BuildPSOs();
 	void BuildFrameResources();
 	void BuildMaterials();
@@ -69,6 +69,12 @@ private:
 
 	// Render items divided by PSO.
 	std::vector<RenderItem*> mOpaqueRitems;
+
+	UINT mInstanceCount = 0;
+
+	bool mFrustumCullingEnabled = true;
+
+	BoundingFrustum mCamFrustum;
 
 	PassConstants mMainPassCB;
 
