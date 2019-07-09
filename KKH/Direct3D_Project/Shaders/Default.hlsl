@@ -70,21 +70,21 @@ cbuffer cbPass : register(b1)
 	float gDeltaTime;
 	float4 gAmbientLight;
 
-	float4 gFogColor;
-	float gFogStart;
-	float gFogRange;
-	float2 cbPerObjectPad2;
+	//float4 gFogColor;
+	//float gFogStart;
+	//float gFogRange;
+	//float2 cbPerObjectPad2;
 
 	Light gLights[MaxLights];
 };
 
-cbuffer cbMaterial : register(b2)
-{
-	float4 gDiffuseAlbedo;
-	float3 gFresnelR0;
-	float gRoughness;
-	float4x4 gMatTransform;
-};
+//cbuffer cbMaterial : register(b2)
+//{
+//	float4 gDiffuseAlbedo;
+//	float3 gFresnelR0;
+//	float gRoughness;
+//	float4x4 gMatTransform;
+//};
 
 struct VertexIn
 {
@@ -139,9 +139,9 @@ float4 PS(VertexOut pin) : SV_Target
 
 	pin.NormalW = normalize(pin.NormalW);
 
-	float3 toEyeW = gEyePosW - pin.PosW;
-	float distToEye = length(toEyeW);
-	toEyeW /= distToEye;
+	float3 toEyeW = normalize(gEyePosW - pin.PosW);
+	//float distToEye = length(toEyeW);
+	//toEyeW /= distToEye;
 
 	float4 ambient = gAmbientLight * diffuseAlbedo;
 

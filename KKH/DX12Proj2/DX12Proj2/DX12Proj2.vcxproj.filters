@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="00.Client">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="01.System">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="02.Utility">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="00.Client\00.MainApp">
+      <UniqueIdentifier>{5f6cdbd0-580b-496d-976c-374b9b827936}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Client\99.Default">
+      <UniqueIdentifier>{f7f57cd2-dd32-40d1-be8f-618629049b62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Header">
+      <UniqueIdentifier>{1446b5e6-757c-46c5-95e6-be12b9d3f326}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Help">
+      <UniqueIdentifier>{5dda81e7-d0c5-4c59-b952-e75da043999e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\00.Graphic">
+      <UniqueIdentifier>{108032f2-10b0-4b45-bb28-6d6c0c7d29c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\01.Time">
+      <UniqueIdentifier>{fb7b5a7f-cc2f-4c9a-9b58-932d57945f49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\01.Time\Manager">
+      <UniqueIdentifier>{29ee3098-1e89-4d77-a4db-0b85a10b25cd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DX12Proj2.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="MainApp.h">
+      <Filter>00.Client\00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="Const.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Unique_Singleton.h">
+      <Filter>99.Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DDSTextureLoader.h">
+      <Filter>98.Help</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\MathHelper.h">
+      <Filter>98.Help</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>01.System\01.Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer_Manager.h">
+      <Filter>01.System\01.Time\Manager</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DX12Proj2.cpp">
+      <Filter>00.Client\99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>00.Client\99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="MainApp.cpp">
+      <Filter>00.Client\00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\DDSTextureLoader.cpp">
+      <Filter>98.Help</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>01.System\01.Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer_Manager.cpp">
+      <Filter>01.System\01.Time\Manager</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>00.Client\99.Default</Filter>
+    </Image>
+    <Image Include="DX12Proj2.ico">
+      <Filter>00.Client\99.Default</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DX12Proj2.rc">
+      <Filter>00.Client\99.Default</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

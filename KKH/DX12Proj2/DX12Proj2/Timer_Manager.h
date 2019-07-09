@@ -7,6 +7,13 @@
 class CTimer_Manager : public CSingleton<CTimer_Manager>
 {
 public:
+	enum TimerType
+	{
+		TIMER_MAIN,
+		TIMER_END
+	};
+
+public:
 	explicit CTimer_Manager(void);
 	CTimer_Manager(const CTimer_Manager&) = delete;
 	CTimer_Manager & operator = (const CTimer_Manager&) = delete;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{199E7A1E-6A4B-42F2-9661-364A75593388}</ProjectGuid>
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{064404BA-4B33-4040-998C-022F50B58018}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Direct3DProject</RootNamespace>
+    <RootNamespace>DX12Proj2</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -72,24 +72,20 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <ExecutablePath>C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\um;../Common/;../Shaders/;../Models/;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files (x86)\Windows Kits\10\Lib\10.0.17763.0\um\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <ExecutablePath>C:\Program Files %28x86%29\Windows Kits\10\bin\10.0.18362.0\x64;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um;../Shaders/;../Models/;../Common/;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\um\x64;$(LibraryPath)</LibraryPath>
-    <ExcludePath>$(ExcludePath)</ExcludePath>
+    <ExecutablePath>C:\Program Files (x86)\Windows Kits\10\bin\10.0.18362.0\x64;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>C:\Program Files %28x86%29\Windows Kits\10\Include\10.0.18362.0\um;./Common/;./Shaders/;./Resource/Texture/;./Resource/Models/;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Windows Kits\10\Lib\10.0.18362.0\um\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <ExecutablePath>C:\Program Files %28x86%29\Windows Kits\10\bin\10.0.18362.0\x64;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>C:\Program Files %28x86%29\Windows Kits\10\Include\10.0.18362.0\um;../Shaders/;../Common/;../Models/;$(IncludePath)</IncludePath>
+    <ExecutablePath>C:\Program Files (x86)\Windows Kits\10\bin\10.0.18362.0\x64;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>C:\Program Files %28x86%29\Windows Kits\10\Include\10.0.18362.0\um;./Shaders/;./Common/;./Resource/Texture/;./Resource/Models/;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\Windows Kits\10\Lib\10.0.18362.0\um\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -97,45 +93,31 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>false</SDLCheck>
+      <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d12.lib;D3DCompiler.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <TargetMachine>MachineX86</TargetMachine>
     </Link>
-    <FxCompile>
-      <ShaderType>Effect</ShaderType>
-    </FxCompile>
-    <FxCompile>
-      <ShaderModel>5.1</ShaderModel>
-      <EntryPointName>main</EntryPointName>
-    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>false</ConformanceMode>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d12.lib;D3DCompiler.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <FxCompile>
-      <ShaderType>Effect</ShaderType>
-    </FxCompile>
-    <FxCompile>
-      <ShaderModel>5.1</ShaderModel>
-      <EntryPointName>main</EntryPointName>
-      <EnableDebuggingInformation>true</EnableDebuggingInformation>
-    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -147,6 +129,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -165,6 +148,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -173,105 +157,40 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d12.lib;D3DCompiler.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <FxCompile>
-      <ShaderType>Effect</ShaderType>
-    </FxCompile>
-    <FxCompile>
-      <ShaderModel>5.1</ShaderModel>
-    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\DDSTextureLoader.h" />
-    <ClInclude Include="..\Common\MathHelper.h" />
-    <ClInclude Include="Billboard.h" />
-    <ClInclude Include="BlurFilter.h" />
-    <ClInclude Include="Box.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Camera_Manager.h" />
-    <ClInclude Include="Component.h" />
+    <ClInclude Include="Common\DDSTextureLoader.h" />
+    <ClInclude Include="Common\MathHelper.h" />
     <ClInclude Include="Const.h" />
-    <ClInclude Include="Cylinder.h" />
-    <ClInclude Include="d3dutil_Manager.h" />
-    <ClInclude Include="Direct3D_Project.h" />
-    <ClInclude Include="FrameResource.h" />
-    <ClInclude Include="Function.h" />
-    <ClInclude Include="GeometryGenerator.h" />
-    <ClInclude Include="GraphicDev.h" />
-    <ClInclude Include="Graphic_Manager.h" />
-    <ClInclude Include="Grid.h" />
-    <ClInclude Include="LitColumn.h" />
+    <ClInclude Include="DX12Proj2.h" />
+    <ClInclude Include="framework.h" />
     <ClInclude Include="MainApp.h" />
-    <ClInclude Include="Mirror.h" />
-    <ClInclude Include="Mouse_Manager.h" />
-    <ClInclude Include="Object.h" />
+    <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="Skull.h" />
-    <ClInclude Include="Sphere.h" />
-    <ClInclude Include="Surface.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Struct.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Texture_Manger.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Timer_Manager.h" />
     <ClInclude Include="Unique_Singleton.h" />
-    <ClInclude Include="UploadBuffer.h" />
-    <ClInclude Include="Utility_Manager.h" />
-    <ClInclude Include="ComputeWaves.h" />
-    <ClInclude Include="Wave.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\DDSTextureLoader.cpp" />
-    <ClCompile Include="Billboard.cpp" />
-    <ClCompile Include="BlurFilter.cpp" />
-    <ClCompile Include="Box.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Camera_Manager.cpp" />
-    <ClCompile Include="Component.cpp" />
-    <ClCompile Include="Cylinder.cpp" />
-    <ClCompile Include="d3dutil_Manager.cpp" />
-    <ClCompile Include="Direct3D_Project.cpp" />
-    <ClCompile Include="FrameResource.cpp" />
-    <ClCompile Include="GeometryGenerator.cpp" />
-    <ClCompile Include="GraphicDev.cpp" />
-    <ClCompile Include="Graphic_Manager.cpp" />
-    <ClCompile Include="Grid.cpp" />
-    <ClCompile Include="LitColumn.cpp" />
+    <ClCompile Include="Common\DDSTextureLoader.cpp" />
+    <ClCompile Include="DX12Proj2.cpp" />
     <ClCompile Include="MainApp.cpp" />
-    <ClCompile Include="Mirror.cpp" />
-    <ClCompile Include="Mouse_Manager.cpp" />
-    <ClCompile Include="Object.cpp" />
-    <ClCompile Include="Skull.cpp" />
-    <ClCompile Include="Sphere.cpp" />
-    <ClCompile Include="Surface.cpp" />
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Texture_Manger.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Timer_Manager.cpp" />
-    <ClCompile Include="Utility_Manager.cpp" />
-    <ClCompile Include="ComputeWaves.cpp" />
-    <ClCompile Include="Wave.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Direct3D_Project.rc" />
+    <ResourceCompile Include="DX12Proj2.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Direct3D_Project.ico" />
+    <Image Include="DX12Proj2.ico" />
     <Image Include="small.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\Shaders\BezierTessellation.hlsl" />
-    <FxCompile Include="..\Shaders\Blur.hlsl" />
-    <FxCompile Include="..\Shaders\color.hlsl" />
-    <FxCompile Include="..\Shaders\Default.hlsl" />
-    <FxCompile Include="..\Shaders\LightingUtil.hlsl" />
-    <FxCompile Include="..\Shaders\Tessellation.hlsl" />
-    <FxCompile Include="..\Shaders\TreeSprite.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -50,7 +50,7 @@ bool CMainApp::Ready_MainApp(void)
 
 	UTIL.UtilityInitialize();
 	UTIL.BuildRootSignature();
-	UTIL.BuildPostProcessRootSignature();
+	//UTIL.BuildPostProcessRootSignature();
 	UTIL.BuildDescriptorHeaps();
 	UTIL.BuildShadersAndInputLayer();
 
@@ -142,8 +142,7 @@ bool CMainApp::CreateObject(void)
 
 	//Billboard
 	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Billboard::Create(Object::COM_TYPE::CT_STATIC, "TreeGeo", "Tree", "treeArrayTex", "treearray")))) return FALSE;
-
-
+	   
 
 
 	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "floorGeo", "floor", "checkboardTex", "checkertile")))) return FALSE;
@@ -154,11 +153,14 @@ bool CMainApp::CreateObject(void)
 	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skullGeo", "skull", "white1x1Tex", "whiteskull")))) return FALSE;
 	//SettingRoom();
 
-
-
+	
 	//Tessellation
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "quadpatchGeo", "quadpatch", "bircksTex", "quadMat")))) return FALSE;
-	SettingTessllation();
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Surface::Create(Object::COM_TYPE::CT_STATIC, "quadpatchGeo", "quadpatch", "bircksTex", "quadMat")))) return FALSE;
+	//SettingTessllation();
+
+
+	//The first personal camera and Dynamic Indexing
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skullGeo", "skull", "white1x1Tex", "whiteskull")))) return FALSE;
 
 	return TRUE;
 }

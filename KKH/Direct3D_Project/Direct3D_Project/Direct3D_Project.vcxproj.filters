@@ -43,9 +43,6 @@
     <Filter Include="02.Utiltiy\97.FrameResource">
       <UniqueIdentifier>{aa76852f-9a1a-438a-a92a-37344b0dc6ea}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utiltiy\99.hlsl">
-      <UniqueIdentifier>{8af8150b-a654-4eb4-a3e6-a8f11a7d2f31}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Utiltiy\98.UploadBuffer">
       <UniqueIdentifier>{dd740f9a-b90c-4df1-ad60-885a0f21e799}</UniqueIdentifier>
     </Filter>
@@ -108,6 +105,9 @@
     </Filter>
     <Filter Include="02.Utiltiy\03.Object\Cylinder">
       <UniqueIdentifier>{734d7838-a2e1-48ef-966c-9ae049658fb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\99.HLSL">
+      <UniqueIdentifier>{c195f02b-9550-4863-b28f-6f723717ea37}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -330,5 +330,28 @@
     <ResourceCompile Include="Direct3D_Project.rc">
       <Filter>00.Client\99.Default</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Shaders\BezierTessellation.hlsl">
+      <Filter>02.Utiltiy\99.HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\Blur.hlsl">
+      <Filter>02.Utiltiy\99.HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\color.hlsl">
+      <Filter>02.Utiltiy\99.HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\Default.hlsl">
+      <Filter>02.Utiltiy\99.HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\LightingUtil.hlsl">
+      <Filter>02.Utiltiy\99.HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\Tessellation.hlsl">
+      <Filter>02.Utiltiy\99.HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Shaders\TreeSprite.hlsl">
+      <Filter>02.Utiltiy\99.HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -122,8 +122,8 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 	const D3D_SHADER_MACRO alphaTestDefines[] = { "FOG", "1", "ALPHA_TEST", "1", NULL, NULL };
 
 	////===== [ Standard ] ======
-	mShaders["standardVS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", nullptr, "VS", "vs_5_1");
-	mShaders["opaquePS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", defines, "PS", "ps_5_1");
+	mShaders["standardVS"] = d3dutil_Manager::CompileShader(L"..\\Shaders\\Default.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["opaquePS"] = d3dutil_Manager::CompileShader(L"..\\Shaders\\Default.hlsl", nullptr, "PS", "ps_5_1");
 	//mShaders["alphaTestedPS"] = d3dutil_Manager::CompileShader(L"../Shaders/Default.hlsl", alphaTestDefines, "PS", "ps_5_0");
 	////=========================
 
@@ -155,18 +155,18 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 	//mShaders["tessPS"] = d3dutil_Manager::CompileShader(L"../Shaders/BezierTessellation.hlsl", nullptr, "PS", "ps_5_0");
 	//===================================
 
-	//mInputLayout =
-	//{
-	//	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-	//	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-	//	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-	//};
-
-	//==== [ Tessellation Stage ] ======
 	mInputLayout =
 	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	};
+
+	//==== [ Tessellation Stage ] ======
+	//mInputLayout =
+	//{
+	//	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+	//};
 	//==================================
 
 	//mTreeSpriteInputLayout =
@@ -495,7 +495,8 @@ bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 	_commandlist->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_graphic->Get_CurrentBackBuffer_Resource(),
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
-	_commandlist->ClearRenderTargetView(_graphic->Get_CurrentBackBufferView_Handle(), (float*)&mMainPassCB.FogColor, 0, nullptr);
+	//_commandlist->ClearRenderTargetView(_graphic->Get_CurrentBackBufferView_Handle(), (float*)&mMainPassCB.FogColor, 0, nullptr);
+	_commandlist->ClearRenderTargetView(_graphic->Get_CurrentBackBufferView_Handle(), Colors::LightSteelBlue, 0, nullptr);
 	_commandlist->ClearDepthStencilView(_graphic->Get_DepthStencilView_Handle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	_commandlist->OMSetRenderTargets(1, &_graphic->Get_CurrentBackBufferView_Handle(), TRUE, &_graphic->Get_DepthStencilView_Handle());
@@ -583,6 +584,7 @@ void Utility_Manager::UpdateObjectCBs(const CTimer& mt)
 			ObjectConstants objConstants;
 			DirectX::XMStoreFloat4x4(&objConstants.World, DirectX::XMMatrixTranspose(world));
 			DirectX::XMStoreFloat4x4(&objConstants.TexTransform, DirectX::XMMatrixTranspose(texTransform));
+			objConstants.Materialndex = e->Mat->MatCBIndex;
 
 			currObjectCB->CopyData(e->objCBIndex, objConstants);
 
