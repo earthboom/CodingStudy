@@ -11,6 +11,7 @@ extern XMFLOAT3 g_EyePos;
 extern XMFLOAT4X4 g_Proj;
 
 extern const float PI;
+extern const float Infinity;
 
 extern const int NumFrameResources;
 

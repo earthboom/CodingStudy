@@ -17,6 +17,7 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 HWND g_hWnd;
 
 const float PI = 3.1415926535897932f;
+const float Infinity = FLT_MAX;
 const int NumFrameResources = 3;
 
 short g_MatCBcount = 0;

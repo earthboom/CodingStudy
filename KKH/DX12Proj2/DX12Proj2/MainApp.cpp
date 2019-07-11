@@ -4,6 +4,7 @@
 #include "Utility_Manager.h"
 #include "Texture_Manger.h"
 #include "Camera_Manager.h"
+#include "Skull.h"
 
 MainApp::MainApp(void)
 	: m_fTime(0.0f)
@@ -28,6 +29,10 @@ bool MainApp::Ready_MainApp(void)
 
 	LoadTexture();
 
+	CreateObject();
+	if (!UTIL.Object_Ready()) return FALSE;
+
+
 	return TRUE;
 }
 
@@ -42,23 +47,23 @@ void MainApp::Render_MainApp(const CTimer& mt)
 
 bool MainApp::LoadTexture(void)
 {
-	if (!TEX.onDDSLoad("grassTex", L"./Resource/Texture/grass.dds"))			return FALSE;
-	if (!TEX.onDDSLoad("waterTex", L"./Resource/Texture/water1.dds"))			return FALSE;
-	if (!TEX.onDDSLoad("fenceTex", L"./Resource/Texture/WireFence.dds"))		return FALSE;
-
-	//Stnecil
-	if (!TEX.onDDSLoad("bircksTex", L"./Resource/Texture/bricks3.dds"))			return FALSE;
-	if (!TEX.onDDSLoad("checkboardTex", L"./Resource/Texture/checkboard.dds"))	return FALSE;
+	if (!TEX.onDDSLoad("bricksTex", L"./Resource/Texture/bricks.dds"))			return FALSE;
+	if (!TEX.onDDSLoad("stoneTex", L"./Resource/Texture/stone.dds"))			return FALSE;
+	if (!TEX.onDDSLoad("tileTex", L"./Resource/Texture/tile.dds"))				return FALSE;
+	if (!TEX.onDDSLoad("crateTex", L"./Resource/Texture/WoodCrate01.dds"))		return FALSE;
 	if (!TEX.onDDSLoad("iceTex", L"./Resource/Texture/ice.dds"))				return FALSE;
-	if (!TEX.onDDSLoad("white1x1Tex", L"./Resource/Texture/white1x1.dds"))		return FALSE;
-
-	//Billboard
-	if (!TEX.onDDSLoad("treeArrayTex", L"./Resource/Texture/treeArray2.dds"))	return FALSE;
+	if (!TEX.onDDSLoad("grassTex", L"./Resource/Texture/grass.dds"))			return FALSE;	
+	if (!TEX.onDDSLoad("defaultTex", L"./Resource/Texture/white1x1.dds"))		return FALSE;
 
 	return TRUE;
 }
 
 bool MainApp::CreateObject(void)
 {
+	g_MatCBcount = 0;
+	g_ObjCBcount = 0;
+
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skullGeo", "skull", "white1x1Tex", "whiteskull")))) return FALSE;
+
 	return TRUE;
 }

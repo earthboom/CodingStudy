@@ -111,6 +111,16 @@ struct MaterialData
 	UINT MaterialPad2;
 };
 
+struct InstanceData
+{
+	XMFLOAT4X4 World = MathHelper::Identity4x4();
+	XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();
+	UINT MaterialIndex;
+	UINT InstancePad0;
+	UINT InstancePad1;
+	UINT InstancePad2;
+};
+
 struct RenderItem
 {
 	RenderItem(void) = default;
@@ -127,6 +137,9 @@ struct RenderItem
 	MeshGeometry* Geo = nullptr;
 
 	D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+	BoundingBox Bounds;
+	std::vector<InstanceData> Instances;
 
 	UINT IndexCount = 0;
 	UINT InstanceCount = 0;
@@ -158,16 +171,6 @@ struct ObjectConstants
 	UINT	ObjPad0;
 	UINT	ObjPad1;
 	UINT	ObjPad2;
-};
-
-struct InstanceData
-{
-	XMFLOAT4X4 World = MathHelper::Identity4x4();
-	XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();
-	UINT MaterialIndex;
-	UINT InstancePad0;
-	UINT InstancePad1;
-	UINT InstancePad2;
 };
 
 struct PassConstants

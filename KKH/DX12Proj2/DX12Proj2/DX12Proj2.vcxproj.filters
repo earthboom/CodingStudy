@@ -70,6 +70,9 @@
     <Filter Include="02.Utility\99.d3dutil">
       <UniqueIdentifier>{233fdf41-ae10-49e3-a056-c10b5618b56b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\02.Object\Skull">
+      <UniqueIdentifier>{276b8048-bd1d-4413-bc94-175c1ce02cec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DX12Proj2.h">
@@ -153,6 +156,9 @@
     <ClInclude Include="d3dutil.h">
       <Filter>02.Utility\99.d3dutil</Filter>
     </ClInclude>
+    <ClInclude Include="Skull.h">
+      <Filter>02.Utility\02.Object\Skull</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DX12Proj2.cpp">
@@ -208,6 +214,9 @@
     </ClCompile>
     <ClCompile Include="d3dutil.cpp">
       <Filter>02.Utility\99.d3dutil</Filter>
+    </ClCompile>
+    <ClCompile Include="Skull.cpp">
+      <Filter>02.Utility\02.Object\Skull</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
