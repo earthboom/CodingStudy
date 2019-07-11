@@ -15,6 +15,10 @@ public:
 	void Render_MainApp(const CTimer& mt);
 
 private:
+	bool	LoadTexture(void);
+	bool	CreateObject(void);
+
+private:
 	float m_fTime;
 };
 

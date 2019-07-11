@@ -14,10 +14,21 @@ HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
+HWND g_hWnd;
+
 const float PI = 3.1415926535897932f;
+const int NumFrameResources = 3;
+
+short g_MatCBcount = 0;
+short g_ObjCBcount = 0;
+
+bool g_ScreenBlur = FALSE;
 
 WORD WINSIZE_X = 1400;
 WORD WINSIZE_Y = 1050;
+
+XMFLOAT3 g_EyePos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+XMFLOAT4X4 g_Proj = MathHelper::Identity4x4();
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -124,7 +135,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    RECT rcWin = { 0, 0, WINSIZE_X, WINSIZE_Y };
 
-   HWND g_hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   g_hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, rcWin.right - rcWin.left, rcWin.bottom - rcWin.top, nullptr, nullptr, hInstance, nullptr);
 
    if (!g_hWnd)

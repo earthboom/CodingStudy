@@ -1,10 +1,5 @@
 #pragma once
 
-#include <Windows.h>
-#include <DirectXMath.h>
-
-using namespace DirectX;
-
 class MathHelper
 {
 public:

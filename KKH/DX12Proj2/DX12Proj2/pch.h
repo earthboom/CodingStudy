@@ -10,7 +10,18 @@
 // add headers that you want to pre-compile here
 #include "framework.h"
 
-#include "Const.h"
+using namespace DirectX;
+
+#include "MathHelper.h"
 #include "Unique_Singleton.h"
+
+#include "Const.h"
+#include "Function.h"
+#include "Struct.h"
+
+#include "d3dutil.h"
+#include "GraphicDev.h"
+#include "UploadBuffer.h"
+#include "FrameResource.h"
 
 #endif //PCH_H
