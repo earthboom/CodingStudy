@@ -45,8 +45,7 @@ bool Skull::Render(const CTimer& mt)
 
 void Skull::BuildDescriptorHeaps(void)
 {
-	int textureCount = g_MatCBcount;
-	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart(), textureCount++, UTIL.Get_CbvSrvDescriptorSize());
+	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart(), g_MatCBcount, UTIL.Get_CbvSrvDescriptorSize());
 
 	auto bricksTex	= TEX.Get_Textures()["bricksTex"]->Resource;
 	auto stoneTex	= TEX.Get_Textures()["stoneTex"]->Resource;
@@ -205,7 +204,7 @@ void Skull::BuildRenderItem(void)
 					1.0f, 0.0f, 0.0f, 0.0f,
 					0.0f, 1.0f, 0.0f, 0.0f,
 					0.0f, 0.0f, 1.0f, 0.0f,
-					x + j * dx, y + i * dy, z + i * dz, 1.0f);
+					x + j * dx, y + i * dy, z + k * dz, 1.0f);
 
 				XMStoreFloat4x4(&ritem->Instances[index].TexTransform, XMMatrixScaling(2.0f, 2.0f, 1.0f));
 				ritem->Instances[index].MaterialIndex = index % UTIL.Get_Materials().size();
@@ -214,10 +213,13 @@ void Skull::BuildRenderItem(void)
 		}
 	}
 
-	m_Skull = ritem.get();
-	UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(ritem.get());
-
+	
 	UTIL.Get_Ritemvec().push_back(std::move(ritem));
+	for (auto& e : UTIL.Get_Ritemvec())
+	{
+		UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(e.get());
+	}	
+	
 }
 
 void Skull::BuildGeometry(void)
@@ -298,8 +300,8 @@ void Skull::BuildGeometry(void)
 	ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
 	CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
-	geo->VertexBufferGPU = D3DUTIL.CreateDefaultBuffer(DEVICE.Get(), COM_LIST.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
-	geo->IndexBufferGPU = D3DUTIL.CreateDefaultBuffer(DEVICE.Get(), COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
+	geo->VertexBufferGPU = d3dutil::CreateDefaultBuffer(DEVICE.Get(), COM_LIST.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
+	geo->IndexBufferGPU = d3dutil::CreateDefaultBuffer(DEVICE.Get(), COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
 
 	geo->VertexByteStride = sizeof(VERTEX);
 	geo->VertexBufferByteSize = vbByteSize;
@@ -310,6 +312,7 @@ void Skull::BuildGeometry(void)
 	submesh.IndexCount = (UINT)indices.size();
 	submesh.StartIndexLocation = 0;
 	submesh.BaseVertexLocation = 0;
+	submesh.Bounds = bounds;
 
 	geo->DrawArgs[m_submeshName] = submesh;
 

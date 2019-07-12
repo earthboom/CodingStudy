@@ -2,8 +2,6 @@
 
 #include "MathHelper.h"
 
-#define D3DUTIL d3dutil::GetInstnace()
-
 class d3dutil : public CSingleton<d3dutil>
 {
 public:

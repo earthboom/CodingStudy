@@ -3,9 +3,11 @@
 
 #include "pch.h"
 #include "framework.h"
+#include <WindowsX.h>
 #include "DX12Proj2.h"
 #include "MainApp.h"
 #include "Timer_Manager.h"
+#include "Mouse_Manager.h"
 
 #define MAX_LOADSTRING 100
 
@@ -24,6 +26,7 @@ short g_MatCBcount = 0;
 short g_ObjCBcount = 0;
 
 bool g_ScreenBlur = FALSE;
+bool g_FrustumCullingEnabled = FALSE;
 
 WORD WINSIZE_X = 1400;
 WORD WINSIZE_Y = 1050;
@@ -36,6 +39,8 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
+void CalculateFrameStats(const float& tt);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -70,7 +75,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	if (!pMainApp->Ready_MainApp())
 		return 0;
 
-	CTimer pMainTimer;
+	PTIMER pMainTimer = TIME_MGR.Get_Timer(CTimer_Manager::TIMER_MAIN);;
 
     // Main message loop:
 	while (msg.message != WM_QUIT)
@@ -83,16 +88,38 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		else
 		{
 			TIME_MGR.Compute_Timer(CTimer_Manager::TIMER_MAIN);
-			pMainTimer = TIME_MGR.Get_Timer(CTimer_Manager::TIMER_MAIN);
-			pMainApp->Update_MainApp(pMainTimer);
-			pMainApp->Render_MainApp(pMainTimer);
+			CalculateFrameStats(pMainTimer->TotalTime());
+			pMainApp->Update_MainApp(*pMainTimer);
+			pMainApp->Render_MainApp(*pMainTimer);
 		}
 	}
 
     return (int) msg.wParam;
 }
 
+void CalculateFrameStats(const float& tt)
+{
+	static int frameCnt = 0;
+	static float timeElapsed = 0.0f;
 
+	++frameCnt;
+
+	if ((tt - timeElapsed) >= 1.0f)
+	{
+		float fps = (float)frameCnt;
+		float mspf = 1000.0f / fps;
+
+		std::wstring fpsStr = std::to_wstring(fps);
+		std::wstring mspfStr = std::to_wstring(mspf);
+
+		std::wstring windowText = L"    fps: " + fpsStr + L"   mspf: " + mspfStr;
+
+		SetWindowText(g_hWnd, windowText.c_str());
+
+		frameCnt = 0;
+		timeElapsed += 1.0f;
+	}
+}
 
 //
 //  FUNCTION: MyRegisterClass()
@@ -181,6 +208,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+	case WM_LBUTTONDOWN:
+	case WM_MBUTTONDOWN:
+	case WM_RBUTTONDOWN:
+		MOUSE.OnMouseDown(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
+
+	case WM_LBUTTONUP:
+	case WM_MBUTTONUP:
+	case WM_RBUTTONUP:
+		MOUSE.OnMouseUP(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
+
+	case WM_MOUSEMOVE:
+		MOUSE.OnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
     case WM_PAINT:
         {
             PAINTSTRUCT ps;

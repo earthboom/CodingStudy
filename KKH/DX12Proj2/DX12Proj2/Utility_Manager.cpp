@@ -33,8 +33,7 @@ void Utility_Manager::UtilityInitialize(void)
 void Utility_Manager::BuildRootSignature(void)
 {
 	CD3DX12_DESCRIPTOR_RANGE texTable;
-	//texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 4, 0, 0);
+	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 8, 0, 0);
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[4];
 
@@ -115,8 +114,8 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 	const D3D_SHADER_MACRO defines[] = { "FOG", "1", NULL, NULL };
 	const D3D_SHADER_MACRO alphaTestDefines[] = { "ALPHA_TEST", "1", NULL, NULL };
 
-	mShaders["standardVS"] = d3dutil::CompileShader(L"..\\Shaders\\Default.hlsl", nullptr, "VS", "vs_5_1");
-	mShaders["opaquePS"] = d3dutil::CompileShader(L"..\\Shaders\\Default.hlsl", nullptr, "PS", "ps_5_1");
+	mShaders["standardVS"] = d3dutil::CompileShader(L"Shaders/Default.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["opaquePS"] = d3dutil::CompileShader(L"Shaders/Default.hlsl", nullptr, "PS", "ps_5_1");
 
 	mInputLayout =
 	{
@@ -176,6 +175,8 @@ void Utility_Manager::OnResize(void)
 		if (mBlurFilter != nullptr)
 			mBlurFilter->OnResize(WINSIZE_X, WINSIZE_Y);
 	}
+
+	BoundingFrustum::CreateFromMatrix(mCamFrustum, XMLoadFloat4x4(&g_Proj));
 }
 
 bool Utility_Manager::Object_Create(OBJECT& obj)
@@ -258,7 +259,8 @@ bool Utility_Manager::Object_Update(const CTimer& mt)
 		}
 	}
 
-	UpdateObjectCBs(mt);
+	//UpdateObjectCBs(mt);
+	UpdateInstanceData(mt);
 	UpdateMaterialCBs(mt);
 	UpdateMainPassCB(mt);
 	UpdateReflectedPassCB(mt);
@@ -339,6 +341,49 @@ void Utility_Manager::UpdateObjectCBs(const CTimer& mt)
 
 			e->NumFramesDirty--;
 		}
+	}
+}
+
+void Utility_Manager::UpdateInstanceData(const CTimer& mt)
+{
+	XMMATRIX view = CURR_CAM->GetView();
+	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+
+	auto currInstanceBuffer = mCurrFrameResource->InstanceBuffer.get();
+	for (auto& e : mAllRitem)
+	{
+		const auto& instanceData = e->Instances;
+
+		int visibleInstanceCount = 0;
+
+		for (UINT i = 0; i < (UINT)instanceData.size(); ++i)
+		{
+			XMMATRIX world = XMLoadFloat4x4(&instanceData[i].World);
+			XMMATRIX texTransform = XMLoadFloat4x4(&instanceData[i].TexTransform);
+
+			XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(world), world);
+
+			XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);
+
+			BoundingFrustum localSpaceFrustum;
+			mCamFrustum.Transform(localSpaceFrustum, viewToLocal);
+
+			if ((localSpaceFrustum.Contains(e->Bounds) != DirectX::DISJOINT) || (g_FrustumCullingEnabled == FALSE))
+			{
+				InstanceData data;
+				XMStoreFloat4x4(&data.World, XMMatrixTranspose(world));
+				XMStoreFloat4x4(&data.TexTransform, XMMatrixTranspose(texTransform));
+				data.MaterialIndex = instanceData[i].MaterialIndex;
+
+				currInstanceBuffer->CopyData(visibleInstanceCount++, data);
+			}
+		}
+
+		e->InstanceCount = visibleInstanceCount;
+
+		std::wostringstream outs;
+		outs.precision(6);
+		outs << L"Instancing and Culling" << L"   " << e->InstanceCount << L" objects visible out of " << e->Instances.size();
 	}
 }
 

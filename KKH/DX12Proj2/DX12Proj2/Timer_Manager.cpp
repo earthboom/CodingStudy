@@ -31,10 +31,10 @@ void CTimer_Manager::Compute_Timer(TimerType pTag)
 	pTimer->Tick();
 }
 
-const CTimer& CTimer_Manager::Get_Timer(const TimerType pTag)
+PTIMER CTimer_Manager::Get_Timer(const TimerType pTag)
 {
 	auto pTimer = Find_Timer(pTag);
-	return *pTimer;
+	return pTimer;
 }
 
 float CTimer_Manager::Get_TimeDelta(TimerType pTag)

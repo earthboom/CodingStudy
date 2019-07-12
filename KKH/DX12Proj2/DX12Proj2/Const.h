@@ -19,6 +19,7 @@ extern short g_MatCBcount;
 extern short g_ObjCBcount;
 
 extern bool g_ScreenBlur;
+extern bool g_FrustumCullingEnabled;
 
 enum class DrawLayer : int
 {

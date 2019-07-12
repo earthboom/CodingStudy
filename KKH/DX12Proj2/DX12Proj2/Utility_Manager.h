@@ -74,6 +74,8 @@ private:
 
 	std::unique_ptr<BlurFilter> mBlurFilter;
 
+	BoundingFrustum	mCamFrustum;
+
 private:
 	typedef std::map<std::string, OBJECT> OBJMAP;
 	OBJMAP* Obj_static_map;
@@ -99,6 +101,7 @@ private:
 	bool Object_Render(const CTimer& mt);//, OBJMAP& _objmap);
 
 	void UpdateObjectCBs(const CTimer& mt);
+	void UpdateInstanceData(const CTimer& mt);
 	void UpdateMaterialCBs(const CTimer& mt);
 	void UpdateMainPassCB(const CTimer& mt);
 	void UpdateReflectedPassCB(const CTimer& mt);

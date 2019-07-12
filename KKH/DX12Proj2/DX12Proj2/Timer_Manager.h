@@ -23,7 +23,7 @@ public:
 	HRESULT	Ready_Timer(const TimerType pTag);
 	void	Compute_Timer(const TimerType pTag);
 
-	const CTimer&	Get_Timer(const TimerType pTag);
+	PTIMER	Get_Timer(const TimerType pTag);
 
 public:
 	float	Get_TimeDelta(const TimerType pTag);

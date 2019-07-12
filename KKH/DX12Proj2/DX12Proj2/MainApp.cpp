@@ -29,20 +29,61 @@ bool MainApp::Ready_MainApp(void)
 
 	LoadTexture();
 
+	UTIL.OnResize();
+	UTIL.BuildRootSignature();
+	UTIL.BuildDescriptorHeaps();
+	
 	CreateObject();
 	if (!UTIL.Object_Ready()) return FALSE;
 
+	UTIL.BuildShadersAndInputLayer();
+	UTIL.BuildFrameResources();
+	UTIL.BuildPSOs();
+
+	//Execute the initialization commands.
+	ThrowIfFailed(COM_LIST->Close());
+
+	ID3D12CommandList* cmdLists[] = { COM_LIST.Get() };
+	g_Graphics->Get_CommandQueue()->ExecuteCommandLists(_countof(cmdLists), cmdLists);
+
+	//Wait until initialization is complete.
+	g_Graphics->FlushCommandQueue();
 
 	return TRUE;
 }
 
 int MainApp::Update_MainApp(const CTimer& mt)
 {
-	return 0;
+	float dt = mt.DeltaTime();
+
+	if (GetAsyncKeyState('W') & 0x8000)
+		CURR_CAM->Walk(25.0f * dt);
+
+	if (GetAsyncKeyState('S') & 0x8000)
+		CURR_CAM->Walk(-25.0f * dt);
+
+	if (GetAsyncKeyState('A') & 0x8000)
+		CURR_CAM->Strafe(-25.0f * dt);
+
+	if (GetAsyncKeyState('D') & 0x8000)
+		CURR_CAM->Strafe(25.0f * dt);
+
+	if (GetAsyncKeyState('1') & 0x8000)
+		g_FrustumCullingEnabled = TRUE;
+
+	if (GetAsyncKeyState('2') & 0x8000)
+		g_FrustumCullingEnabled = FALSE;
+
+	CURR_CAM->UpdateViewMatrix();
+
+	if (!UTIL.Object_Cycle(mt, Utility_Manager::OS_UPDATE)) return 0;
+
+	return 1;
 }
 
 void MainApp::Render_MainApp(const CTimer& mt)
 {
+	if (!UTIL.Object_Cycle(mt, Utility_Manager::OS_RENDER)) return;
 }
 
 bool MainApp::LoadTexture(void)
