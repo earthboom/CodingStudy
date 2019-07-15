@@ -27,7 +27,7 @@ private:
 
 	void OnKeyboardInput(const GameTimer& gt);
 	void AnimateMaterials(const GameTimer& gt);
-	void UpdateInstanceData(const GameTimer& gt);
+	void UpdateObjectCBs(const GameTimer& gt);
 	void UpdateMaterialBuffer(const GameTimer& gt);
 	void UpdateMainPassCB(const GameTimer& gt);
 
@@ -35,12 +35,13 @@ private:
 	void BuildRootSignature();
 	void BuildDescriptorHeaps();
 	void BuildShadersAndInputLayout();
-	void BuildSkullGeometry();
+	void BuildCarGeometry();
 	void BuildPSOs();
 	void BuildFrameResources();
 	void BuildMaterials();
 	void BuildRenderItems();
 	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems);
+	void Pick(int sx, int sy);
 
 	std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
 
@@ -68,13 +69,9 @@ private:
 	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
 	// Render items divided by PSO.
-	std::vector<RenderItem*> mOpaqueRitems;
+	std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];
 
-	UINT mInstanceCount = 0;
-
-	bool mFrustumCullingEnabled = true;
-
-	BoundingFrustum mCamFrustum;
+	RenderItem* mPickedRitem = nullptr;
 
 	PassConstants mMainPassCB;
 
