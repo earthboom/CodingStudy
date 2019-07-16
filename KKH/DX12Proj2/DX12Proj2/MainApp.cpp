@@ -36,6 +36,8 @@ bool MainApp::Ready_MainApp(void)
 	CreateObject();
 	if (!UTIL.Object_Ready()) return FALSE;
 
+	MOUSE.SetPieckedRitem();
+
 	UTIL.BuildShadersAndInputLayer();
 	UTIL.BuildFrameResources();
 	UTIL.BuildPSOs();

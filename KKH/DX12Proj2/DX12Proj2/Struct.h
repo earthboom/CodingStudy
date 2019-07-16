@@ -124,6 +124,9 @@ struct InstanceData
 struct RenderItem
 {
 	RenderItem(void) = default;
+	RenderItem(const RenderItem&) = delete;
+
+	bool Visible = TRUE;
 
 	DirectX::XMFLOAT4X4 World = MathHelper::Identity4x4();
 

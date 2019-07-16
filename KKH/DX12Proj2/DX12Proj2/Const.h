@@ -23,10 +23,11 @@ extern bool g_FrustumCullingEnabled;
 
 enum class DrawLayer : int
 {
-	DL_OPAUQE = 0,
+	DL_OPAUQE = 0,	
 	DL_MIRROR,
 	DL_REFLECTED,
 	DL_TRANSPARENT,
+	DL_HIGHLIGHT,
 	DL_ALPHATESTED,
 	DL_ALPHATESTED_TREESPRITE,
 	DL_SHADOW,
