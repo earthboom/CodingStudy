@@ -31,5 +31,6 @@ public:
 
 	void Set_Obj(std::shared_ptr<Object> _obj) { mObj = _obj; }
 
-	void SetPieckedRitem(void);
+	//void SetPieckedRitem(void);
+	std::vector<RenderItem*>& GetPickedRitem(void) { return mPickedRitem; }
 };

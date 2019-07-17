@@ -2,6 +2,7 @@
 #include "Skull.h"
 #include "Utility_Manager.h"
 #include "Texture_Manger.h"
+#include "Mouse_Manager.h"
 
 Skull::Skull(void)
 	: Object()
@@ -152,6 +153,14 @@ void Skull::BuildMaterials(void)
 	skullMat->FresnelR0 = DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f);
 	skullMat->Roughness = 0.5f;
 
+	auto highlight0 = std::make_unique<Material>();
+	highlight0->Name = "highlight0";
+	highlight0->MatCBIndex = g_MatCBcount++;
+	highlight0->DiffuseSrvHeapIndex = 0;
+	highlight0->DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 0.0f, 0.0f);
+	highlight0->FresnelR0 = XMFLOAT3(0.06f, 0.06f, 0.06f);
+	highlight0->Roughness = 0.0f;
+
 	UTIL.Get_Materials()["bricks"]	= std::move(bricks);
 	UTIL.Get_Materials()["stone"]	= std::move(stone);
 	UTIL.Get_Materials()["tile"]	= std::move(tile);
@@ -159,6 +168,7 @@ void Skull::BuildMaterials(void)
 	UTIL.Get_Materials()["ice"]		= std::move(ice);
 	UTIL.Get_Materials()["grass"]	= std::move(grass);
 	UTIL.Get_Materials()["skullMat"]= std::move(skullMat);
+	UTIL.Get_Materials()["highlight0"] = std::move(highlight0);
 }
 
 void Skull::BuildRenderItem(void)
@@ -219,7 +229,24 @@ void Skull::BuildRenderItem(void)
 	{
 		UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(e.get());
 	}	
-	
+
+	auto _pieckedRitem = std::make_unique<RenderItem>();
+	_pieckedRitem->World = MathHelper::Identity4x4();
+	_pieckedRitem->TexTransform = MathHelper::Identity4x4();
+	_pieckedRitem->objCBIndex = g_ObjCBcount;
+	_pieckedRitem->Mat = UTIL.Get_Materials()["highlight0"].get();
+	_pieckedRitem->Geo = UTIL.Get_Geomesh()[m_Name].get();
+	_pieckedRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	_pieckedRitem->Visible = FALSE;
+	_pieckedRitem->IndexCount = 0;
+	_pieckedRitem->StartIndexLocation = 0;
+	_pieckedRitem->BaseVertexLocation = 0;
+
+	MOUSE.GetPickedRitem().push_back(_pieckedRitem.get());
+
+	UTIL.Get_Drawlayer((int)DrawLayer::DL_HIGHLIGHT).push_back(_pieckedRitem.get());
+
+	UTIL.Get_Ritemvec().push_back(std::move(_pieckedRitem));
 }
 
 void Skull::BuildGeometry(void)

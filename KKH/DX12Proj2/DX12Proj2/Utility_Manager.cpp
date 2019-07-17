@@ -202,6 +202,19 @@ void Utility_Manager::OnResize(void)
 	BoundingFrustum::CreateFromMatrix(mCamFrustum, XMLoadFloat4x4(&g_Proj));
 }
 
+//void Utility_Manager::BuildPublicMaterials(void)
+//{
+//	auto highlight0 = std::make_unique<Material>();
+//	highlight0->Name = "highlight0";
+//	highlight0->MatCBIndex = g_MatCBcount++;
+//	highlight0->DiffuseSrvHeapIndex = 0;
+//	highlight0->DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 0.0f, 0.0f);
+//	highlight0->FresnelR0 = XMFLOAT3(0.06f, 0.06f, 0.06f);
+//	highlight0->Roughness = 0.0f;
+//
+//	mMaterials["highlight0"] = std::move(highlight0);
+//}
+
 bool Utility_Manager::Object_Create(OBJECT& obj)
 {
 	if (obj == nullptr) return FALSE;
@@ -503,6 +516,9 @@ void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const
 	for (size_t i = 0; i < ritems.size(); ++i)
 	{
 		auto ri = ritems[i];
+
+		if(ri->Visible == FALSE)
+			continue;
 
 		cmdList->IASetVertexBuffers(0, 1, &ri->Geo->VertexBufferView());
 		cmdList->IASetIndexBuffer(&ri->Geo->IndexBufferView());

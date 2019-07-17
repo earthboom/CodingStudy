@@ -31,6 +31,7 @@ public:
 
 
 	void OnResize(void);
+	//void BuildPublicMaterials(void);
 
 private:
 	UINT mCbvSrvDescriptorSize;
