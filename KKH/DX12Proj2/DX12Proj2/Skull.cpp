@@ -174,6 +174,8 @@ void Skull::BuildMaterials(void)
 void Skull::BuildRenderItem(void)
 {
 	auto ritem = std::make_unique<RenderItem>();
+	auto _pieckedRitem = std::make_unique<RenderItem>();
+
 	ritem->World = MathHelper::Identity4x4();
 	ritem->TexTransform = MathHelper::Identity4x4();
 	ritem->objCBIndex = g_ObjCBcount++;
@@ -218,19 +220,11 @@ void Skull::BuildRenderItem(void)
 
 				XMStoreFloat4x4(&ritem->Instances[index].TexTransform, XMMatrixScaling(2.0f, 2.0f, 1.0f));
 				ritem->Instances[index].MaterialIndex = index % UTIL.Get_Materials().size();
-
 			}
 		}
 	}
 
 	
-	UTIL.Get_Ritemvec().push_back(std::move(ritem));
-	for (auto& e : UTIL.Get_Ritemvec())
-	{
-		UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(e.get());
-	}	
-
-	auto _pieckedRitem = std::make_unique<RenderItem>();
 	_pieckedRitem->World = MathHelper::Identity4x4();
 	_pieckedRitem->TexTransform = MathHelper::Identity4x4();
 	_pieckedRitem->objCBIndex = g_ObjCBcount;
@@ -238,14 +232,20 @@ void Skull::BuildRenderItem(void)
 	_pieckedRitem->Geo = UTIL.Get_Geomesh()[m_Name].get();
 	_pieckedRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	_pieckedRitem->Visible = FALSE;
+	_pieckedRitem->InstanceCount = 0;
 	_pieckedRitem->IndexCount = 0;
 	_pieckedRitem->StartIndexLocation = 0;
 	_pieckedRitem->BaseVertexLocation = 0;
 
 	MOUSE.GetPickedRitem().push_back(_pieckedRitem.get());
 
-	UTIL.Get_Drawlayer((int)DrawLayer::DL_HIGHLIGHT).push_back(_pieckedRitem.get());
+	UTIL.Get_Ritemvec().push_back(std::move(ritem));
+	for (auto& e : UTIL.Get_Ritemvec())
+	{
+		UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(e.get());
+	}
 
+	UTIL.Get_Drawlayer((int)DrawLayer::DL_HIGHLIGHT).push_back(_pieckedRitem.get());
 	UTIL.Get_Ritemvec().push_back(std::move(_pieckedRitem));
 }
 

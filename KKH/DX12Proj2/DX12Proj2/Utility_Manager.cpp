@@ -3,6 +3,7 @@
 #include "Timer_Manager.h"
 #include "Texture_Manger.h"
 #include "Camera_Manager.h"
+#include "Mouse_Manager.h"
 
 Utility_Manager::Utility_Manager(void)
 	: mRootSignature(nullptr), mPostProcessRootSignature(nullptr)

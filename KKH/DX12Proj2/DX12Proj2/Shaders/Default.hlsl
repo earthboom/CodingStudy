@@ -82,6 +82,16 @@ cbuffer cbPass : register(b0)
 	Light gLights[MaxLights];
 };
 
+//cbuffer cbPerObject : register(b1)
+//{
+//    float4x4 gWorld;
+//    float4x4 gTexTransform;
+//    uint gMaterialIndex;
+//    uint gObjPad0;
+//    uint gObjPad1;
+//    uint gObjPad2;
+//}
+
 struct VertexIn
 {
 	float3 PosL    : POSITION;

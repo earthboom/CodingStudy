@@ -3,7 +3,8 @@
 struct FrameResource
 {
 public:
-	explicit FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT materialCount, UINT waveVertCount);
+	explicit FrameResource(ID3D12Device* device, UINT passCount, UINT maxInstanceCount, UINT objectCount, UINT materialCount);
+	//explicit FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT materialCount, UINT waveVertCount);
 	//explicit FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT materialCount);
 	explicit FrameResource(ID3D12Device* device, UINT passCount, UINT maxInstanceCount, UINT materialCount);
 
