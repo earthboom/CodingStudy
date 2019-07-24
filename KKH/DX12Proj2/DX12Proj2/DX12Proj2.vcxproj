@@ -175,6 +175,7 @@
     <ClInclude Include="GraphicDev.h" />
     <ClInclude Include="MainApp.h" />
     <ClInclude Include="Mouse_Manager.h" />
+    <ClInclude Include="NormalObject.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
@@ -201,6 +202,7 @@
     <ClCompile Include="GraphicDev.cpp" />
     <ClCompile Include="MainApp.cpp" />
     <ClCompile Include="Mouse_Manager.cpp" />
+    <ClCompile Include="NormalObject.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

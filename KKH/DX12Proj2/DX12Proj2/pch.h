@@ -24,4 +24,6 @@ using namespace DirectX;
 #include "UploadBuffer.h"
 #include "FrameResource.h"
 
+#include "Texture_Manger.h"
+
 #endif //PCH_H

@@ -2,6 +2,8 @@
 
 #define TEX Texture_Manger::GetInstnace()
 
+typedef std::unordered_map<std::string, std::unique_ptr<Texture>> MAP_TEX;
+
 class Texture_Manger : public CSingleton<Texture_Manger>
 {
 public:
@@ -14,7 +16,6 @@ public:
 	bool onDDSLoad(std::string _key, std::wstring _fileadress);
 
 private:
-	typedef std::unordered_map<std::string, std::unique_ptr<Texture>> MAP_TEX;
 	MAP_TEX mTexture;
 
 public:

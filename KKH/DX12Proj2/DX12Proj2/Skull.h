@@ -17,7 +17,7 @@ public:
 	virtual bool Render(const CTimer& mt);
 
 protected:
-	virtual void BuildDescriptorHeaps(void);
+	virtual bool BuildDescriptorHeaps(void);
 
 private:
 	void BuildMaterials(void);

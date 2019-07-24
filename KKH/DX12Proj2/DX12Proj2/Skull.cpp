@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Skull.h"
 #include "Utility_Manager.h"
-#include "Texture_Manger.h"
 #include "Mouse_Manager.h"
 
 Skull::Skull(void)
@@ -44,142 +43,56 @@ bool Skull::Render(const CTimer& mt)
 	return TRUE;
 }
 
-void Skull::BuildDescriptorHeaps(void)
+bool Skull::BuildDescriptorHeaps(void)
 {
 	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart(), g_MatCBcount, UTIL.Get_CbvSrvDescriptorSize());
 
-	auto bricksTex	= TEX.Get_Textures()["bricksTex"]->Resource;
-	auto stoneTex	= TEX.Get_Textures()["stoneTex"]->Resource;
-	auto tileTex	= TEX.Get_Textures()["tileTex"]->Resource;
-	auto crateTex	= TEX.Get_Textures()["crateTex"]->Resource;
-	auto iceTex		= TEX.Get_Textures()["iceTex"]->Resource;
-	auto grassTex	= TEX.Get_Textures()["grassTex"]->Resource;
-	auto defaultTex = TEX.Get_Textures()["defaultTex"]->Resource;
+	auto defaultTex = TEX.Get_Textures()[m_texName]->Resource;
+	TEX.Get_Textures()[m_texName]->matCount = g_MatCBcount;
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.Format = bricksTex->GetDesc().Format;
+	srvDesc.Format = defaultTex->GetDesc().Format;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MostDetailedMip = 0;
-	srvDesc.Texture2D.MipLevels = bricksTex->GetDesc().MipLevels;
-	DEVICE->CreateShaderResourceView(bricksTex.Get(), &srvDesc, hDescriptor);
-
-	hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
-	srvDesc.Format = stoneTex->GetDesc().Format;
-	srvDesc.Texture2D.MipLevels = stoneTex->GetDesc().MipLevels;
-	DEVICE->CreateShaderResourceView(stoneTex.Get(), &srvDesc, hDescriptor);
-
-	hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
-	srvDesc.Format = tileTex->GetDesc().Format;
-	srvDesc.Texture2D.MipLevels = tileTex->GetDesc().MipLevels;
-	DEVICE->CreateShaderResourceView(tileTex.Get(), &srvDesc, hDescriptor);
-
-	hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
-	srvDesc.Format = crateTex->GetDesc().Format;
-	srvDesc.Texture2D.MipLevels = crateTex->GetDesc().MipLevels;
-	DEVICE->CreateShaderResourceView(crateTex.Get(), &srvDesc, hDescriptor);
-
-	hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
-	srvDesc.Format = iceTex->GetDesc().Format;
-	srvDesc.Texture2D.MipLevels = iceTex->GetDesc().MipLevels;
-	DEVICE->CreateShaderResourceView(iceTex.Get(), &srvDesc, hDescriptor);
-
-	hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
-	srvDesc.Format = grassTex->GetDesc().Format;
-	srvDesc.Texture2D.MipLevels = grassTex->GetDesc().MipLevels;
-	DEVICE->CreateShaderResourceView(grassTex.Get(), &srvDesc, hDescriptor);
-
-	hDescriptor.Offset(1, UTIL.Get_CbvSrvDescriptorSize());
-	srvDesc.Format = defaultTex->GetDesc().Format;
 	srvDesc.Texture2D.MipLevels = defaultTex->GetDesc().MipLevels;
 	DEVICE->CreateShaderResourceView(defaultTex.Get(), &srvDesc, hDescriptor);
+
+	return TRUE;
 }
 
 void Skull::BuildMaterials(void)
 {
-	auto bricks = std::make_unique<Material>();
-	bricks->Name = "bricks";
-	bricks->MatCBIndex = g_MatCBcount;
-	bricks->DiffuseSrvHeapIndex = g_MatCBcount++;
-	bricks->DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	bricks->FresnelR0 = DirectX::XMFLOAT3(0.02f, 0.02f, 0.02f);
-	bricks->Roughness = 0.1f;
+	auto pMat = std::make_unique<Material>();
+	pMat->Name = m_matName;
+	pMat->MatCBIndex = g_MatCBcount;
+	pMat->DiffuseSrvHeapIndex = g_MatCBcount++;
+	pMat->DiffuseAlbedo = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+	pMat->FresnelR0 = DirectX::XMFLOAT3(0.02f, 0.02f, 0.02f);
+	pMat->Roughness = 0.1f;
 
-	auto stone = std::make_unique<Material>();
-	stone->Name = "stone";
-	stone->MatCBIndex = g_MatCBcount;
-	stone->DiffuseSrvHeapIndex = g_MatCBcount++;
-	stone->DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	stone->FresnelR0 = DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f);
-	stone->Roughness = 0.3f;
+	//auto highlight0 = std::make_unique<Material>();
+	//highlight0->Name = "highlight0";
+	//highlight0->MatCBIndex = g_MatCBcount++;
+	//highlight0->DiffuseSrvHeapIndex = 0;
+	//highlight0->DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 0.0f, 0.0f);
+	//highlight0->FresnelR0 = XMFLOAT3(0.06f, 0.06f, 0.06f);
+	//highlight0->Roughness = 0.0f;
 
-	auto tile = std::make_unique<Material>();
-	tile->Name = "tile";
-	tile->MatCBIndex = g_MatCBcount;
-	tile->DiffuseSrvHeapIndex = g_MatCBcount++;
-	tile->DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	tile->FresnelR0 = DirectX::XMFLOAT3(0.02f, 0.02f, 0.02f);
-	tile->Roughness = 0.3f;
+	UTIL.Get_Materials()[m_matName]	= std::move(pMat);
 
-	auto crate = std::make_unique<Material>();
-	crate->Name = "crate";
-	crate->MatCBIndex = g_MatCBcount;
-	crate->DiffuseSrvHeapIndex = g_MatCBcount++;
-	crate->DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	crate->FresnelR0 = DirectX::XMFLOAT3(0.02f, 0.02f, 0.02f);
-	crate->Roughness = 0.3f;
-
-	auto ice = std::make_unique<Material>();
-	ice->Name = "ice";
-	ice->MatCBIndex = g_MatCBcount;
-	ice->DiffuseSrvHeapIndex = g_MatCBcount++;
-	ice->DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	ice->FresnelR0 = DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f);
-	ice->Roughness = 0.0f;
-
-	auto grass = std::make_unique<Material>();
-	grass->Name = "grass";
-	grass->MatCBIndex = g_MatCBcount;
-	grass->DiffuseSrvHeapIndex = g_MatCBcount++;
-	grass->DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	grass->FresnelR0 = DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f);
-	grass->Roughness = 0.2f;
-
-	auto skullMat = std::make_unique<Material>();
-	skullMat->Name = "skullMat";
-	skullMat->MatCBIndex = g_MatCBcount;
-	skullMat->DiffuseSrvHeapIndex = g_MatCBcount++;
-	skullMat->DiffuseAlbedo = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	skullMat->FresnelR0 = DirectX::XMFLOAT3(0.05f, 0.05f, 0.05f);
-	skullMat->Roughness = 0.5f;
-
-	auto highlight0 = std::make_unique<Material>();
-	highlight0->Name = "highlight0";
-	highlight0->MatCBIndex = g_MatCBcount++;
-	highlight0->DiffuseSrvHeapIndex = 0;
-	highlight0->DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 0.0f, 0.0f);
-	highlight0->FresnelR0 = XMFLOAT3(0.06f, 0.06f, 0.06f);
-	highlight0->Roughness = 0.0f;
-
-	UTIL.Get_Materials()["bricks"]	= std::move(bricks);
-	UTIL.Get_Materials()["stone"]	= std::move(stone);
-	UTIL.Get_Materials()["tile"]	= std::move(tile);
-	UTIL.Get_Materials()["crate"]	= std::move(crate);
-	UTIL.Get_Materials()["ice"]		= std::move(ice);
-	UTIL.Get_Materials()["grass"]	= std::move(grass);
-	UTIL.Get_Materials()["skullMat"]= std::move(skullMat);
-	UTIL.Get_Materials()["highlight0"] = std::move(highlight0);
+	//UTIL.Get_Materials()["highlight0"] = std::move(highlight0);
 }
 
 void Skull::BuildRenderItem(void)
 {
 	auto ritem = std::make_unique<RenderItem>();
-	auto _pieckedRitem = std::make_unique<RenderItem>();
+	//auto _pieckedRitem = std::make_unique<RenderItem>();
 
-	ritem->World = MathHelper::Identity4x4();
-	ritem->TexTransform = MathHelper::Identity4x4();
+	//ritem->World = MathHelper::Identity4x4();
+	//ritem->TexTransform = MathHelper::Identity4x4();
 	ritem->objCBIndex = g_ObjCBcount++;
-	ritem->Mat = UTIL.Get_Materials()["tile"].get();
+	ritem->Mat = UTIL.Get_Materials()[m_matName].get();
 	ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
 	ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	ritem->InstanceCount = 0;
@@ -188,44 +101,50 @@ void Skull::BuildRenderItem(void)
 	ritem->BaseVertexLocation = ritem->Geo->DrawArgs[m_submeshName].BaseVertexLocation;
 	ritem->Bounds = ritem->Geo->DrawArgs[m_submeshName].Bounds;
 
-	//Generate instance data
-	const int n = 5;
-	ritem->Instances.resize(n * n * n);
-
-	float width = 200.0f;
-	float height = 200.0f;
-	float depth = 200.0f;
-
-	float x = -0.5f * width;
-	float y = -0.5f * height;
-	float z = -0.5f * depth;
-
-	float dx = width / (n - 1);
-	float dy = height / (n - 1);
-	float dz = depth / (n - 1);
-
-	for (int k = 0; k < n; ++k)
-	{
-		for (int i = 0; i < n; ++i)
-		{
-			for (int j = 0; j < n; ++j)
-			{
-				int index = k * n * n + i * n + j;
-
-				ritem->Instances[index].World = XMFLOAT4X4(
-					1.0f, 0.0f, 0.0f, 0.0f,
-					0.0f, 1.0f, 0.0f, 0.0f,
-					0.0f, 0.0f, 1.0f, 0.0f,
-					x + j * dx, y + i * dy, z + k * dz, 1.0f);
-
-				XMStoreFloat4x4(&ritem->Instances[index].TexTransform, XMMatrixScaling(2.0f, 2.0f, 1.0f));
-				ritem->Instances[index].MaterialIndex = index % UTIL.Get_Materials().size();
-			}
-		}
-	}
+	ritem->Instances.resize(1);
+	ritem->Instances[0].World = MathHelper::Identity4x4();
+	ritem->Instances[0].MaterialIndex = 0;
+	XMStoreFloat4x4(&ritem->Instances[0].TexTransform, XMMatrixScaling(2.0f, 2.0f, 1.0f));
 
 	
-	_pieckedRitem->World = MathHelper::Identity4x4();
+	//Generate instance data
+	//const int n = 5;
+	//ritem->Instances.resize(n * n * n);
+
+	//float width = 200.0f;
+	//float height = 200.0f;
+	//float depth = 200.0f;
+
+	//float x = -0.5f * width;
+	//float y = -0.5f * height;
+	//float z = -0.5f * depth;
+
+	//float dx = width / (n - 1);
+	//float dy = height / (n - 1);
+	//float dz = depth / (n - 1);
+
+	//for (int k = 0; k < n; ++k)
+	//{
+	//	for (int i = 0; i < n; ++i)
+	//	{
+	//		for (int j = 0; j < n; ++j)
+	//		{
+	//			int index = k * n * n + i * n + j;
+
+	//			ritem->Instances[index].World = XMFLOAT4X4(
+	//				1.0f, 0.0f, 0.0f, 0.0f,
+	//				0.0f, 1.0f, 0.0f, 0.0f,
+	//				0.0f, 0.0f, 1.0f, 0.0f,
+	//				x + j * dx, y + i * dy, z + k * dz, 1.0f);
+
+	//			XMStoreFloat4x4(&ritem->Instances[index].TexTransform, XMMatrixScaling(2.0f, 2.0f, 1.0f));
+	//			ritem->Instances[index].MaterialIndex = index % UTIL.Get_Materials().size();
+	//		}
+	//	}
+	//}
+
+	
+	/*_pieckedRitem->World = MathHelper::Identity4x4();
 	_pieckedRitem->TexTransform = MathHelper::Identity4x4();
 	_pieckedRitem->objCBIndex = g_ObjCBcount;
 	_pieckedRitem->Mat = UTIL.Get_Materials()["highlight0"].get();
@@ -237,7 +156,7 @@ void Skull::BuildRenderItem(void)
 	_pieckedRitem->StartIndexLocation = 0;
 	_pieckedRitem->BaseVertexLocation = 0;
 
-	MOUSE.GetPickedRitem().push_back(_pieckedRitem.get());
+	MOUSE.GetPickedRitem().push_back(_pieckedRitem.get());*/
 
 	UTIL.Get_Ritemvec().push_back(std::move(ritem));
 	for (auto& e : UTIL.Get_Ritemvec())
@@ -245,8 +164,8 @@ void Skull::BuildRenderItem(void)
 		UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(e.get());
 	}
 
-	UTIL.Get_Drawlayer((int)DrawLayer::DL_HIGHLIGHT).push_back(_pieckedRitem.get());
-	UTIL.Get_Ritemvec().push_back(std::move(_pieckedRitem));
+	//UTIL.Get_Drawlayer((int)DrawLayer::DL_HIGHLIGHT).push_back(_pieckedRitem.get());
+	//UTIL.Get_Ritemvec().push_back(std::move(_pieckedRitem));
 }
 
 void Skull::BuildGeometry(void)

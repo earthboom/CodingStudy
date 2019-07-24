@@ -17,10 +17,10 @@ protected:
 public:
 	virtual bool Ready(void);
 	virtual bool Update(const CTimer& mt);
-	virtual bool Render(const CTimer& mt) PURE;
+	virtual bool Render(const CTimer& mt);
 
 protected:
-	virtual void BuildDescriptorHeaps(void)PURE;
+	virtual bool BuildDescriptorHeaps(void);
 
 public:
 	std::string m_Name;

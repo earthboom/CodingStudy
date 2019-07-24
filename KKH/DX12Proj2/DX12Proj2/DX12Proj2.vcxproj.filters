@@ -73,6 +73,9 @@
     <Filter Include="02.Utility\02.Object\Skull">
       <UniqueIdentifier>{276b8048-bd1d-4413-bc94-175c1ce02cec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\02.Object\NormalObject">
+      <UniqueIdentifier>{4ccd2b2b-9eaf-49d7-9c3f-e58678d13cf2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DX12Proj2.h">
@@ -159,6 +162,9 @@
     <ClInclude Include="Skull.h">
       <Filter>02.Utility\02.Object\Skull</Filter>
     </ClInclude>
+    <ClInclude Include="NormalObject.h">
+      <Filter>02.Utility\02.Object\NormalObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DX12Proj2.cpp">
@@ -217,6 +223,9 @@
     </ClCompile>
     <ClCompile Include="Skull.cpp">
       <Filter>02.Utility\02.Object\Skull</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalObject.cpp">
+      <Filter>02.Utility\02.Object\NormalObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

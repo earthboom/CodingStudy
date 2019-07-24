@@ -42,3 +42,17 @@ bool Object::Update(const CTimer& mt)
 {
 	return TRUE;
 }
+
+bool Object::Render(const CTimer& mt)
+{
+	return TRUE;
+}
+
+bool Object::BuildDescriptorHeaps(void)
+{
+	MAP_TEX* pTexMap = &TEX.Get_Textures();
+	if (pTexMap->find(m_texName) != pTexMap->end())
+		return TRUE;
+	else
+		return FALSE;
+}

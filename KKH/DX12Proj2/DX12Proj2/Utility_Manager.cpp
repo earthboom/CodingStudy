@@ -332,7 +332,7 @@ bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 	_commandlist->SetGraphicsRootSignature(mRootSignature.Get());
 
 	auto matBuffer = mCurrFrameResource->MaterialBuffer->Resource();
-	_commandlist->SetGraphicsRootConstantBufferView(1, matBuffer->GetGPUVirtualAddress());
+	_commandlist->SetGraphicsRootShaderResourceView(1, matBuffer->GetGPUVirtualAddress());
 
 	auto passCB = mCurrFrameResource->PassCB->Resource();
 	_commandlist->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());

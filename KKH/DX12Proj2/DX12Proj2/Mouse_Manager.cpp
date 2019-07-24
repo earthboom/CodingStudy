@@ -21,10 +21,10 @@ void Mouse_Manager::OnMouseDown(WPARAM btnState, int x, int y)
 
 		SetCapture(g_hWnd);
 	}
-	else if ((btnState & MK_RBUTTON) != 0)
-	{
-		Pick(x, y);
-	}	
+	//else if ((btnState & MK_RBUTTON) != 0)
+	//{
+	//	Pick(x, y);
+	//}	
 }
 
 void Mouse_Manager::OnMouseUP(WPARAM btnState, int x, int y)
