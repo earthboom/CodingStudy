@@ -12,6 +12,7 @@ Object::Object(void)
 	, mPhi(DirectX::XM_PIDIV4)
 	, mRadius(5.0f)
 	, m_DrawLayer(DrawLayer::DL_END)
+	, mPosition(0.0f, 0.0f, 0.0f), mScaling(0.0f, 0.0f, 0.0f), mRotation(0.0f, 0.0f, 0.0f)
 {
 }
 
@@ -26,6 +27,7 @@ Object::Object(COM_TYPE _type, std::string _name, std::string _submeshname, std:
 	, mPhi(DirectX::XM_PIDIV4)
 	, mRadius(5.0f)
 	, m_DrawLayer(DrawLayer::DL_END)
+	, mPosition(0.0f, 0.0f, 0.0f), mScaling(0.0f, 0.0f, 0.0f), mRotation(0.0f, 0.0f, 0.0f)
 {
 }
 

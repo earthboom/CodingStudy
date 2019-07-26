@@ -5,6 +5,7 @@
 #include "Texture_Manger.h"
 #include "Camera_Manager.h"
 #include "Skull.h"
+#include "NormalObject.h"
 
 MainApp::MainApp(void)
 	: m_fTime(0.0f)
@@ -109,6 +110,21 @@ bool MainApp::CreateObject(void)
 	g_ObjCBcount = 0;
 
 	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skullGeo", "skull", "defaultTex", "skullMat")))) return FALSE;
+
+	if (![]()->bool {
+		std::shared_ptr<Object> pObj;
+			pObj = NormalObject::Create(Object::COM_TYPE::CT_STATIC, "BoxGeo", "box", "boxTex", "boxMat", NormalObject::ShapeType::ST_BOX);
+			pObj->Get_Scaling() = XMFLOAT3(2.0f, 1.0f, 2.0f);
+			pObj->Get_Postion() = XMFLOAT3(0.0f, 0.5f, 0.0f);
+			if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(pObj)))	return FALSE;
+
+			pObj = NormalObject::Create(Object::COM_TYPE::CT_STATIC, "SphereGeo", "shpere", "defaultTex", "mirror0", NormalObject::ShapeType::ST_SHPERE);
+			pObj->Get_Scaling() = XMFLOAT3(2.0f, 2.0f, 2.0f);
+			pObj->Get_Postion() = XMFLOAT3(0.0f, 2.0f, 0.0f);
+			if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(pObj)))	return FALSE;
+
+			return TRUE;
+		}()) return FALSE;
 
 	return TRUE;
 }

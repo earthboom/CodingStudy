@@ -41,6 +41,10 @@ protected:
 	float mPhi;		// = DirectX::XM_PIDIV4;
 	float mRadius;	// = 5.0f;
 
+	DirectX::XMFLOAT3 mPosition;
+	DirectX::XMFLOAT3 mScaling;
+	DirectX::XMFLOAT3 mRotation;
+
 public:
 	//std::function<COM_TYPE&()> Get_Comtype = [&]()->COM_TYPE& {return m_Comtype; };
 	//std::function<std::string&()> Get_Objname = [&]()->std::string& {return m_Name; };
@@ -56,6 +60,10 @@ public:
 
 	Material& Get_Material(void) { return m_Material; }
 	DrawLayer& Get_DrawLayer(void) { return m_DrawLayer; }
+
+	DirectX::XMFLOAT3& Get_Postion(void) { return mPosition; }
+	DirectX::XMFLOAT3& Get_Scaling(void) { return mScaling; }
+	DirectX::XMFLOAT3& Get_Rotation(void) { return mRotation; }
 };
 
 typedef std::shared_ptr<Object> OBJECT;
