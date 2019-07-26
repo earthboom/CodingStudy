@@ -16,7 +16,7 @@ public:
 
 public:
 	explicit NormalObject(void);
-	NormalObject(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname, ShapeType eType);
+	NormalObject(Object::COM_TYPE _type, std::string _name, std::string _geoname, std::string _submeshname, std::string _texname, std::string _matname, ShapeType eType);
 	NormalObject(const NormalObject&) = delete;
 	NormalObject& operator=(const NormalObject&) = delete;
 	~NormalObject(void);
@@ -40,8 +40,8 @@ private:
 	ShapeType m_eShapeType;
 
 public:
-	static std::shared_ptr<NormalObject> Create(Object::COM_TYPE _type, std::string _name, std::string _submeshname,
-		std::string _texname, std::string _matname, ShapeType eType);
+	static std::shared_ptr<NormalObject> Create(Object::COM_TYPE _type, std::string _geoname, std::string _name, 
+		std::string _submeshname, std::string _texname, std::string _matname, ShapeType eType);
 };
 
 typedef std::shared_ptr<NormalObject> NORMALOBJECT;

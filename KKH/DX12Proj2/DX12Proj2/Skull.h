@@ -6,7 +6,7 @@ class Skull : public Object
 {
 public:
 	explicit Skull(void);
-	Skull(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname);
+	Skull(Object::COM_TYPE _type, std::string _name, std::string _geoname, std::string _submeshname, std::string _texname, std::string _matname);
 	Skull(const Skull&) = delete;
 	Skull& operator=(const Skull&) = delete;
 	~Skull(void);
@@ -32,8 +32,8 @@ private:
 	RenderItem* m_Skull;
 
 public:
-	static std::shared_ptr<Skull> Create(Object::COM_TYPE _type, std::string _name, std::string _submeshname,
-		std::string _texname, std::string _matname);
+	static std::shared_ptr<Skull> Create(Object::COM_TYPE _type, std::string _name, std::string _geoname, 
+		std::string _submeshname, std::string _texname, std::string _matname);
 };
 
 typedef std::shared_ptr<Skull> SKULL;

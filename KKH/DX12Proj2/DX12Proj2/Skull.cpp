@@ -10,8 +10,8 @@ Skull::Skull(void)
 {
 }
 
-Skull::Skull(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname)
-	: Object(_type, _name, _submeshname, _texname, _matname)
+Skull::Skull(Object::COM_TYPE _type, std::string _name, std::string _geoname, std::string _submeshname, std::string _texname, std::string _matname)
+	: Object(_type, _name, _geoname, _submeshname, _texname, _matname)
 	, m_Skull(nullptr)
 	, mSkullTranslation(0.0f, 1.0f, -5.0f)
 {
@@ -45,10 +45,14 @@ bool Skull::Render(const CTimer& mt)
 
 bool Skull::BuildDescriptorHeaps(void)
 {
+	if (TEX.Get_Textures()[m_texName]->bRegister)
+		return FALSE;
+
 	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart(), g_MatCBcount, UTIL.Get_CbvSrvDescriptorSize());
 
 	auto defaultTex = TEX.Get_Textures()[m_texName]->Resource;
-	TEX.Get_Textures()[m_texName]->matCount = g_MatCBcount;
+	TEX.Get_Textures()[m_texName]->matCount = g_MatCBcount++;
+	TEX.Get_Textures()[m_texName]->bRegister = TRUE;
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -65,11 +69,11 @@ void Skull::BuildMaterials(void)
 {
 	auto pMat = std::make_unique<Material>();
 	pMat->Name = m_matName;
-	pMat->MatCBIndex = g_MatCBcount;
-	pMat->DiffuseSrvHeapIndex = g_MatCBcount++;
+	pMat->MatCBIndex = TEX.Get_Textures()[m_texName]->matCount;
+	pMat->DiffuseSrvHeapIndex = TEX.Get_Textures()[m_texName]->matCount;
 	pMat->DiffuseAlbedo = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
 	pMat->FresnelR0 = DirectX::XMFLOAT3(0.02f, 0.02f, 0.02f);
-	pMat->Roughness = 0.1f;
+	pMat->Roughness = 0.2f;
 
 	//auto highlight0 = std::make_unique<Material>();
 	//highlight0->Name = "highlight0";
@@ -93,7 +97,7 @@ void Skull::BuildRenderItem(void)
 	//ritem->TexTransform = MathHelper::Identity4x4();
 	ritem->objCBIndex = g_ObjCBcount++;
 	ritem->Mat = UTIL.Get_Materials()[m_matName].get();
-	ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
+	ritem->Geo = UTIL.Get_Geomesh()[m_geoName].get();
 	ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	ritem->InstanceCount = 0;
 	ritem->IndexCount = ritem->Geo->DrawArgs[m_submeshName].IndexCount;
@@ -170,6 +174,9 @@ void Skull::BuildRenderItem(void)
 
 void Skull::BuildGeometry(void)
 {
+	if (UTIL.Get_Geomesh().find(m_geoName) != UTIL.Get_Geomesh().end())
+		return;
+
 	std::ifstream fin("./Resource/Models/skull.txt");
 
 	if (!fin)
@@ -238,7 +245,7 @@ void Skull::BuildGeometry(void)
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::int32_t);
 
 	auto geo = std::make_unique<MeshGeometry>();
-	geo->Name = m_Name;
+	geo->Name = m_geoName;
 
 	ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
 	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
@@ -265,9 +272,9 @@ void Skull::BuildGeometry(void)
 	UTIL.Get_Geomesh()[geo->Name] = std::move(geo);
 }
 
-std::shared_ptr<Skull> Skull::Create(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname)
+std::shared_ptr<Skull> Skull::Create(Object::COM_TYPE _type, std::string _geoname, std::string _name, std::string _submeshname, std::string _texname, std::string _matname)
 {
-	SKULL pSkull = std::make_shared<Skull>(_type, _name, _submeshname, _texname, _matname);
+	SKULL pSkull = std::make_shared<Skull>(_type, _name, _geoname, _submeshname, _texname, _matname);
 
 	if (!pSkull) return nullptr;
 

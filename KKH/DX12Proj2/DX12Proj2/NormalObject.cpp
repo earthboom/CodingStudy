@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "NormalObject.h"
 #include "Utility_Manager.h"
+#include "GeometryGenerator.h"
 
 NormalObject::NormalObject(void)
 	: Object()
@@ -8,8 +9,8 @@ NormalObject::NormalObject(void)
 {
 }
 
-NormalObject::NormalObject(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname, ShapeType eType)
-	: Object(_type, _name, _submeshname, _texname, _matname)
+NormalObject::NormalObject(Object::COM_TYPE _type, std::string _name, std::string _geoname, std::string _submeshname, std::string _texname, std::string _matname, ShapeType eType)
+	: Object(_type, _name, _geoname, _submeshname, _texname, _matname)
 	, m_eShapeType(eType)
 {
 }
@@ -40,22 +41,22 @@ bool NormalObject::Render(const CTimer& mt)
 
 bool NormalObject::BuildDescriptorHeaps(void)
 {
-	bool bTexLoad = Object::BuildDescriptorHeaps();
-	if (!bTexLoad)
-	{
-		CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart(), g_MatCBcount, UTIL.Get_CbvSrvDescriptorSize());
+	if (TEX.Get_Textures()[m_texName]->bRegister)
+		return FALSE;
+	
+	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart(), g_MatCBcount, UTIL.Get_CbvSrvDescriptorSize());
 
-		auto defaultTex = TEX.Get_Textures()[m_texName]->Resource;
-		TEX.Get_Textures()[m_texName]->matCount = g_MatCBcount++;
+	auto defaultTex = TEX.Get_Textures()[m_texName]->Resource;
+	TEX.Get_Textures()[m_texName]->matCount = g_MatCBcount++;
+	TEX.Get_Textures()[m_texName]->bRegister = TRUE;
 
-		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		srvDesc.Format = defaultTex->GetDesc().Format;
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Texture2D.MostDetailedMip = 0;
-		srvDesc.Texture2D.MipLevels = defaultTex->GetDesc().MipLevels;
-		DEVICE->CreateShaderResourceView(defaultTex.Get(), &srvDesc, hDescriptor);
-	}
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Format = defaultTex->GetDesc().Format;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = defaultTex->GetDesc().MipLevels;
+	DEVICE->CreateShaderResourceView(defaultTex.Get(), &srvDesc, hDescriptor);	
 
 	return TRUE;
 }
@@ -79,7 +80,7 @@ void NormalObject::BuildRenderItem(void)
 
 	ritem->objCBIndex = g_ObjCBcount++;
 	ritem->Mat = UTIL.Get_Materials()[m_matName].get();
-	ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
+	ritem->Geo = UTIL.Get_Geomesh()[m_geoName].get();
 	ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	ritem->InstanceCount = 0;
 	ritem->IndexCount = ritem->Geo->DrawArgs[m_submeshName].IndexCount;
@@ -90,33 +91,89 @@ void NormalObject::BuildRenderItem(void)
 	ritem->Instances.resize(1);
 	ritem->Instances[0].World = MathHelper::Identity4x4();
 	ritem->Instances[0].MaterialIndex = 0;
-	XMStoreFloat4x4(&ritem->Instances[0].TexTransform, XMMatrixScaling(2.0f, 2.0f, 1.0f));
+	XMStoreFloat4x4(&ritem->Instances[0].TexTransform, 
+		XMMatrixScaling(mScaling.x, mScaling.y, mScaling.z) * 
+		XMMatrixTranslation(mPosition.x, mPosition.y, mPosition.z));
+
+	UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(ritem.get());
+	UTIL.Get_Ritemvec().push_back(std::move(ritem));
 }
 
 void NormalObject::BuildGeometry(void)
 {
+	if (UTIL.Get_Geomesh().find(m_geoName) != UTIL.Get_Geomesh().end())
+		return;
+
+	GeometryGenerator geoGen;
+	GeometryGenerator::MeshData object;
+
+	SubmeshGeometry Submesh;
+
 	switch (m_eShapeType)
 	{
 	case ST_BOX:
+		object = geoGen.CreateBox(1.0f, 1.0f, 1.0f, 3);		
 		break;
 
 	case ST_GRID:
+		object = geoGen.CreateGrid(20.0f, 30.0f, 60, 40);
 		break;
 
 	case ST_SHPERE:
+		object = geoGen.CreateSphere(0.5f, 20, 20);
 		break;
 
 	case ST_CYLINEDER:
+		object = geoGen.CreateCylinder(0.5f, 0.3f, 3.0f, 20, 20);
 		break;
 
 	default:
 		return;
 	}
+
+	Submesh.IndexCount = (UINT)object.Indices32.size();
+	Submesh.StartIndexLocation = 0;
+	Submesh.BaseVertexLocation = 0;
+
+	std::vector<VERTEX> vertices(object.Vertices.size());
+
+	for (int i = 0; i < object.Vertices.size(); ++i)
+	{
+		vertices[i].Pos		= object.Vertices[i].Position;
+		vertices[i].Normal	= object.Vertices[i].Normal;
+		vertices[i].TexC	= object.Vertices[i].TexC;
+	}
+
+	std::vector<std::uint16_t> indices(3 * object.Vertices.size());
+
+	const UINT vbByteSize = (UINT)vertices.size() * sizeof(VERTEX);
+	const UINT ibByteSize = (UINT)indices.size() * sizeof(uint16_t);
+
+	auto geo = std::make_unique<MeshGeometry>();
+	geo->Name = m_geoName;
+
+	ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
+	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+
+	ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
+	CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
+	geo->VertexBufferGPU = d3dutil::CreateDefaultBuffer(DEVICE.Get(), COM_LIST.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
+	geo->IndexBufferGPU = d3dutil::CreateDefaultBuffer(DEVICE.Get(), COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
+
+	geo->VertexByteStride = sizeof(VERTEX);
+	geo->VertexBufferByteSize = vbByteSize;
+	geo->IndexFormat = DXGI_FORMAT_R16_UINT;
+	geo->IndexBufferByteSize = ibByteSize;
+
+	geo->DrawArgs[m_submeshName] = Submesh;
+
+	UTIL.Get_Geomesh()[geo->Name] = std::move(geo);
 }
 
-std::shared_ptr<NormalObject> NormalObject::Create(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname, ShapeType eType)
+std::shared_ptr<NormalObject> NormalObject::Create(Object::COM_TYPE _type, std::string _name, std::string _geoname, std::string _submeshname, std::string _texname, std::string _matname, ShapeType eType)
 {
-	NORMALOBJECT pNormalObject = std::make_unique<NormalObject>(_type, _name, _submeshname, _texname, _matname, eType);
+	NORMALOBJECT pNormalObject = std::make_unique<NormalObject>(_type, _name, _geoname, _submeshname, _texname, _matname, eType);
 
 	if (!pNormalObject)
 		return nullptr;

@@ -152,10 +152,11 @@ struct RenderItem
 
 struct Texture
 {
-	std::string Name;
-	std::wstring Filename;
+	std::string Name = "";
+	std::wstring Filename = L"";
 
-	UINT matCount;
+	bool bRegister = FALSE;
+	UINT matCount = 0;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> Resource = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> UploadHeap = nullptr;

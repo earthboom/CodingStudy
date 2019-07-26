@@ -109,22 +109,14 @@ bool MainApp::CreateObject(void)
 	g_MatCBcount = 0;
 	g_ObjCBcount = 0;
 
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skullGeo", "skull", "defaultTex", "skullMat")))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skull", "skullGeo", "Subskull", "defaultTex", "skullMat")))) return FALSE;
 
-	if (![]()->bool {
-		std::shared_ptr<Object> pObj;
-			pObj = NormalObject::Create(Object::COM_TYPE::CT_STATIC, "BoxGeo", "box", "boxTex", "boxMat", NormalObject::ShapeType::ST_BOX);
-			pObj->Get_Scaling() = XMFLOAT3(2.0f, 1.0f, 2.0f);
-			pObj->Get_Postion() = XMFLOAT3(0.0f, 0.5f, 0.0f);
-			if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(pObj)))	return FALSE;
-
-			pObj = NormalObject::Create(Object::COM_TYPE::CT_STATIC, "SphereGeo", "shpere", "defaultTex", "mirror0", NormalObject::ShapeType::ST_SHPERE);
-			pObj->Get_Scaling() = XMFLOAT3(2.0f, 2.0f, 2.0f);
-			pObj->Get_Postion() = XMFLOAT3(0.0f, 2.0f, 0.0f);
-			if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(pObj)))	return FALSE;
-
-			return TRUE;
-		}()) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "Sky", "SkyGeo", "Subbox", "bricksTex", "boxMat", NormalObject::ShapeType::ST_SHPERE)))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "Box", "BoxGeo", "Subbox", "bricksTex", "boxMat", NormalObject::ShapeType::ST_BOX)))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "MirrorBall", "SphereGeo", "Subshpere", "defaultTex", "sphereMat", NormalObject::ShapeType::ST_SHPERE)))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "Grid", "GridGeo", "Subgrid", "tileTex", "GridMat", NormalObject::ShapeType::ST_GRID)))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "Cylinder", "CylinderGeo", "Subcylinder", "tileTex", "cylinderMat", NormalObject::ShapeType::ST_CYLINEDER)))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "Sphere", "SphereGeo", "Subsphere", "defaultTex", "sphereMat", NormalObject::ShapeType::ST_SHPERE)))) return FALSE;
 
 	return TRUE;
 }
