@@ -115,10 +115,34 @@ struct InstanceData
 {
 	XMFLOAT4X4 World = MathHelper::Identity4x4();
 	XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();
-	UINT MaterialIndex;
-	UINT InstancePad0;
-	UINT InstancePad1;
-	UINT InstancePad2;
+	UINT MaterialIndex = 0;
+	UINT InstancePad0 = 0;
+	UINT InstancePad1 = 0;
+	UINT InstancePad2 = 0;
+
+	InstanceData(void)
+		: World(MathHelper::Identity4x4()), TexTransform(MathHelper::Identity4x4())
+		, MaterialIndex(0), InstancePad0(0), InstancePad1(0), InstancePad2(0) {}
+
+	void Init(void)
+	{
+		World = MathHelper::Identity4x4();
+		TexTransform = MathHelper::Identity4x4();
+		MaterialIndex = 0;
+		InstancePad0 = 0;
+		InstancePad1 = 0;
+		InstancePad2 = 0;
+	}
+
+	void operator=(InstanceData& _data)
+	{
+		World = _data.World;
+		TexTransform = _data.TexTransform;
+		MaterialIndex = _data.MaterialIndex;
+		InstancePad0 = _data.InstancePad0;
+		InstancePad1 = _data.InstancePad1;
+		InstancePad2 = _data.InstancePad2;
+	}
 };
 
 struct RenderItem
@@ -152,11 +176,10 @@ struct RenderItem
 
 struct Texture
 {
-	std::string Name = "";
-	std::wstring Filename = L"";
+	std::string Name;
+	std::wstring Filename;
 
-	bool bRegister = FALSE;
-	UINT matCount = 0;
+	UINT matCount;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> Resource = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> UploadHeap = nullptr;

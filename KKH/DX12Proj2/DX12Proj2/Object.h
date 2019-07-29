@@ -9,7 +9,7 @@ public:
 
 protected:
 	explicit Object(void);
-	Object(COM_TYPE _type, std::string _name, std::string _geoname, std::string _submeshname, std::string _texname, std::string _matname);
+	Object(COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname);
 	Object(const Object&) = delete;
 	Object& operator=(const Object&) = delete;
 	~Object(void);
@@ -24,7 +24,6 @@ protected:
 
 public:
 	std::string m_Name;
-	std::string m_geoName;
 	std::string m_submeshName;
 	std::string m_texName;
 	std::string m_matName;
@@ -46,6 +45,8 @@ protected:
 	DirectX::XMFLOAT3 mScaling;
 	DirectX::XMFLOAT3 mRotation;
 
+	std::vector<InstanceData>	m_vecInstanceData;
+
 public:
 	//std::function<COM_TYPE&()> Get_Comtype = [&]()->COM_TYPE& {return m_Comtype; };
 	//std::function<std::string&()> Get_Objname = [&]()->std::string& {return m_Name; };
@@ -65,6 +66,8 @@ public:
 	DirectX::XMFLOAT3& Get_Postion(void) { return mPosition; }
 	DirectX::XMFLOAT3& Get_Scaling(void) { return mScaling; }
 	DirectX::XMFLOAT3& Get_Rotation(void) { return mRotation; }
+
+	std::vector<InstanceData>& Get_vectorInstanceData(void) { return m_vecInstanceData; }
 };
 
 typedef std::shared_ptr<Object> OBJECT;

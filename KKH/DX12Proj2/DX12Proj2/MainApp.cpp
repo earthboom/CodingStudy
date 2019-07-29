@@ -109,14 +109,60 @@ bool MainApp::CreateObject(void)
 	g_MatCBcount = 0;
 	g_ObjCBcount = 0;
 
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skull", "skullGeo", "Subskull", "defaultTex", "skullMat")))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skullGeo", "skull", "defaultTex", "skullMat")))) return FALSE;
 
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "Sky", "SkyGeo", "Subbox", "bricksTex", "boxMat", NormalObject::ShapeType::ST_SHPERE)))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "Box", "BoxGeo", "Subbox", "bricksTex", "boxMat", NormalObject::ShapeType::ST_BOX)))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "MirrorBall", "SphereGeo", "Subshpere", "defaultTex", "sphereMat", NormalObject::ShapeType::ST_SHPERE)))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "Grid", "GridGeo", "Subgrid", "tileTex", "GridMat", NormalObject::ShapeType::ST_GRID)))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "Cylinder", "CylinderGeo", "Subcylinder", "tileTex", "cylinderMat", NormalObject::ShapeType::ST_CYLINEDER)))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "Sphere", "SphereGeo", "Subsphere", "defaultTex", "sphereMat", NormalObject::ShapeType::ST_SHPERE)))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "BoxGeo", "box", "bricksTex", "boxMat", NormalObject::ShapeType::ST_BOX)))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "SphereMirrorGeo", "shperemirror", "defaultTex", "SphereMirrorMat", NormalObject::ShapeType::ST_SHPERE)))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "GridGeo", "grid", "tileTex", "gridMat", NormalObject::ShapeType::ST_GRID)))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "ShpereGeo", "shpere", "defaultTex", "shpereMat", NormalObject::ShapeType::ST_SHPERE)))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "CylinderGeo", "cylinder", "bricksTex", "cylinderMat", NormalObject::ShapeType::ST_CYLINEDER)))) return FALSE;
+
+
+	InstanceData tempInstance;
+	OBJECT Object = UTIL.Get_Object("BoxGeo", Object::COM_TYPE::CT_STATIC);
+	XMStoreFloat4x4(&tempInstance.World, XMMatrixScaling(2.0f, 1.0f, 2.0f) * XMMatrixTranslation(0.0f, 5.0f, 0.0f));
+	XMStoreFloat4x4(&tempInstance.TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
+	Object->Get_vectorInstanceData().push_back(std::move(tempInstance));
+
+	tempInstance.Init();
+	Object = UTIL.Get_Object("SphereMirrorGeo", Object::COM_TYPE::CT_STATIC);
+	XMStoreFloat4x4(&tempInstance.World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 2.0f, 0.0f));
+	XMStoreFloat4x4(&tempInstance.TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
+	Object->Get_vectorInstanceData().push_back(std::move(tempInstance));
+
+	tempInstance.Init();
+	Object = UTIL.Get_Object("GridGeo", Object::COM_TYPE::CT_STATIC);
+	XMStoreFloat4x4(&tempInstance.TexTransform, XMMatrixScaling(8.0f, 8.0f, 1.0f));
+	Object->Get_vectorInstanceData().push_back(std::move(tempInstance));
+
+	XMMATRIX briTexTransform = XMMatrixScaling(1.5f, 2.0f, 1.0f);
+	for (int i = 0; i < 5; ++i)
+	{
+		XMMATRIX leftCylWorld = XMMatrixTranslation(-5.0f, 1.5f, -10.0f + i * 5.0f);
+		XMMATRIX rightCylWorld = XMMatrixTranslation(+5.0f, 1.5f, -10.0f + i * 5.0f);
+
+		XMMATRIX leftSphereWorld = XMMatrixTranslation(-5.0f, 3.5f, -10.0f + i * 5.0f);
+		XMMATRIX rightSphereWorld = XMMatrixTranslation(+5.0f, 3.5f, -10.0f + i * 5.0f);
+
+		tempInstance.Init();
+		Object = UTIL.Get_Object("CylinderGeo", Object::COM_TYPE::CT_STATIC);
+		XMStoreFloat4x4(&tempInstance.World, leftCylWorld);
+		XMStoreFloat4x4(&tempInstance.TexTransform, briTexTransform);
+		Object->Get_vectorInstanceData().push_back(std::move(tempInstance));
+
+		tempInstance.Init();
+		XMStoreFloat4x4(&tempInstance.World, rightCylWorld);
+		XMStoreFloat4x4(&tempInstance.TexTransform, briTexTransform);
+		Object->Get_vectorInstanceData().push_back(std::move(tempInstance));
+
+		tempInstance.Init();
+		Object = UTIL.Get_Object("ShpereGeo", Object::COM_TYPE::CT_STATIC);
+		XMStoreFloat4x4(&tempInstance.World, leftSphereWorld);
+		Object->Get_vectorInstanceData().push_back(std::move(tempInstance));
+
+		XMStoreFloat4x4(&tempInstance.World, rightSphereWorld);
+		Object->Get_vectorInstanceData().push_back(std::move(tempInstance));
+	}
 
 	return TRUE;
 }
