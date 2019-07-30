@@ -138,7 +138,7 @@ void Utility_Manager::BuildFrameResources(void)
 {
 	for (int i = 0; i < NumFrameResources; ++i)
 	{
-		mFrameResources.push_back(std::make_unique<FrameResource>(DEVICE.Get(), 1, (UINT)mAllRitem.size(), (UINT)mMaterials.size()));
+		mFrameResources.push_back(std::make_unique<FrameResource>(DEVICE.Get(), 8, (UINT)mAllRitem.size(), (UINT)mMaterials.size()));
 	}
 }
 
@@ -170,24 +170,24 @@ void Utility_Manager::BuildPSOs(void)
 
 	// hightlight object
 
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC highlightPsoDesc = psoDesc;
+	//D3D12_GRAPHICS_PIPELINE_STATE_DESC highlightPsoDesc = psoDesc;
 
-	highlightPsoDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+	//highlightPsoDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
-	D3D12_RENDER_TARGET_BLEND_DESC transparencyBlendDesc;
-	transparencyBlendDesc.BlendEnable = TRUE;
-	transparencyBlendDesc.LogicOpEnable = FALSE;
-	transparencyBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
-	transparencyBlendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-	transparencyBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;
-	transparencyBlendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
-	transparencyBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
-	transparencyBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
-	transparencyBlendDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
-	transparencyBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	//D3D12_RENDER_TARGET_BLEND_DESC transparencyBlendDesc;
+	//transparencyBlendDesc.BlendEnable = TRUE;
+	//transparencyBlendDesc.LogicOpEnable = FALSE;
+	//transparencyBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	//transparencyBlendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	//transparencyBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+	//transparencyBlendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+	//transparencyBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+	//transparencyBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	//transparencyBlendDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
+	//transparencyBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
-	highlightPsoDesc.BlendState.RenderTarget[0] = transparencyBlendDesc;
-	ThrowIfFailed(DEVICE->CreateGraphicsPipelineState(&highlightPsoDesc, IID_PPV_ARGS(&mPSOs["highlight"])));
+	//highlightPsoDesc.BlendState.RenderTarget[0] = transparencyBlendDesc;
+	//ThrowIfFailed(DEVICE->CreateGraphicsPipelineState(&highlightPsoDesc, IID_PPV_ARGS(&mPSOs["highlight"])));
 }
 
 void Utility_Manager::OnResize(void)
@@ -219,11 +219,13 @@ void Utility_Manager::OnResize(void)
 bool Utility_Manager::Object_Create(OBJECT& obj)
 {
 	if (obj == nullptr) return FALSE;
-
+	
 	if (obj->Get_Comtype() == Object::COM_TYPE::CT_STATIC)
-		Obj_static_map->insert(OBJMAP::value_type(obj->Get_Objname(), obj));
+		Obj_static_map->insert(OBJMAP::value_type(obj->Get_submeshName(), obj));
+		//Obj_static_map->insert(OBJMAP::value_type(obj->Get_Objname(), obj));
 	else if (obj->Get_Comtype() == Object::COM_TYPE::CT_DYNAMIC)
-		Obj_dynamic_map->insert(OBJMAP::value_type(obj->Get_Objname(), obj));
+		Obj_dynamic_map->insert(OBJMAP::value_type(obj->Get_submeshName(), obj));
+		//Obj_dynamic_map->insert(OBJMAP::value_type(obj->Get_Objname(), obj));
 
 	return TRUE;
 }
@@ -341,8 +343,8 @@ bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 
 	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_OPAUQE]);
 
-	_commandlist->SetPipelineState(mPSOs["highlight"].Get());
-	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_HIGHLIGHT]);
+	//_commandlist->SetPipelineState(mPSOs["highlight"].Get());
+	//DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_HIGHLIGHT]);
 
 	_commandlist->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_graphic->Get_CurrentBackBuffer_Resource(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
@@ -395,6 +397,7 @@ void Utility_Manager::UpdateInstanceData(const CTimer& mt)
 		const auto& instanceData = e->Instances;
 
 		int visibleInstanceCount = 0;
+		UINT matIndex = e->Mat->DiffuseSrvHeapIndex + 1;
 
 		for (UINT i = 0; i < (UINT)instanceData.size(); ++i)
 		{
@@ -413,7 +416,8 @@ void Utility_Manager::UpdateInstanceData(const CTimer& mt)
 				InstanceData data;
 				XMStoreFloat4x4(&data.World, XMMatrixTranspose(world));
 				XMStoreFloat4x4(&data.TexTransform, XMMatrixTranspose(texTransform));
-				data.MaterialIndex = instanceData[i].MaterialIndex;
+				//data.MaterialIndex = instanceData[i].MaterialIndex;
+				data.MaterialIndex = matIndex;
 
 				currInstanceBuffer->CopyData(visibleInstanceCount++, data);
 			}

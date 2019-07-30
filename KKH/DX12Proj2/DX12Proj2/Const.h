@@ -15,8 +15,12 @@ extern const float Infinity;
 
 extern const int NumFrameResources;
 
+extern short g_SrvHeapCount;
 extern short g_MatCBcount;
 extern short g_ObjCBcount;
+
+extern UINT g_totalVertexOffset;
+extern UINT g_totalIndexOffset;
 
 extern bool g_ScreenBlur;
 extern bool g_FrustumCullingEnabled;

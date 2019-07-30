@@ -41,22 +41,26 @@ bool NormalObject::Render(const CTimer& mt)
 
 bool NormalObject::BuildDescriptorHeaps(void)
 {
-	bool bTexLoad = Object::BuildDescriptorHeaps();
-	if (!bTexLoad)
+	if (TEX.Get_Textures()[m_texName]->bRegister)
 	{
-		CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart(), g_MatCBcount, UTIL.Get_CbvSrvDescriptorSize());
-
-		auto defaultTex = TEX.Get_Textures()[m_texName]->Resource;
-		TEX.Get_Textures()[m_texName]->matCount = g_MatCBcount++;
-
-		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		srvDesc.Format = defaultTex->GetDesc().Format;
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Texture2D.MostDetailedMip = 0;
-		srvDesc.Texture2D.MipLevels = defaultTex->GetDesc().MipLevels;
-		DEVICE->CreateShaderResourceView(defaultTex.Get(), &srvDesc, hDescriptor);
+		m_matCount = g_MatCBcount++;
+		return FALSE;
 	}
+
+	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart(), g_SrvHeapCount, UTIL.Get_CbvSrvDescriptorSize());
+
+	auto defaultTex = TEX.Get_Textures()[m_texName]->Resource;
+	m_matCount = g_MatCBcount++;
+	TEX.Get_Textures()[m_texName]->srvHeapCount = g_SrvHeapCount++;
+	TEX.Get_Textures()[m_texName]->bRegister = TRUE;
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Format = defaultTex->GetDesc().Format;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = defaultTex->GetDesc().MipLevels;
+	DEVICE->CreateShaderResourceView(defaultTex.Get(), &srvDesc, hDescriptor);
 
 	return TRUE;
 }
@@ -65,8 +69,8 @@ void NormalObject::BuildMaterials(void)
 {
 	auto pMat = std::make_unique<Material>();
 	pMat->Name = m_matName;
-	pMat->MatCBIndex = TEX.Get_Textures()[m_texName]->matCount;
-	pMat->DiffuseSrvHeapIndex = TEX.Get_Textures()[m_texName]->matCount;
+	pMat->MatCBIndex = m_matCount;
+	pMat->DiffuseSrvHeapIndex = TEX.Get_Textures()[m_texName]->srvHeapCount;
 	pMat->DiffuseAlbedo = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
 	pMat->FresnelR0 = DirectX::XMFLOAT3(0.02f, 0.02f, 0.02f);
 	pMat->Roughness = 0.1f;
@@ -100,6 +104,9 @@ void NormalObject::BuildRenderItem(void)
 
 void NormalObject::BuildGeometry(void)
 {
+	if (UTIL.Get_Geomesh().find(m_Name) != UTIL.Get_Geomesh().end())
+		return;
+
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData mesh;
 
@@ -165,6 +172,7 @@ void NormalObject::BuildGeometry(void)
 	geo->DrawArgs[m_submeshName] = SubMesh;
 	UTIL.Get_Geomesh()[geo->Name] = std::move(geo);
 }
+
 
 std::shared_ptr<NormalObject> NormalObject::Create(Object::COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname, ShapeType eType)
 {

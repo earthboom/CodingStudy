@@ -179,7 +179,8 @@ struct Texture
 	std::string Name;
 	std::wstring Filename;
 
-	UINT matCount;
+	UINT srvHeapCount = -1;
+	bool bRegister = FALSE;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> Resource = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> UploadHeap = nullptr;

@@ -22,8 +22,12 @@ const float PI = 3.1415926535897932f;
 const float Infinity = FLT_MAX;
 const int NumFrameResources = 3;
 
+short g_SrvHeapCount = 0;
 short g_MatCBcount = 0;
 short g_ObjCBcount = 0;
+
+UINT g_totalVertexOffset = 0;
+UINT g_totalIndexOffset = 0;
 
 bool g_ScreenBlur = FALSE;
 bool g_FrustumCullingEnabled = FALSE;

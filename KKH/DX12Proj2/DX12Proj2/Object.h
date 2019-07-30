@@ -47,11 +47,14 @@ protected:
 
 	std::vector<InstanceData>	m_vecInstanceData;
 
+	UINT	m_matCount;
+
 public:
 	//std::function<COM_TYPE&()> Get_Comtype = [&]()->COM_TYPE& {return m_Comtype; };
 	//std::function<std::string&()> Get_Objname = [&]()->std::string& {return m_Name; };
 	COM_TYPE& Get_Comtype(void){return m_Comtype; }
 	std::string& Get_Objname(void){return m_Name; }
+	std::string& Get_submeshName(void) { return m_submeshName; }
 
 	//std::function<float&()> Get_Theta = [&]()->float& {return mTheta; };
 	//std::function<float&()> Get_Phi = [&]()->float& {return mPhi; };
