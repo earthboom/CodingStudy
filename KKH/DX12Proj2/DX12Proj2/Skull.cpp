@@ -268,12 +268,12 @@ void Skull::BuildGeometry(void)
 
 	SubmeshGeometry submesh;
 	submesh.IndexCount = (UINT)indices.size();
-	submesh.StartIndexLocation = g_totalIndexOffset;
-	submesh.BaseVertexLocation = g_totalVertexOffset;
+	submesh.StartIndexLocation = 0;//g_totalIndexOffset;
+	submesh.BaseVertexLocation = 0;//g_totalVertexOffset;
 	submesh.Bounds = bounds;
 
-	g_totalIndexOffset += tcount;
-	g_totalVertexOffset += vcount;
+	//g_totalIndexOffset += tcount;
+	//g_totalVertexOffset += vcount;
 
 	geo->DrawArgs[m_submeshName] = submesh;
 

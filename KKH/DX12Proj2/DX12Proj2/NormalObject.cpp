@@ -135,8 +135,17 @@ void NormalObject::BuildGeometry(void)
 	}
 
 	SubMesh.IndexCount = (UINT)mesh.Indices32.size();
-	SubMesh.StartIndexLocation = 0;
-	SubMesh.BaseVertexLocation = 0;
+	SubMesh.StartIndexLocation = 0;// g_totalIndexOffset;
+	SubMesh.BaseVertexLocation = 0;// g_totalVertexOffset;
+
+	//g_totalIndexOffset = (UINT)mesh.Indices32.size();
+	//g_totalVertexOffset = (UINT)mesh.Vertices.size();
+
+	XMFLOAT3 vMinf3(Infinity, Infinity, Infinity);
+	XMFLOAT3 vMaxf3(-Infinity, -Infinity, -Infinity);
+
+	XMVECTOR vMin = XMLoadFloat3(&vMinf3);
+	XMVECTOR vMax = XMLoadFloat3(&vMaxf3);
 
 	std::vector<VERTEX> vertices(mesh.Vertices.size());
 
@@ -145,7 +154,16 @@ void NormalObject::BuildGeometry(void)
 		vertices[i].Pos = mesh.Vertices[i].Position;
 		vertices[i].Normal = mesh.Vertices[i].Normal;
 		vertices[i].TexC = mesh.Vertices[i].TexC;
+
+		XMVECTOR P = XMLoadFloat3(&vertices[i].Pos);
+		vMin = XMVectorMin(vMin, P);
+		vMax = XMVectorMax(vMax, P);
 	}
+
+	BoundingBox bounds;
+	XMStoreFloat3(&bounds.Center, 0.5f * (vMin + vMax));
+	XMStoreFloat3(&bounds.Extents, 0.5f * (vMax - vMin));
+	SubMesh.Bounds = bounds;
 
 	std::vector<std::uint16_t> indices(3 * mesh.Indices32.size());
 

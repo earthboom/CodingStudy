@@ -392,11 +392,11 @@ void Utility_Manager::UpdateInstanceData(const CTimer& mt)
 	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
 
 	auto currInstanceBuffer = mCurrFrameResource->InstanceBuffer.get();
+	int visibleInstanceCount = 0;
 	for (auto& e : mAllRitem)
 	{
 		const auto& instanceData = e->Instances;
-
-		int visibleInstanceCount = 0;
+		
 		UINT matIndex = e->Mat->DiffuseSrvHeapIndex + 1;
 
 		for (UINT i = 0; i < (UINT)instanceData.size(); ++i)
@@ -517,6 +517,8 @@ void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const
 	//auto objectCB = mCurrFrameResource->ObjectCB->Resource();
 	//auto matCB = mCurrFrameResource->MaterialBuffer->Resource();//MaterialCB->Resource();
 
+	UINT InstanceBufByteSize = d3dutil::CalcConstantBufferByteSize(sizeof(InstanceData));
+
 	// For each render item...
 	for (size_t i = 0; i < ritems.size(); ++i)
 	{
@@ -540,8 +542,9 @@ void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const
 		//cmdList->SetGraphicsRootConstantBufferView(3, matCBAddress);
 
 		auto instanceBuffer = mCurrFrameResource->InstanceBuffer->Resource();
-		g_Graphics->Get_CommandList()->SetGraphicsRootShaderResourceView(0, instanceBuffer->GetGPUVirtualAddress());
-
+		D3D12_GPU_VIRTUAL_ADDRESS instAddress = instanceBuffer->GetGPUVirtualAddress() + ri->objCBIndex * InstanceBufByteSize;
+		g_Graphics->Get_CommandList()->SetGraphicsRootShaderResourceView(0, instAddress);
+		
 		cmdList->DrawIndexedInstanced(ri->IndexCount, ri->InstanceCount, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
 	}
 }
