@@ -76,6 +76,9 @@
     <Filter Include="02.Utility\02.Object\NormalObject">
       <UniqueIdentifier>{4ccd2b2b-9eaf-49d7-9c3f-e58678d13cf2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="91.Shadow">
+      <UniqueIdentifier>{32c7645e-0bc6-452b-ac1f-80aaf08745cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DX12Proj2.h">
@@ -165,6 +168,9 @@
     <ClInclude Include="NormalObject.h">
       <Filter>02.Utility\02.Object\NormalObject</Filter>
     </ClInclude>
+    <ClInclude Include="ShadowMap.h">
+      <Filter>91.Shadow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DX12Proj2.cpp">
@@ -226,6 +232,9 @@
     </ClCompile>
     <ClCompile Include="NormalObject.cpp">
       <Filter>02.Utility\02.Object\NormalObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMap.cpp">
+      <Filter>91.Shadow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
