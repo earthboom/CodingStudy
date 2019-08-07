@@ -99,11 +99,12 @@ void Skull::BuildRenderItem(void)
 
 	//ritem->World = MathHelper::Identity4x4();
 	//ritem->TexTransform = MathHelper::Identity4x4();
-	ritem->objCBIndex = g_ObjCBcount++;
+	//ritem->objCBIndex = g_ObjCBcount++;
+	ritem->objCBIndex = 1;
 	ritem->Mat = UTIL.Get_Materials()[m_matName].get();
 	ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
 	ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	ritem->InstanceCount = 0;
+	ritem->InstanceCount = 1;
 	ritem->IndexCount = ritem->Geo->DrawArgs[m_submeshName].IndexCount;
 	ritem->StartIndexLocation = ritem->Geo->DrawArgs[m_submeshName].StartIndexLocation;
 	ritem->BaseVertexLocation = ritem->Geo->DrawArgs[m_submeshName].BaseVertexLocation;
@@ -179,7 +180,7 @@ void Skull::BuildRenderItem(void)
 
 void Skull::BuildGeometry(void)
 {
-	if (UTIL.Get_Geomesh().find(m_Name) != UTIL.Get_Geomesh().end())
+	if (UTIL.Get_Geomesh().find(m_submeshName) != UTIL.Get_Geomesh().end())
 		return;
 
 	std::ifstream fin("./Resource/Models/skull.txt");

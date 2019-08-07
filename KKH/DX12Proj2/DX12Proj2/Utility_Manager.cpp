@@ -517,6 +517,7 @@ void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const
 	//auto objectCB = mCurrFrameResource->ObjectCB->Resource();
 	//auto matCB = mCurrFrameResource->MaterialBuffer->Resource();//MaterialCB->Resource();
 
+	auto instanceBuffer = mCurrFrameResource->InstanceBuffer->Resource();
 	UINT InstanceBufByteSize = d3dutil::CalcConstantBufferByteSize(sizeof(InstanceData));
 
 	// For each render item...
@@ -540,8 +541,7 @@ void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const
 		//cmdList->SetGraphicsRootDescriptorTable(0, tex);
 		//cmdList->SetGraphicsRootConstantBufferView(1, objCBAddress);
 		//cmdList->SetGraphicsRootConstantBufferView(3, matCBAddress);
-
-		auto instanceBuffer = mCurrFrameResource->InstanceBuffer->Resource();
+				
 		D3D12_GPU_VIRTUAL_ADDRESS instAddress = instanceBuffer->GetGPUVirtualAddress() + ri->objCBIndex * InstanceBufByteSize;
 		g_Graphics->Get_CommandList()->SetGraphicsRootShaderResourceView(0, instAddress);
 		

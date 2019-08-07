@@ -86,7 +86,7 @@ void NormalObject::BuildRenderItem(void)
 	ritem->Mat = UTIL.Get_Materials()[m_matName].get();
 	ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
 	ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	ritem->InstanceCount = 0;
+	ritem->InstanceCount = m_vecInstanceData.size();
 	ritem->IndexCount = ritem->Geo->DrawArgs[m_submeshName].IndexCount;
 	ritem->StartIndexLocation = ritem->Geo->DrawArgs[m_submeshName].StartIndexLocation;
 	ritem->BaseVertexLocation = ritem->Geo->DrawArgs[m_submeshName].BaseVertexLocation;
@@ -96,6 +96,7 @@ void NormalObject::BuildRenderItem(void)
 	for (int i = 0; i < m_vecInstanceData.size(); ++i)
 	{
 		ritem->Instances[i] = m_vecInstanceData[i];
+		ritem->Instances[i].MaterialIndex = i;
 	}
 
 	UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(ritem.get());
@@ -104,7 +105,7 @@ void NormalObject::BuildRenderItem(void)
 
 void NormalObject::BuildGeometry(void)
 {
-	if (UTIL.Get_Geomesh().find(m_Name) != UTIL.Get_Geomesh().end())
+	if (UTIL.Get_Geomesh().find(m_submeshName) != UTIL.Get_Geomesh().end())
 		return;
 
 	GeometryGenerator geoGen;
