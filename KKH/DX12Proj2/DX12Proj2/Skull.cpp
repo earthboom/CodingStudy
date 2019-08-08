@@ -180,7 +180,7 @@ void Skull::BuildRenderItem(void)
 
 void Skull::BuildGeometry(void)
 {
-	if (UTIL.Get_Geomesh().find(m_submeshName) != UTIL.Get_Geomesh().end())
+	if (UTIL.Get_Geomesh().find(m_Name) != UTIL.Get_Geomesh().end())
 		return;
 
 	std::ifstream fin("./Resource/Models/skull.txt");

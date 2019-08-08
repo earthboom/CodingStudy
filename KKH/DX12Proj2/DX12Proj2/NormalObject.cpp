@@ -43,7 +43,7 @@ bool NormalObject::BuildDescriptorHeaps(void)
 {
 	if (TEX.Get_Textures()[m_texName]->bRegister)
 	{
-		m_matCount = g_MatCBcount++;
+		m_matCount = TEX.Get_Textures()[m_texName]->matCBCount;
 		return FALSE;
 	}
 
@@ -51,6 +51,7 @@ bool NormalObject::BuildDescriptorHeaps(void)
 
 	auto defaultTex = TEX.Get_Textures()[m_texName]->Resource;
 	m_matCount = g_MatCBcount++;
+	TEX.Get_Textures()[m_texName]->matCBCount = m_matCount;
 	TEX.Get_Textures()[m_texName]->srvHeapCount = g_SrvHeapCount++;
 	TEX.Get_Textures()[m_texName]->bRegister = TRUE;
 
@@ -96,7 +97,7 @@ void NormalObject::BuildRenderItem(void)
 	for (int i = 0; i < m_vecInstanceData.size(); ++i)
 	{
 		ritem->Instances[i] = m_vecInstanceData[i];
-		ritem->Instances[i].MaterialIndex = i;
+		ritem->Instances[i].MaterialIndex = m_matCount;
 	}
 
 	UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(ritem.get());
@@ -105,14 +106,11 @@ void NormalObject::BuildRenderItem(void)
 
 void NormalObject::BuildGeometry(void)
 {
-	if (UTIL.Get_Geomesh().find(m_submeshName) != UTIL.Get_Geomesh().end())
-		return;
-
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData mesh;
 
 	SubmeshGeometry	SubMesh;
-
+	
 	switch (m_eShapeType)
 	{
 	case ST_BOX:
@@ -171,25 +169,33 @@ void NormalObject::BuildGeometry(void)
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(VERTEX);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
-	auto geo = std::make_unique<MeshGeometry>();
-	geo->Name = m_Name;
+	
+	if (UTIL.Get_Geomesh().find(m_Name) == UTIL.Get_Geomesh().end())
+	{
+		auto geo = std::make_unique<MeshGeometry>();
+		geo->Name = m_Name;
 
-	ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
-	CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+		ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
+		CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
 
-	ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
-	CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+		ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
+		CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
-	geo->VertexBufferGPU = d3dutil::CreateDefaultBuffer(DEVICE.Get(), COM_LIST.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
-	geo->IndexBufferGPU = d3dutil::CreateDefaultBuffer(DEVICE.Get(), COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
+		geo->VertexBufferGPU = d3dutil::CreateDefaultBuffer(DEVICE.Get(), COM_LIST.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
+		geo->IndexBufferGPU = d3dutil::CreateDefaultBuffer(DEVICE.Get(), COM_LIST.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
 
-	geo->VertexByteStride = sizeof(VERTEX);
-	geo->VertexBufferByteSize = vbByteSize;
-	geo->IndexFormat = DXGI_FORMAT_R16_UINT;
-	geo->IndexBufferByteSize = ibByteSize;
+		geo->VertexByteStride = sizeof(VERTEX);
+		geo->VertexBufferByteSize = vbByteSize;
+		geo->IndexFormat = DXGI_FORMAT_R16_UINT;
+		geo->IndexBufferByteSize = ibByteSize;
 
-	geo->DrawArgs[m_submeshName] = SubMesh;
-	UTIL.Get_Geomesh()[geo->Name] = std::move(geo);
+		geo->DrawArgs[m_submeshName] = SubMesh;
+		UTIL.Get_Geomesh()[geo->Name] = std::move(geo);
+	}
+	else
+	{
+		UTIL.Get_Geomesh()[m_Name]->DrawArgs[m_submeshName] = SubMesh;
+	}
 }
 
 

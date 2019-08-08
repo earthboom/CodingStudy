@@ -180,6 +180,7 @@ struct Texture
 	std::wstring Filename;
 
 	UINT srvHeapCount = -1;
+	UINT matCBCount = -1;
 	bool bRegister = FALSE;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> Resource = nullptr;

@@ -424,6 +424,7 @@ void Utility_Manager::UpdateInstanceData(const CTimer& mt)
 		}
 
 		e->InstanceCount = visibleInstanceCount;
+		visibleInstanceCount = 0;
 
 		std::wostringstream outs;
 		outs.precision(6);
@@ -519,7 +520,7 @@ void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const
 
 	auto instanceBuffer = mCurrFrameResource->InstanceBuffer->Resource();
 	UINT InstanceBufByteSize = d3dutil::CalcConstantBufferByteSize(sizeof(InstanceData));
-
+	UINT instanceAllbufsize = 1;
 	// For each render item...
 	for (size_t i = 0; i < ritems.size(); ++i)
 	{
@@ -541,11 +542,12 @@ void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const
 		//cmdList->SetGraphicsRootDescriptorTable(0, tex);
 		//cmdList->SetGraphicsRootConstantBufferView(1, objCBAddress);
 		//cmdList->SetGraphicsRootConstantBufferView(3, matCBAddress);
-				
-		D3D12_GPU_VIRTUAL_ADDRESS instAddress = instanceBuffer->GetGPUVirtualAddress() + ri->objCBIndex * InstanceBufByteSize;
+		
+		D3D12_GPU_VIRTUAL_ADDRESS instAddress = instanceBuffer->GetGPUVirtualAddress();// +1 * sizeof(ri->Instances);
 		g_Graphics->Get_CommandList()->SetGraphicsRootShaderResourceView(0, instAddress);
 		
 		cmdList->DrawIndexedInstanced(ri->IndexCount, ri->InstanceCount, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
+		//instanceAllbufsize += ri->InstanceCount;
 	}
 }
 
