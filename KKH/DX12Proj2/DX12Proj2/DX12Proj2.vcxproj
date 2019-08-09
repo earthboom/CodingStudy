@@ -181,6 +181,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="Skull.h" />
+    <ClInclude Include="Sky.h" />
     <ClInclude Include="Struct.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Texture_Manger.h" />
@@ -213,6 +214,7 @@
     </ClCompile>
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="Skull.cpp" />
+    <ClCompile Include="Sky.cpp" />
     <ClCompile Include="Texture_Manger.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Timer_Manager.cpp" />

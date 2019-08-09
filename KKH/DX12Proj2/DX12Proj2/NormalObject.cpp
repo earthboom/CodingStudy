@@ -99,7 +99,7 @@ void NormalObject::BuildRenderItem(void)
 		ritem->Instances[i] = m_vecInstanceData[i];
 		ritem->Instances[i].MaterialIndex = m_matCount;
 	}
-
+	
 	UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(ritem.get());
 	UTIL.Get_Ritemvec().push_back(std::move(ritem));
 }

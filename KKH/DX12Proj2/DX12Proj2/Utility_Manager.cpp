@@ -14,11 +14,21 @@ Utility_Manager::Utility_Manager(void)
 	, mView(MathHelper::Identity4x4())
 	//, mProj(MathHelper::Identity4x4())
 	, mCurrFrameResource(nullptr), mCurrFrameResourceIndex(0)
-	, mCbvSrvDescriptorSize(0)
+	, mCbvSrvDescriptorSize(0), mLightRotetionAngle(0.0f)
 	, mCurrState(OS_END)
+	, mLightNearZ(0.0f), mLightFarZ(0.0f)
+	, mLightPosW(XMFLOAT3(0.0f, 0.0f, 0.0f))
+	, mLightView(MathHelper::Identity4x4())
+	, mLightProj(MathHelper::Identity4x4())
+	, mShadowTransform(MathHelper::Identity4x4())
+	, mSkyTexHeapIndex(0.0f), mShadowMapHeapIndex(0.0f), mNullCubeSrvIndex(0.0f), mNullTexSrvIndex(0.0f)
 {
 	allObj_Update_vec.push_back(Obj_static_map);
 	allObj_Update_vec.push_back(Obj_dynamic_map);
+
+	mBaseLightDirections[0] = XMFLOAT3(0.57735f, -0.57735f, 0.57735f);
+	mBaseLightDirections[1] = XMFLOAT3(-0.57735f, -0.57735f, 0.57735f);
+	mBaseLightDirections[2] = XMFLOAT3(0.0f, -0.707f, -0.707f);
 }
 
 Utility_Manager::~Utility_Manager(void)
@@ -71,15 +81,22 @@ void Utility_Manager::BuildPostProcessRootSignature(void)
 	srvTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
 	CD3DX12_DESCRIPTOR_RANGE uavTable;
-	uavTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0);
+	uavTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 2, 0);
+	//uavTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0);
 
-	CD3DX12_ROOT_PARAMETER slotRootParameter[3];
+	CD3DX12_ROOT_PARAMETER slotRootParameter[5];
 
-	slotRootParameter[0].InitAsConstants(12, 0);
-	slotRootParameter[1].InitAsDescriptorTable(1, &srvTable);
-	slotRootParameter[2].InitAsDescriptorTable(1, &uavTable);
+	//slotRootParameter[0].InitAsConstants(12, 0);
+	slotRootParameter[0].InitAsConstantBufferView(0);
+	slotRootParameter[1].InitAsConstantBufferView(1);
+	slotRootParameter[2].InitAsShaderResourceView(0, 1);
+	slotRootParameter[3].InitAsDescriptorTable(1, &srvTable, D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[4].InitAsDescriptorTable(1, &uavTable, D3D12_SHADER_VISIBILITY_PIXEL);
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(3, slotRootParameter, 0, nullptr,
+	auto staticSampler = GetStaticSamplers();
+
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(3, slotRootParameter
+		, (UINT)staticSampler.size(), staticSampler.data(),
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	Microsoft::WRL::ComPtr<ID3DBlob> serializedRootSig = nullptr;
@@ -112,17 +129,28 @@ void Utility_Manager::BuildDescriptorHeaps(void)
 
 void Utility_Manager::BuildShadersAndInputLayer(void)
 {
-	const D3D_SHADER_MACRO defines[] = { "FOG", "1", NULL, NULL };
+	//const D3D_SHADER_MACRO defines[] = { "FOG", "1", NULL, NULL };
 	const D3D_SHADER_MACRO alphaTestDefines[] = { "ALPHA_TEST", "1", NULL, NULL };
 
 	mShaders["standardVS"] = d3dutil::CompileShader(L"Shaders/Default.hlsl", nullptr, "VS", "vs_5_1");
 	mShaders["opaquePS"] = d3dutil::CompileShader(L"Shaders/Default.hlsl", nullptr, "PS", "ps_5_1");
+
+	mShaders["shadowVS"] = d3dutil::CompileShader(L"Shaders/Shadows.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["shadowOpaquePS"] = d3dutil::CompileShader(L"Shaders/Shadows.hlsl", nullptr, "PS", "ps_5_1");
+	mShaders["shadowAlphaTestPS"] = d3dutil::CompileShader(L"Shaders/Shadows.hlsl", alphaTestDefines, "PS", "vs_5_1");
+
+	mShaders["debugVS"] = d3dutil::CompileShader(L"Shaders/ShadowDbug.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["debugPS"] = d3dutil::CompileShader(L"Shaders/ShadowDbug.hlsl", nullptr, "PS", "ps_5_1");
+
+	mShaders["skyVS"] = d3dutil::CompileShader(L"Shaders/Sky.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["skyPS"] = d3dutil::CompileShader(L"Shaders/Sky.hlsl", nullptr, "PS", "ps_5_1");
 
 	mInputLayout =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 }
 
@@ -138,7 +166,7 @@ void Utility_Manager::BuildFrameResources(void)
 {
 	for (int i = 0; i < NumFrameResources; ++i)
 	{
-		mFrameResources.push_back(std::make_unique<FrameResource>(DEVICE.Get(), 8, (UINT)mAllRitem.size(), (UINT)mMaterials.size()));
+		mFrameResources.push_back(std::make_unique<FrameResource>(DEVICE.Get(), 2, (UINT)mAllRitem.size(), (UINT)mMaterials.size()));
 	}
 }
 
@@ -166,6 +194,38 @@ void Utility_Manager::BuildPSOs(void)
 
 	ThrowIfFailed(DEVICE->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
 
+
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC samPsoDesc = psoDesc;
+	samPsoDesc.RasterizerState.DepthBias = 100000;
+	samPsoDesc.RasterizerState.DepthBiasClamp = 0.0f;
+	samPsoDesc.RasterizerState.SlopeScaledDepthBias = 1.0f;
+	samPsoDesc.pRootSignature = mRootSignature.Get();
+	samPsoDesc.VS = { reinterpret_cast<BYTE*>(mShaders["shadowVS"]->GetBufferPointer()), mShaders["shadowVS"]->GetBufferSize() };
+	samPsoDesc.PS = { reinterpret_cast<BYTE*>(mShaders["shadowOpaquePS"]->GetBufferPointer()), mShaders["shadowOpaquePS"]->GetBufferSize() };
+	samPsoDesc.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
+	samPsoDesc.NumRenderTargets = 0;
+	ThrowIfFailed(DEVICE->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSOs["shadow_opaque"])));
+
+
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC debugDesc = psoDesc;
+	debugDesc.pRootSignature = mRootSignature.Get();
+	debugDesc.VS = { reinterpret_cast<BYTE*>(mShaders["debugVS"]->GetBufferPointer()), mShaders["debugVS"]->GetBufferSize() };
+	debugDesc.PS = { reinterpret_cast<BYTE*>(mShaders["debugPS"]->GetBufferPointer()), mShaders["debugPS"]->GetBufferSize() };
+	ThrowIfFailed(DEVICE->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSOs["debug"])));
+
+
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC skyPsoDesc = psoDesc;
+
+	skyPsoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
+	skyPsoDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+	skyPsoDesc.pRootSignature = mRootSignature.Get();
+	skyPsoDesc.VS = { reinterpret_cast<BYTE*>(mShaders["skyVS"]->GetBufferPointer()), mShaders["skyVS"]->GetBufferSize() };
+	skyPsoDesc.PS = { reinterpret_cast<BYTE*>(mShaders["skyPS"]->GetBufferPointer()), mShaders["skyPS"]->GetBufferSize() };
+	ThrowIfFailed(DEVICE->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSOs["sky"])));
 
 
 	// hightlight object
@@ -288,6 +348,16 @@ bool Utility_Manager::Object_Update(const CTimer& mt)
 		CloseHandle(eventHandle);
 	}
 
+	mLightRotetionAngle += 0.1f * mt.DeltaTime();
+	
+	XMMATRIX R = XMMatrixRotationY(mLightRotetionAngle);
+	for (int i = 0; i < 3; ++i)
+	{
+		XMVECTOR lightDir = XMLoadFloat3(&mBaseLightDirections[i]);
+		lightDir = XMVector3TransformNormal(lightDir, R);
+		XMStoreFloat3(&mRotatedLightDirections[i], lightDir);
+	}
+
 	for (auto& objmap : allObj_Update_vec)
 	{
 		for (auto& obj : *objmap)
@@ -298,8 +368,8 @@ bool Utility_Manager::Object_Update(const CTimer& mt)
 		}
 	}
 
-	//UpdateObjectCBs(mt);
-	UpdateInstanceData(mt);
+	UpdateObjectCBs(mt);
+	//UpdateInstanceData(mt);
 	UpdateMaterialCBs(mt);
 	UpdateMainPassCB(mt);
 	UpdateReflectedPassCB(mt);
@@ -423,8 +493,8 @@ void Utility_Manager::UpdateInstanceData(const CTimer& mt)
 			}
 		}
 
-		e->InstanceCount = visibleInstanceCount;
-		visibleInstanceCount = 0;
+		//e->InstanceCount = visibleInstanceCount;
+		//visibleInstanceCount = 0;
 
 		std::wostringstream outs;
 		outs.precision(6);
@@ -481,15 +551,29 @@ void Utility_Manager::UpdateMainPassCB(const CTimer& mt)
 	mMainPassCB.TotalTime = mt.TotalTime();
 	mMainPassCB.DeltaTime = mt.DeltaTime();
 	mMainPassCB.AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
-	mMainPassCB.Lights[0].Direction = { 0.57735f, -0.57735f, 0.57735f };
+	mMainPassCB.Lights[0].Direction = mRotatedLightDirections[0];//{ 0.57735f, -0.57735f, 0.57735f };
 	mMainPassCB.Lights[0].Strength = { 0.9f, 0.9f, 0.8f };
-	mMainPassCB.Lights[1].Direction = { -0.57735f, -0.57735f, 0.57735f };
+	mMainPassCB.Lights[1].Direction = mRotatedLightDirections[1]; //{ -0.57735f, -0.57735f, 0.57735f };
 	mMainPassCB.Lights[1].Strength = { 0.3f, 0.3f, 0.3f };
-	mMainPassCB.Lights[2].Direction = { 0.0f, -0.707f, -0.707f };
-	mMainPassCB.Lights[2].Strength = { 0.15f, 0.15f, 0.15f };
+	mMainPassCB.Lights[2].Direction = mRotatedLightDirections[2]; //{ 0.0f, -0.707f, -0.707f };
+	mMainPassCB.Lights[2].Strength = { 0.2f, 0.2f, 0.2f };
 
 	auto currPassCB = mCurrFrameResource->PassCB.get();
 	currPassCB->CopyData(0, mMainPassCB);
+}
+
+void Utility_Manager::UpdateShadowPassCB(const CTimer& mt)
+{
+	XMMATRIX view = XMLoadFloat4x4(&mLightView);
+	XMMATRIX proj = XMLoadFloat4x4(&mLightProj);
+
+	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
+	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
+	XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+
+	UINT w = mShadowMap->Width();
+	UINT h = mShadowMap->Height();
 }
 
 void Utility_Manager::UpdateReflectedPassCB(const CTimer& mt)
@@ -519,7 +603,7 @@ void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const
 	//auto matCB = mCurrFrameResource->MaterialBuffer->Resource();//MaterialCB->Resource();
 
 	auto instanceBuffer = mCurrFrameResource->InstanceBuffer->Resource();
-	UINT InstanceBufByteSize = d3dutil::CalcConstantBufferByteSize(sizeof(InstanceData));
+	UINT InstanceBufByteSize = sizeof(InstanceData);
 	UINT instanceAllbufsize = 1;
 	// For each render item...
 	for (size_t i = 0; i < ritems.size(); ++i)
@@ -543,12 +627,48 @@ void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const
 		//cmdList->SetGraphicsRootConstantBufferView(1, objCBAddress);
 		//cmdList->SetGraphicsRootConstantBufferView(3, matCBAddress);
 		
-		D3D12_GPU_VIRTUAL_ADDRESS instAddress = instanceBuffer->GetGPUVirtualAddress();// +1 * sizeof(ri->Instances);
+		D3D12_GPU_VIRTUAL_ADDRESS instAddress = instanceBuffer->GetGPUVirtualAddress() + ri->objCBIndex * InstanceBufByteSize;
 		g_Graphics->Get_CommandList()->SetGraphicsRootShaderResourceView(0, instAddress);
 		
 		cmdList->DrawIndexedInstanced(ri->IndexCount, ri->InstanceCount, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
 		//instanceAllbufsize += ri->InstanceCount;
 	}
+}
+
+void Utility_Manager::UpdateShadowTransform(const CTimer& mt)
+{
+	XMVECTOR lightDir = XMLoadFloat3(&mRotatedLightDirections[0]);
+	XMVECTOR lightPos = -2.0f * mSceneBounds.Radius * lightDir;
+	XMVECTOR targetPos = XMLoadFloat3(&mSceneBounds.Center);
+	XMVECTOR lightUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	XMMATRIX lightView = XMMatrixLookAtLH(lightPos, targetPos, lightUp);
+
+	XMStoreFloat3(&mLightPosW, lightPos);
+
+	XMFLOAT3 sphereCenterLS;
+	XMStoreFloat3(&sphereCenterLS, XMVector3TransformCoord(targetPos, lightView));
+
+	float l = sphereCenterLS.x - mSceneBounds.Radius;
+	float b = sphereCenterLS.y - mSceneBounds.Radius;
+	float n = sphereCenterLS.z - mSceneBounds.Radius;
+	float r = sphereCenterLS.x + mSceneBounds.Radius;
+	float t = sphereCenterLS.y + mSceneBounds.Radius;
+	float f = sphereCenterLS.z + mSceneBounds.Radius;
+
+	mLightNearZ = n;
+	mLightFarZ = f;
+	XMMATRIX lightProj = XMMatrixOrthographicOffCenterLH(l, r, b, t, n, f);
+
+	XMMATRIX T(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+
+	XMMATRIX S = lightView * lightProj * T;
+	XMStoreFloat4x4(&mLightView, lightView);
+	XMStoreFloat4x4(&mLightProj, lightProj);
+	XMStoreFloat4x4(&mShadowTransform, S);
 }
 
 void Utility_Manager::OnKeyboardInput(const CTimer& mt)

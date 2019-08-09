@@ -11,6 +11,7 @@ public:
 		ST_GRID,
 		ST_SHPERE,
 		ST_CYLINEDER,
+		ST_SKY,
 		ST_END
 	};
 

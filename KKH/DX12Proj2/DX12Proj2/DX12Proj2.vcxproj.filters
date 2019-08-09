@@ -79,6 +79,9 @@
     <Filter Include="91.Shadow">
       <UniqueIdentifier>{32c7645e-0bc6-452b-ac1f-80aaf08745cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.Utility\02.Object\Sky">
+      <UniqueIdentifier>{37adc85d-55d9-42d1-9709-c7704f1d1697}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DX12Proj2.h">
@@ -171,6 +174,9 @@
     <ClInclude Include="ShadowMap.h">
       <Filter>91.Shadow</Filter>
     </ClInclude>
+    <ClInclude Include="Sky.h">
+      <Filter>02.Utility\02.Object\Sky</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DX12Proj2.cpp">
@@ -235,6 +241,9 @@
     </ClCompile>
     <ClCompile Include="ShadowMap.cpp">
       <Filter>91.Shadow</Filter>
+    </ClCompile>
+    <ClCompile Include="Sky.cpp">
+      <Filter>02.Utility\02.Object\Sky</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

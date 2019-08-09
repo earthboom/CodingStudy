@@ -3,6 +3,7 @@
 #include "FrameResource.h"
 //#include "ComputeWaves.h"
 #include "Object.h"
+#include "ShadowMap.h"
 #include "BlurFilter.h"
 
 #define UTIL Utility_Manager::GetInstnace()
@@ -66,9 +67,6 @@ private:
 	FrameResource* mCurrFrameResource;
 	int mCurrFrameResourceIndex;
 
-	PassConstants mMainPassCB;
-	PassConstants mReflectedPassCB;
-
 	std::vector<RenderItem*> mDrawLayer[(int)DrawLayer::DL_END];
 
 	//std::unique_ptr<ComputeWaves> mCPWave;
@@ -84,6 +82,33 @@ private:
 
 	typedef std::vector<OBJMAP*> ALLOBJVEC;
 	ALLOBJVEC allObj_Update_vec;
+
+	UINT mSkyTexHeapIndex;
+	UINT mShadowMapHeapIndex;
+
+	UINT mNullCubeSrvIndex;
+	UINT mNullTexSrvIndex;
+
+	CD3DX12_GPU_DESCRIPTOR_HANDLE mNullSrv;
+
+	PassConstants mMainPassCB;
+	PassConstants mReflectedPassCB;
+	PassConstants mShadowPassCB;
+
+	DirectX::BoundingSphere mSceneBounds;
+
+	std::unique_ptr<ShadowMap> mShadowMap;
+
+	float mLightNearZ;
+	float mLightFarZ;
+	XMFLOAT3 mLightPosW;
+	XMFLOAT4X4 mLightView;
+	XMFLOAT4X4 mLightProj;
+	XMFLOAT4X4 mShadowTransform;
+
+	float	 mLightRotetionAngle;
+	XMFLOAT3 mBaseLightDirections[3];
+	XMFLOAT3 mRotatedLightDirections[3];
 
 private:
 	ObjState	mCurrState;
@@ -105,7 +130,10 @@ private:
 	void UpdateInstanceData(const CTimer& mt);
 	void UpdateMaterialCBs(const CTimer& mt);
 	void UpdateMainPassCB(const CTimer& mt);
+	void UpdateShadowPassCB(const CTimer& mt);
+	
 	void UpdateReflectedPassCB(const CTimer& mt);
+	void UpdateShadowTransform(const CTimer& mt);
 
 	void DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const std::vector<RenderItem*>& ritems);
 

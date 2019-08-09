@@ -93,13 +93,13 @@ void MainApp::Render_MainApp(const CTimer& mt)
 
 bool MainApp::LoadTexture(void)
 {
-	if (!TEX.onDDSLoad("bricksTex", L"./Resource/Texture/bricks.dds"))			return FALSE;
-	if (!TEX.onDDSLoad("stoneTex", L"./Resource/Texture/stone.dds"))			return FALSE;
-	if (!TEX.onDDSLoad("tileTex", L"./Resource/Texture/tile.dds"))				return FALSE;
-	if (!TEX.onDDSLoad("crateTex", L"./Resource/Texture/WoodCrate01.dds"))		return FALSE;
-	if (!TEX.onDDSLoad("iceTex", L"./Resource/Texture/ice.dds"))				return FALSE;
-	if (!TEX.onDDSLoad("grassTex", L"./Resource/Texture/grass.dds"))			return FALSE;	
-	if (!TEX.onDDSLoad("defaultTex", L"./Resource/Texture/white1x1.dds"))		return FALSE;
+	if (!TEX.onDDSLoad("bricksTex", L"./Resource/Texture/bricks.dds"))				return FALSE;
+	if (!TEX.onDDSLoad("brickNormalTex", L"./Resource/Texture/bricks2_nmap.dds"))	return FALSE;
+	if (!TEX.onDDSLoad("tileTex", L"./Resource/Texture/tile.dds"))					return FALSE;
+	if (!TEX.onDDSLoad("tileNormalTex", L"./Resource/Texture/tile_nmap.dds"))		return FALSE;
+	if (!TEX.onDDSLoad("defaultTex", L"./Resource/Texture/white1x1.dds"))			return FALSE;
+	if (!TEX.onDDSLoad("defaultNormalTex", L"./Resource/Texture/default_nmap.dds"))	return FALSE;
+	if (!TEX.onDDSLoad("skycubeTex", L"./Resource/Texture/desertcube1024.dds"))		return FALSE;		
 
 	return TRUE;
 }
@@ -110,14 +110,14 @@ bool MainApp::CreateObject(void)
 	g_MatCBcount = 0;
 	g_ObjCBcount = 0;
 
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skullGeo", "skull", "defaultTex", "skullMat")))) return FALSE;
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skullGeo", "skull", "defaultTex", "skullMat")))) return FALSE;
 
 	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "BoxGeo", "box", "bricksTex", "boxMat", NormalObject::ShapeType::ST_BOX)))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "ShpereGeo", "shperemirror", "defaultTex", "sphereMirrorMat", NormalObject::ShapeType::ST_SHPERE)))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "GridGeo", "grid", "tileTex", "gridMat", NormalObject::ShapeType::ST_GRID)))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "ShpereGeo", "shpere", "defaultTex", "shpereMat", NormalObject::ShapeType::ST_SHPERE)))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "CylinderGeo", "cylinder", "bricksTex", "cylinderMat", NormalObject::ShapeType::ST_CYLINEDER)))) return FALSE;
-
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "ShpereGeo", "shperemirror", "defaultTex", "sphereMirrorMat", NormalObject::ShapeType::ST_SHPERE)))) return FALSE;
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "GridGeo", "grid", "tileTex", "gridMat", NormalObject::ShapeType::ST_GRID)))) return FALSE;
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "ShpereGeo", "shpere", "defaultTex", "shpereMat", NormalObject::ShapeType::ST_SHPERE)))) return FALSE;
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "CylinderGeo", "cylinder", "bricksTex", "cylinderMat", NormalObject::ShapeType::ST_CYLINEDER)))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "ShpereGeo", "sky", "skycubeTex", "skyMat", NormalObject::ShapeType::ST_SKY)))) return FALSE;
 
 	InstanceData tempInstance;
 	OBJECT Object = UTIL.Get_Object("box", Object::COM_TYPE::CT_STATIC);
@@ -125,7 +125,7 @@ bool MainApp::CreateObject(void)
 	XMStoreFloat4x4(&tempInstance.TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
 	Object->Get_vectorInstanceData().push_back(std::move(tempInstance));
 
-	tempInstance.Init();
+	/*tempInstance.Init();
 	Object = UTIL.Get_Object("shperemirror", Object::COM_TYPE::CT_STATIC);
 	XMStoreFloat4x4(&tempInstance.World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(0.0f, 2.0f, 0.0f));
 	XMStoreFloat4x4(&tempInstance.TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
@@ -163,7 +163,7 @@ bool MainApp::CreateObject(void)
 
 		XMStoreFloat4x4(&tempInstance.World, rightSphereWorld);
 		Object->Get_vectorInstanceData().push_back(std::move(tempInstance));
-	}
+	}*/
 
 	return TRUE;
 }

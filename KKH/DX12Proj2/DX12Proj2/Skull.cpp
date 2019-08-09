@@ -47,7 +47,7 @@ bool Skull::BuildDescriptorHeaps(void)
 {
 	if (TEX.Get_Textures()[m_texName]->bRegister)
 	{
-		m_matCount = g_MatCBcount++;
+		m_matCount = TEX.Get_Textures()[m_texName]->matCBCount;
 		return FALSE;
 	}
 
@@ -55,6 +55,7 @@ bool Skull::BuildDescriptorHeaps(void)
 
 	auto defaultTex = TEX.Get_Textures()[m_texName]->Resource;
 	m_matCount = g_MatCBcount++;
+	TEX.Get_Textures()[m_texName]->matCBCount = m_matCount;
 	TEX.Get_Textures()[m_texName]->srvHeapCount = g_SrvHeapCount++;
 	TEX.Get_Textures()[m_texName]->bRegister = TRUE;
 
@@ -99,8 +100,7 @@ void Skull::BuildRenderItem(void)
 
 	//ritem->World = MathHelper::Identity4x4();
 	//ritem->TexTransform = MathHelper::Identity4x4();
-	//ritem->objCBIndex = g_ObjCBcount++;
-	ritem->objCBIndex = 1;
+	ritem->objCBIndex = g_ObjCBcount++;
 	ritem->Mat = UTIL.Get_Materials()[m_matName].get();
 	ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
 	ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -112,7 +112,7 @@ void Skull::BuildRenderItem(void)
 
 	ritem->Instances.resize(1);
 	ritem->Instances[0].World = MathHelper::Identity4x4();
-	ritem->Instances[0].MaterialIndex = 0;
+	ritem->Instances[0].MaterialIndex = 1;
 	XMStoreFloat4x4(&ritem->Instances[0].TexTransform, XMMatrixScaling(2.0f, 2.0f, 1.0f));
 
 	
