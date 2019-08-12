@@ -41,6 +41,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> mPostProcessRootSignature;
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mSrvDescriptorHeap;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mDsvDescriptorHeap;
 
 	std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3DBlob>> mShaders;
 
@@ -146,6 +147,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D12PipelineState>& Get_PSOs(std::string str){return mPSOs[str]; }
 	Microsoft::WRL::ComPtr<ID3D12RootSignature>& Get_RootSignature(void){return mRootSignature; }
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& Get_SrvDiscriptorHeap(void){return mSrvDescriptorHeap; }
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& Get_DsvDiscriptorHeap(void) { return mDsvDescriptorHeap; }
 
 	GEOMESH&	Get_Geomesh(void){return mGeometries; }
 	RITEMVEC&	Get_Ritemvec(void){return mAllRitem; }
@@ -164,6 +166,14 @@ public:
 	DirectX::XMFLOAT4X4& Get_ViewMat(void){return mView; }
 
 	UINT& Get_CbvSrvDescriptorSize(void){return mCbvSrvDescriptorSize; }
+
+	CD3DX12_GPU_DESCRIPTOR_HANDLE& Get_NullSrv(void) { return mNullSrv; }
+	std::unique_ptr<ShadowMap>& Get_ShadowMap(void) { return mShadowMap; }
+
+	UINT& Get_SkyTexHeapIndex(void) { return mSkyTexHeapIndex; }
+	UINT& Get_ShadowMapHeapIndex(void) { return mShadowMapHeapIndex; }
+	UINT& Get_NullCubeSrvIndex(void) { return mNullCubeSrvIndex; }
+	UINT& Get_NullTexSrvIndex(void) { return mNullTexSrvIndex; }
 
 	//std::function<std::unique_ptr<ComputeWaves>&()> Get_CPWave = [&]()->std::unique_ptr<ComputeWaves>& {return mCPWave; };
 	//COMWAVE& Get_CPWave(void){return mCPWave; }

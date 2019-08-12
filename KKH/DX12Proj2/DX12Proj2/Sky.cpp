@@ -85,15 +85,71 @@ bool Sky::BuildDescriptorHeaps(void)
 	srvDesc.Format = defaultTex->GetDesc().Format;
 	DEVICE->CreateShaderResourceView(defaultTex.Get(), &srvDesc, hDescriptor);
 
+	UINT skyTexHeapIndex = (UINT)tex2DList.size();
+	UINT shadowMapHeapIndex = skyTexHeapIndex + 1;
+
+	UINT nullCubeSrvIndex = shadowMapHeapIndex + 1;
+	UINT nullTexSrvIndex = nullCubeSrvIndex + 1;
+
+	auto srvCpuStart = UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart();
+	auto srvGpuStart = UTIL.Get_SrvDiscriptorHeap()->GetGPUDescriptorHandleForHeapStart();
+	auto dsvCpuStart = g_Graphics->Get_DepthStencilView_Handle();
+
+	auto nullSrv = CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, nullCubeSrvIndex, g_Graphics->Get_CbvSrvUavDescriptorSize());
+	UTIL.Get_NullSrv() = CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, nullCubeSrvIndex, g_Graphics->Get_CbvSrvUavDescriptorSize());
+
+	DEVICE->CreateShaderResourceView(nullptr, &srvDesc, nullSrv);
+	nullSrv.Offset(1, g_Graphics->Get_CbvSrvUavDescriptorSize());
+
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = 1;
+	srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+	DEVICE->CreateShaderResourceView(nullptr, &srvDesc, nullSrv);
+
+	UTIL.Get_ShadowMap()->BuildDescriptor(
+		CD3DX12_CPU_DESCRIPTOR_HANDLE(srvCpuStart, shadowMapHeapIndex, g_Graphics->Get_CbvSrvUavDescriptorSize()),
+		CD3DX12_GPU_DESCRIPTOR_HANDLE(srvGpuStart, shadowMapHeapIndex, g_Graphics->Get_CbvSrvUavDescriptorSize()),
+		CD3DX12_CPU_DESCRIPTOR_HANDLE(dsvCpuStart, 1, g_Graphics->Get_DsvDescriptiorSize()));
+
+	UTIL.Get_SkyTexHeapIndex() = skyTexHeapIndex;
+	UTIL.Get_ShadowMapHeapIndex() = shadowMapHeapIndex;
+	UTIL.Get_NullCubeSrvIndex() = nullCubeSrvIndex;
+	UTIL.Get_NullTexSrvIndex() = nullTexSrvIndex;
+
 	return TRUE;
 }
 
 void Sky::BuildMaterials(void)
 {
+	auto pMat = std::make_unique<Material>();
+	pMat->Name = m_matName;
+	pMat->MatCBIndex = m_matCount;
+	pMat->DiffuseSrvHeapIndex = TEX.Get_Textures()[m_texName]->srvHeapCount;
+	//pMat->NormalSrvHeapIndex = 
+	pMat->DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	pMat->FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);
+	pMat->Roughness = 1.0f;
+
+	UTIL.Get_Materials()[m_matName] = std::move(pMat);
 }
 
 void Sky::BuildRenderItem(void)
 {
+	auto ritem = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&ritem->World, XMMatrixScaling(5000.0f, 5000.0f, 5000.0f));
+	ritem->TexTransform = MathHelper::Identity4x4();
+	ritem->objCBIndex = g_ObjCBcount++;
+	ritem->Mat = UTIL.Get_Materials()[m_matName].get();
+	ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
+	ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	ritem->InstanceCount = m_vecInstanceData.size();
+	ritem->IndexCount = ritem->Geo->DrawArgs[m_submeshName].IndexCount;
+	ritem->StartIndexLocation = ritem->Geo->DrawArgs[m_submeshName].StartIndexLocation;
+	ritem->BaseVertexLocation = ritem->Geo->DrawArgs[m_submeshName].BaseVertexLocation;
+	ritem->Bounds = ritem->Geo->DrawArgs[m_submeshName].Bounds;
 }
 
 void Sky::BuildGeometry(void)
