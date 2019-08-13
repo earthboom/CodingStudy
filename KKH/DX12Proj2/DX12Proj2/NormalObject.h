@@ -5,19 +5,10 @@
 class NormalObject : public Object
 {
 public:
-	enum ShapeType
-	{
-		ST_BOX,
-		ST_GRID,
-		ST_SHPERE,
-		ST_CYLINEDER,
-		ST_SKY,
-		ST_END
-	};
-
-public:
 	explicit NormalObject(void);
-	NormalObject(Object::COM_TYPE _type, std::string _geoname, std::string _submeshname, std::string _texname, std::string _matname, ShapeType eType);
+	NormalObject(Object::COM_TYPE _type, std::string _geoname, 
+		std::string _submeshname, std::string _texname, std::string _matname, 
+		std::string _normalMap = "", ShapeType eType = ST_END);
 	NormalObject(const NormalObject&) = delete;
 	NormalObject& operator=(const NormalObject&) = delete;
 	~NormalObject(void);
@@ -29,20 +20,17 @@ public:
 
 protected:
 	virtual bool BuildDescriptorHeaps(void);
+	virtual void BuildGeometry(void);
 
 private:
 	void BuildMaterials(void);
 	void BuildRenderItem(void);
-
-private:
-	void BuildGeometry(void);
-
-private:
-	ShapeType m_eShapeType;
+	
 
 public:
-	static std::shared_ptr<NormalObject> Create(Object::COM_TYPE _type, std::string _geoname, 
-		std::string _submeshname, std::string _texname, std::string _matname, ShapeType eType);
+	static std::shared_ptr<NormalObject> Create(Object::COM_TYPE _type, 
+		std::string _geoname, std::string _submeshname, std::string _texname, 
+		std::string _matname, std::string _normalMap, ShapeType eType = ST_END);
 };
 
 typedef std::shared_ptr<NormalObject> NORMALOBJECT;

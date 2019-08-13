@@ -6,7 +6,8 @@ class Skull : public Object
 {
 public:
 	explicit Skull(void);
-	Skull(Object::COM_TYPE _type, std::string _geoname, std::string _submeshname, std::string _texname, std::string _matname);
+	Skull(Object::COM_TYPE _type, std::string _geoname, std::string _submeshname, 
+		std::string _texname, std::string _matname, std::string _normalMap = "");
 	Skull(const Skull&) = delete;
 	Skull& operator=(const Skull&) = delete;
 	~Skull(void);
@@ -18,13 +19,11 @@ public:
 
 protected:
 	virtual bool BuildDescriptorHeaps(void);
+	virtual void BuildGeometry(void);
 
 private:
 	void BuildMaterials(void);
 	void BuildRenderItem(void);
-
-private:
-	void BuildGeometry(void);
 
 private:
 	DirectX::XMFLOAT3 mSkullTranslation;
@@ -33,7 +32,7 @@ private:
 
 public:
 	static std::shared_ptr<Skull> Create(Object::COM_TYPE _type, std::string _geoname, 
-		std::string _submeshname, std::string _texname, std::string _matname);
+		std::string _submeshname, std::string _texname, std::string _matname, std::string _normalMap = "");
 };
 
 typedef std::shared_ptr<Skull> SKULL;

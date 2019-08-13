@@ -8,8 +8,9 @@ Sky::Sky(void)
 {
 }
 
-Sky::Sky(Object::COM_TYPE _type, std::string _geoname, std::string _submeshname, std::string _texname, std::string _matname)
-	: Object(_type, _geoname, _submeshname, _texname, _matname)
+Sky::Sky(Object::COM_TYPE _type, std::string _geoname, std::string _submeshname, 
+	std::string _texname, std::string _matname, std::string _normalMap)
+	: Object(_type, _geoname, _submeshname, _texname, _matname, _normalMap)
 {
 }
 
@@ -127,7 +128,7 @@ void Sky::BuildMaterials(void)
 	pMat->Name = m_matName;
 	pMat->MatCBIndex = m_matCount;
 	pMat->DiffuseSrvHeapIndex = TEX.Get_Textures()[m_texName]->srvHeapCount;
-	//pMat->NormalSrvHeapIndex = 
+	pMat->NormalSrvHeapIndex = TEX.Get_Textures()[m_normalTex]->srvHeapCount;
 	pMat->DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	pMat->FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	pMat->Roughness = 1.0f;
@@ -154,11 +155,13 @@ void Sky::BuildRenderItem(void)
 
 void Sky::BuildGeometry(void)
 {
+	Object::BuildGeometry();
 }
 
-std::shared_ptr<Sky> Sky::Create(Object::COM_TYPE _type, std::string _geoname, std::string _submeshname, std::string _texname, std::string _matname)
+std::shared_ptr<Sky> Sky::Create(Object::COM_TYPE _type, std::string _geoname, 
+	std::string _submeshname, std::string _texname, std::string _matname, std::string _normalMap)
 {
-	SKY pSky = std::make_shared<Sky>(_type, _geoname, _submeshname, _texname, _matname);
+	SKY pSky = std::make_shared<Sky>(_type, _geoname, _submeshname, _texname, _matname, _normalMap);
 
 	if (!pSky) return nullptr;
 

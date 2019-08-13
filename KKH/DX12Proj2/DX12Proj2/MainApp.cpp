@@ -6,6 +6,7 @@
 #include "Camera_Manager.h"
 #include "Skull.h"
 #include "NormalObject.h"
+#include "Sky.h"
 
 MainApp::MainApp(void)
 	: m_fTime(0.0f)
@@ -110,14 +111,14 @@ bool MainApp::CreateObject(void)
 	g_MatCBcount = 0;
 	g_ObjCBcount = 0;
 
-	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skullGeo", "skull", "defaultTex", "skullMat")))) return FALSE;
+	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skullGeo", "skull", "defaultTex", "skullMat", "defaultNormalTex")))) return FALSE;
 
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "BoxGeo", "box", "bricksTex", "boxMat", NormalObject::ShapeType::ST_BOX)))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "BoxGeo", "box", "bricksTex", "boxMat", "brickNormalTex", NormalObject::ShapeType::ST_BOX)))) return FALSE;
 	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "ShpereGeo", "shperemirror", "defaultTex", "sphereMirrorMat", NormalObject::ShapeType::ST_SHPERE)))) return FALSE;
 	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "GridGeo", "grid", "tileTex", "gridMat", NormalObject::ShapeType::ST_GRID)))) return FALSE;
 	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "ShpereGeo", "shpere", "defaultTex", "shpereMat", NormalObject::ShapeType::ST_SHPERE)))) return FALSE;
 	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "CylinderGeo", "cylinder", "bricksTex", "cylinderMat", NormalObject::ShapeType::ST_CYLINEDER)))) return FALSE;
-	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "ShpereGeo", "sky", "skycubeTex", "skyMat", NormalObject::ShapeType::ST_SKY)))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Sky::Create(Object::COM_TYPE::CT_STATIC, "ShpereGeo", "sky", "skycubeTex", "skyMat")))) return FALSE;
 
 	InstanceData tempInstance;
 	OBJECT Object = UTIL.Get_Object("box", Object::COM_TYPE::CT_STATIC);

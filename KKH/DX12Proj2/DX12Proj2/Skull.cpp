@@ -10,8 +10,8 @@ Skull::Skull(void)
 {
 }
 
-Skull::Skull(Object::COM_TYPE _type, std::string _geoname, std::string _submeshname, std::string _texname, std::string _matname)
-	: Object(_type, _geoname, _submeshname, _texname, _matname)
+Skull::Skull(Object::COM_TYPE _type, std::string _geoname, std::string _submeshname, std::string _texname, std::string _matname, std::string _normalMap)
+	: Object(_type, _geoname, _submeshname, _texname, _matname, _normalMap)
 	, m_Skull(nullptr)
 	, mSkullTranslation(0.0f, 1.0f, -5.0f)
 {
@@ -51,12 +51,16 @@ bool Skull::BuildDescriptorHeaps(void)
 		return FALSE;
 	}
 
+	if (TEX.Get_Textures()[m_normalTex]->bRegister)
+		return FALSE;
+
 	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart(), g_SrvHeapCount, UTIL.Get_CbvSrvDescriptorSize());
 
 	auto defaultTex = TEX.Get_Textures()[m_texName]->Resource;
 	m_matCount = g_MatCBcount++;
 	TEX.Get_Textures()[m_texName]->matCBCount = m_matCount;
 	TEX.Get_Textures()[m_texName]->srvHeapCount = g_SrvHeapCount++;
+	TEX.Get_Textures()[m_normalTex]->srvHeapCount = g_SrvHeapCount++;
 	TEX.Get_Textures()[m_texName]->bRegister = TRUE;
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -76,6 +80,7 @@ void Skull::BuildMaterials(void)
 	pMat->Name = m_matName;
 	pMat->MatCBIndex = m_matCount;
 	pMat->DiffuseSrvHeapIndex = TEX.Get_Textures()[m_texName]->srvHeapCount;
+	pMat->NormalSrvHeapIndex = TEX.Get_Textures()[m_normalTex]->srvHeapCount;
 	pMat->DiffuseAlbedo = DirectX::XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
 	pMat->FresnelR0 = DirectX::XMFLOAT3(0.02f, 0.02f, 0.02f);
 	pMat->Roughness = 0.2f;
@@ -281,9 +286,9 @@ void Skull::BuildGeometry(void)
 	UTIL.Get_Geomesh()[geo->Name] = std::move(geo);
 }
 
-std::shared_ptr<Skull> Skull::Create(Object::COM_TYPE _type, std::string _geoname, std::string _submeshname, std::string _texname, std::string _matname)
+std::shared_ptr<Skull> Skull::Create(Object::COM_TYPE _type, std::string _geoname, std::string _submeshname, std::string _texname, std::string _matname, std::string _normalMap)
 {
-	SKULL pSkull = std::make_shared<Skull>(_type,  _geoname, _submeshname, _texname, _matname);
+	SKULL pSkull = std::make_shared<Skull>(_type,  _geoname, _submeshname, _texname, _matname, _normalMap);
 
 	if (!pSkull) return nullptr;
 

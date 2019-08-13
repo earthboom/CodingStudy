@@ -7,9 +7,21 @@ class Object : public Component
 public:
 	enum COM_TYPE { CT_STATIC, CT_DYNAMIC, DT_END };
 
+public:
+	enum ShapeType
+	{
+		ST_BOX,
+		ST_GRID,
+		ST_SHPERE,
+		ST_CYLINEDER,
+		ST_END
+	};
+
 protected:
 	explicit Object(void);
-	Object(COM_TYPE _type, std::string _name, std::string _submeshname, std::string _texname, std::string _matname);
+	Object(COM_TYPE _type, std::string _name, std::string _submeshname, 
+		std::string _texname, std::string _matname, std::string _normalMap = "", 
+		ShapeType eType = ST_END);
 	Object(const Object&) = delete;
 	Object& operator=(const Object&) = delete;
 	~Object(void);
@@ -21,12 +33,14 @@ public:
 
 protected:
 	virtual bool BuildDescriptorHeaps(void);
+	virtual void BuildGeometry(void);
 
 public:
 	std::string m_Name;
 	std::string m_submeshName;
 	std::string m_texName;
 	std::string m_matName;
+	std::string m_normalTex;
 
 protected:	
 	COM_TYPE	m_Comtype;
@@ -48,6 +62,8 @@ protected:
 	std::vector<InstanceData>	m_vecInstanceData;
 
 	UINT	m_matCount;
+
+	ShapeType m_eShapeType;
 
 public:
 	//std::function<COM_TYPE&()> Get_Comtype = [&]()->COM_TYPE& {return m_Comtype; };
