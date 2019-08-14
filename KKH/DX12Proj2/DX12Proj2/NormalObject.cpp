@@ -86,27 +86,32 @@ void NormalObject::BuildMaterials(void)
 
 void NormalObject::BuildRenderItem(void)
 {
-	auto ritem = std::make_unique<RenderItem>();
-
-	ritem->objCBIndex = g_ObjCBcount++;
-	ritem->Mat = UTIL.Get_Materials()[m_matName].get();
-	ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
-	ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	ritem->InstanceCount = m_vecInstanceData.size();
-	ritem->IndexCount = ritem->Geo->DrawArgs[m_submeshName].IndexCount;
-	ritem->StartIndexLocation = ritem->Geo->DrawArgs[m_submeshName].StartIndexLocation;
-	ritem->BaseVertexLocation = ritem->Geo->DrawArgs[m_submeshName].BaseVertexLocation;
-	ritem->Bounds = ritem->Geo->DrawArgs[m_submeshName].Bounds;
-
-	ritem->Instances.resize(m_vecInstanceData.size());
+	//ritem->Instances.resize(m_vecInstanceData.size());
+	//for (int i = 0; i < m_vecInstanceData.size(); ++i)
+	//{
+	//	ritem->Instances[i] = m_vecInstanceData[i];
+	//	ritem->Instances[i].MaterialIndex = m_matCount;
+	//}
+	
 	for (int i = 0; i < m_vecInstanceData.size(); ++i)
 	{
-		ritem->Instances[i] = m_vecInstanceData[i];
-		ritem->Instances[i].MaterialIndex = m_matCount;
+		auto ritem = std::make_unique<RenderItem>();
+
+		ritem->objCBIndex = g_ObjCBcount++;
+		ritem->World = m_vecInstanceData[i].World;//MathHelper::Identity4x4();
+		ritem->TexTransform = m_vecInstanceData[i].TexTransform;
+		ritem->Mat = UTIL.Get_Materials()[m_matName].get();
+		ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
+		ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		ritem->InstanceCount = m_vecInstanceData.size();
+		ritem->IndexCount = ritem->Geo->DrawArgs[m_submeshName].IndexCount;
+		ritem->StartIndexLocation = ritem->Geo->DrawArgs[m_submeshName].StartIndexLocation;
+		ritem->BaseVertexLocation = ritem->Geo->DrawArgs[m_submeshName].BaseVertexLocation;
+		ritem->Bounds = ritem->Geo->DrawArgs[m_submeshName].Bounds;
+
+		UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(ritem.get());
+		UTIL.Get_Ritemvec().push_back(std::move(ritem));
 	}
-	
-	UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(ritem.get());
-	UTIL.Get_Ritemvec().push_back(std::move(ritem));
 }
 
 void NormalObject::BuildGeometry(void)

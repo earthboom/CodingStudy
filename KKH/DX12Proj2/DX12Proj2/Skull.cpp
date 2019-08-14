@@ -103,8 +103,8 @@ void Skull::BuildRenderItem(void)
 	auto ritem = std::make_unique<RenderItem>();
 	//auto _pieckedRitem = std::make_unique<RenderItem>();
 
-	//ritem->World = MathHelper::Identity4x4();
-	//ritem->TexTransform = MathHelper::Identity4x4();
+	ritem->World = m_vecInstanceData[0].World;//MathHelper::Identity4x4();
+	ritem->TexTransform = m_vecInstanceData[0].TexTransform;
 	ritem->objCBIndex = g_ObjCBcount++;
 	ritem->Mat = UTIL.Get_Materials()[m_matName].get();
 	ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
@@ -115,11 +115,13 @@ void Skull::BuildRenderItem(void)
 	ritem->BaseVertexLocation = ritem->Geo->DrawArgs[m_submeshName].BaseVertexLocation;
 	ritem->Bounds = ritem->Geo->DrawArgs[m_submeshName].Bounds;
 
-	ritem->Instances.resize(1);
-	ritem->Instances[0].World = MathHelper::Identity4x4();
-	ritem->Instances[0].MaterialIndex = 1;
-	XMStoreFloat4x4(&ritem->Instances[0].TexTransform, XMMatrixScaling(2.0f, 2.0f, 1.0f));
+	//ritem->Instances.resize(1);
+	//ritem->Instances[0].World = MathHelper::Identity4x4();
+	//ritem->Instances[0].MaterialIndex = 1;
+	//XMStoreFloat4x4(&ritem->Instances[0].TexTransform, XMMatrixScaling(2.0f, 2.0f, 1.0f));
 
+	UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(ritem.get());
+	UTIL.Get_Ritemvec().push_back(std::move(ritem));
 	
 	//Generate instance data
 	//const int n = 5;
@@ -177,8 +179,8 @@ void Skull::BuildRenderItem(void)
 	//{
 	//	UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(e.get());
 	//}
-	UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(ritem.get());
-	UTIL.Get_Ritemvec().push_back(std::move(ritem));
+	//UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(ritem.get());
+	//UTIL.Get_Ritemvec().push_back(std::move(ritem));
 	//UTIL.Get_Drawlayer((int)DrawLayer::DL_HIGHLIGHT).push_back(_pieckedRitem.get());
 	//UTIL.Get_Ritemvec().push_back(std::move(_pieckedRitem));
 }

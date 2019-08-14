@@ -140,9 +140,9 @@ void Sky::BuildRenderItem(void)
 {
 	auto ritem = std::make_unique<RenderItem>();
 
-	XMStoreFloat4x4(&ritem->World, XMMatrixScaling(5000.0f, 5000.0f, 5000.0f));
-	ritem->TexTransform = MathHelper::Identity4x4();
 	ritem->objCBIndex = g_ObjCBcount++;
+	ritem->World = m_vecInstanceData[0].World;
+	ritem->TexTransform = m_vecInstanceData[0].TexTransform;
 	ritem->Mat = UTIL.Get_Materials()[m_matName].get();
 	ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
 	ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -151,6 +151,9 @@ void Sky::BuildRenderItem(void)
 	ritem->StartIndexLocation = ritem->Geo->DrawArgs[m_submeshName].StartIndexLocation;
 	ritem->BaseVertexLocation = ritem->Geo->DrawArgs[m_submeshName].BaseVertexLocation;
 	ritem->Bounds = ritem->Geo->DrawArgs[m_submeshName].Bounds;
+
+	UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(ritem.get());
+	UTIL.Get_Ritemvec().push_back(std::move(ritem));
 }
 
 void Sky::BuildGeometry(void)

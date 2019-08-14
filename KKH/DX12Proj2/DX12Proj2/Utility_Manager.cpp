@@ -371,8 +371,10 @@ bool Utility_Manager::Object_Update(const CTimer& mt)
 	UpdateObjectCBs(mt);
 	//UpdateInstanceData(mt);
 	UpdateMaterialCBs(mt);
+	UpdateShadowTransform(mt);
 	UpdateMainPassCB(mt);
-	UpdateReflectedPassCB(mt);
+	UpdateShadowPassCB(mt);
+	//UpdateReflectedPassCB(mt);
 
 	return TRUE;
 }
@@ -519,6 +521,7 @@ void Utility_Manager::UpdateMaterialCBs(const CTimer& mt)
 			matData.Roughness = mat->Roughness;
 			DirectX::XMStoreFloat4x4(&matData.MatTransform, DirectX::XMMatrixTranspose(matTransform));
 			matData.DiffuseMapIndex = mat->DiffuseSrvHeapIndex;
+			matData.NormalMapIndex = mat->NormalSrvHeapIndex;
 
 			currMaterialCB->CopyData(mat->MatCBIndex, matData);
 
@@ -574,6 +577,21 @@ void Utility_Manager::UpdateShadowPassCB(const CTimer& mt)
 
 	UINT w = mShadowMap->Width();
 	UINT h = mShadowMap->Height();
+
+	XMStoreFloat4x4(&mShadowPassCB.View, XMMatrixTranspose(view));
+	XMStoreFloat4x4(&mShadowPassCB.InvView, XMMatrixTranspose(invView));
+	XMStoreFloat4x4(&mShadowPassCB.Proj, XMMatrixTranspose(proj));
+	XMStoreFloat4x4(&mShadowPassCB.InvProj, XMMatrixTranspose(invProj));
+	XMStoreFloat4x4(&mShadowPassCB.ViewProj, XMMatrixTranspose(viewProj));
+	XMStoreFloat4x4(&mShadowPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
+	mShadowPassCB.EyePosW = mLightPosW;
+	mShadowPassCB.RenderTargetSize = XMFLOAT2((float)w, (float)h);
+	mShadowPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / w, 1.0f / h);
+	mShadowPassCB.NearZ = mLightNearZ;
+	mShadowPassCB.FarZ = mLightFarZ;
+
+	auto currPassCB = mCurrFrameResource->PassCB.get();
+	currPassCB->CopyData(1, mShadowPassCB);
 }
 
 void Utility_Manager::UpdateReflectedPassCB(const CTimer& mt)

@@ -111,7 +111,7 @@ bool MainApp::CreateObject(void)
 	g_MatCBcount = 0;
 	g_ObjCBcount = 0;
 
-	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skullGeo", "skull", "defaultTex", "skullMat", "defaultNormalTex")))) return FALSE;
+	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Skull::Create(Object::COM_TYPE::CT_STATIC, "skullGeo", "skull", "defaultTex", "skullMat", "defaultNormalTex")))) return FALSE;
 
 	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "BoxGeo", "box", "bricksTex", "boxMat", "brickNormalTex", NormalObject::ShapeType::ST_BOX)))) return FALSE;
 	//if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(NormalObject::Create(Object::COM_TYPE::CT_STATIC, "ShpereGeo", "shperemirror", "defaultTex", "sphereMirrorMat", NormalObject::ShapeType::ST_SHPERE)))) return FALSE;
@@ -121,7 +121,17 @@ bool MainApp::CreateObject(void)
 	if (!UTIL.Object_Create(std::dynamic_pointer_cast<Object>(Sky::Create(Object::COM_TYPE::CT_STATIC, "ShpereGeo", "sky", "skycubeTex", "skyMat")))) return FALSE;
 
 	InstanceData tempInstance;
-	OBJECT Object = UTIL.Get_Object("box", Object::COM_TYPE::CT_STATIC);
+	OBJECT Object = UTIL.Get_Object("skull", Object::COM_TYPE::CT_STATIC);
+	XMStoreFloat4x4(&tempInstance.World, XMMatrixScaling(2.0f, 1.0f, 2.0f) * XMMatrixTranslation(0.0f, 5.0f, 0.0f));
+	XMStoreFloat4x4(&tempInstance.TexTransform, XMMatrixScaling(1.0f, 0.5f, 1.0f));
+	Object->Get_vectorInstanceData().push_back(std::move(tempInstance));
+
+	Object = UTIL.Get_Object("sky", Object::COM_TYPE::CT_STATIC);
+	XMStoreFloat4x4(&tempInstance.World, XMMatrixScaling(5000.0f, 5000.0f, 5000.0f));
+	tempInstance.TexTransform = MathHelper::Identity4x4();
+	Object->Get_vectorInstanceData().push_back(std::move(tempInstance));
+
+	Object = UTIL.Get_Object("box", Object::COM_TYPE::CT_STATIC);
 	XMStoreFloat4x4(&tempInstance.World, XMMatrixScaling(2.0f, 1.0f, 2.0f) * XMMatrixTranslation(0.0f, 5.0f, 0.0f));
 	XMStoreFloat4x4(&tempInstance.TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
 	Object->Get_vectorInstanceData().push_back(std::move(tempInstance));
