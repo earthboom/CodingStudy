@@ -137,6 +137,7 @@ private:
 	void UpdateShadowTransform(const CTimer& mt);
 
 	void DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const std::vector<RenderItem*>& ritems);
+	void DrawSceneToShadowMap(void);
 
 	void OnKeyboardInput(const CTimer& mt);
 	void UpdateCamera(const CTimer& mtt);

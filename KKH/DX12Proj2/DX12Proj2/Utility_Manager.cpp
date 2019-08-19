@@ -389,6 +389,20 @@ bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 	ThrowIfFailed(cmdListAlloc->Reset());
 	ThrowIfFailed(_commandlist->Reset(cmdListAlloc.Get(), mPSOs["opaque"].Get()));
 	
+	ID3D12DescriptorHeap* descriptorHeaps[] = { mSrvDescriptorHeap.Get() };
+	_commandlist->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+
+	_commandlist->SetGraphicsRootSignature(mRootSignature.Get());
+
+	auto matBuffer = mCurrFrameResource->MaterialBuffer->Resource();
+	_commandlist->SetGraphicsRootShaderResourceView(2, matBuffer->GetGPUVirtualAddress());
+
+	_commandlist->SetGraphicsRootDescriptorTable(3, mNullSrv);
+
+	_commandlist->SetGraphicsRootDescriptorTable(4, mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	
+	DrawSceneToShadowMap();
+
 	_commandlist->RSSetViewports(1, &_graphic->Get_ScreenViewport());
 	_commandlist->RSSetScissorRects(1, &_graphic->Get_ScissorRect());
 
@@ -400,20 +414,21 @@ bool Utility_Manager::Object_Render(const CTimer& mt)//, OBJMAP& _objmap)
 
 	_commandlist->OMSetRenderTargets(1, &_graphic->Get_CurrentBackBufferView_Handle(), TRUE, &_graphic->Get_DepthStencilView_Handle());
 
-	ID3D12DescriptorHeap* descriptorHeaps[] = { mSrvDescriptorHeap.Get() };
-	_commandlist->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
-
-	_commandlist->SetGraphicsRootSignature(mRootSignature.Get());
-
-	auto matBuffer = mCurrFrameResource->MaterialBuffer->Resource();
-	_commandlist->SetGraphicsRootShaderResourceView(1, matBuffer->GetGPUVirtualAddress());
-
 	auto passCB = mCurrFrameResource->PassCB->Resource();
 	_commandlist->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
 
-	_commandlist->SetGraphicsRootDescriptorTable(3, mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	CD3DX12_GPU_DESCRIPTOR_HANDLE skyTexDip(mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	skyTexDip.Offset(mSkyTexHeapIndex, mCbvSrvDescriptorSize);
+	_commandlist->SetGraphicsRootDescriptorTable(3, skyTexDip);
 
+	_commandlist->SetPipelineState(mPSOs["opaque"].Get());
 	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_OPAUQE]);
+
+	_commandlist->SetPipelineState(mPSOs["debug"].Get());
+	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_DEUBG]);
+	
+	_commandlist->SetPipelineState(mPSOs["sky"].Get());
+	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_SKY]);
 
 	//_commandlist->SetPipelineState(mPSOs["highlight"].Get());
 	//DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_HIGHLIGHT]);
@@ -651,6 +666,32 @@ void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const
 		cmdList->DrawIndexedInstanced(ri->IndexCount, ri->InstanceCount, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
 		//instanceAllbufsize += ri->InstanceCount;
 	}
+}
+
+void Utility_Manager::DrawSceneToShadowMap(void)
+{
+	const COMMANDLIST& _commandlist = COM_LIST;
+
+	_commandlist->RSSetViewports(1, &mShadowMap->Viewport());
+	_commandlist->RSSetScissorRects(1, &mShadowMap->ScissorRect());
+
+	_commandlist->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mShadowMap->Resource(), D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_DEPTH_WRITE));
+
+	UINT passCBByteSize = d3dutil::CalcConstantBufferByteSize(sizeof(PassConstants));
+
+	_commandlist->ClearDepthStencilView(mShadowMap->Dsv(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
+
+	_commandlist->OMSetRenderTargets(0, nullptr, FALSE, &mShadowMap->Dsv());
+
+	auto passCB = mCurrFrameResource->PassCB->Resource();
+	D3D12_GPU_VIRTUAL_ADDRESS passCBAddress = passCB->GetGPUVirtualAddress() + 1 * passCBByteSize;
+	_commandlist->SetGraphicsRootConstantBufferView(1, passCBAddress);
+
+	_commandlist->SetPipelineState(mPSOs["shadow_opaque"].Get());
+
+	DrawRenderItems(_commandlist.Get(), mDrawLayer[(int)DrawLayer::DL_OPAUQE]);
+
+	_commandlist->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(mShadowMap->Resource(), D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ));
 }
 
 void Utility_Manager::UpdateShadowTransform(const CTimer& mt)

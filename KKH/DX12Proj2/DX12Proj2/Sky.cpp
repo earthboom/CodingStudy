@@ -76,7 +76,7 @@ bool Sky::BuildDescriptorHeaps(void)
 		srvDesc.Texture2D.MipLevels = tex2DList[i]->GetDesc().MipLevels;
 		DEVICE->CreateShaderResourceView(tex2DList[i].Get(), &srvDesc, hDescriptor);
 
-		hDescriptor.Offset(1, g_Graphics->Get_CbvSrvUavDescriptorSize());
+		hDescriptor.Offset(g_SrvHeapCount, g_Graphics->Get_CbvSrvUavDescriptorSize());
 	}
 
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;

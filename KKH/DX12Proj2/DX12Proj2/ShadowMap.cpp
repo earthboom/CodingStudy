@@ -35,7 +35,7 @@ UINT ShadowMap::Height(void) const
 	return 0;
 }
 
-ID3D12Resource* ShadowMap::Resorce(void)
+ID3D12Resource* ShadowMap::Resource(void)
 {
 	return m_ShadowMap.Get();
 }
