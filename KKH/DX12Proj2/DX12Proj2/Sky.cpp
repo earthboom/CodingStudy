@@ -45,6 +45,15 @@ bool Sky::BuildDescriptorHeaps(void)
 		m_matCount = TEX.Get_Textures()[m_texName]->matCBCount;
 		return FALSE;
 	}
+	
+	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart(), g_SrvHeapCount, UTIL.Get_CbvSrvDescriptorSize());
+
+	auto defaultTex = TEX.Get_Textures()[m_texName]->Resource;
+	m_matCount = g_MatCBcount++;
+	TEX.Get_Textures()[m_texName]->matCBCount = m_matCount;
+	TEX.Get_Textures()[m_texName]->srvHeapCount = g_SrvHeapCount++;
+	//TEX.Get_Textures()[m_normalTex]->srvHeapCount = g_SrvHeapCount++;
+	TEX.Get_Textures()[m_texName]->bRegister = TRUE;
 
 	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> tex2DList =
 	{
@@ -55,14 +64,6 @@ bool Sky::BuildDescriptorHeaps(void)
 		TEX.Get_Textures()["defaultTex"]->Resource,
 		TEX.Get_Textures()["defaultNormalTex"]->Resource,
 	};
-
-	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(UTIL.Get_SrvDiscriptorHeap()->GetCPUDescriptorHandleForHeapStart(), g_SrvHeapCount, UTIL.Get_CbvSrvDescriptorSize());
-
-	auto defaultTex = TEX.Get_Textures()[m_texName]->Resource;
-	m_matCount = g_MatCBcount++;
-	TEX.Get_Textures()[m_texName]->matCBCount = m_matCount;
-	TEX.Get_Textures()[m_texName]->srvHeapCount = g_SrvHeapCount++;
-	TEX.Get_Textures()[m_texName]->bRegister = TRUE;
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -76,7 +77,7 @@ bool Sky::BuildDescriptorHeaps(void)
 		srvDesc.Texture2D.MipLevels = tex2DList[i]->GetDesc().MipLevels;
 		DEVICE->CreateShaderResourceView(tex2DList[i].Get(), &srvDesc, hDescriptor);
 
-		hDescriptor.Offset(g_SrvHeapCount, g_Graphics->Get_CbvSrvUavDescriptorSize());
+		//hDescriptor.Offset(g_SrvHeapCount, g_Graphics->Get_CbvSrvUavDescriptorSize());
 	}
 
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
@@ -128,7 +129,7 @@ void Sky::BuildMaterials(void)
 	pMat->Name = m_matName;
 	pMat->MatCBIndex = m_matCount;
 	pMat->DiffuseSrvHeapIndex = TEX.Get_Textures()[m_texName]->srvHeapCount;
-	pMat->NormalSrvHeapIndex = TEX.Get_Textures()[m_normalTex]->srvHeapCount;
+	pMat->NormalSrvHeapIndex = TEX.Get_Textures()[m_texName]->srvHeapCount + 1;
 	pMat->DiffuseAlbedo = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	pMat->FresnelR0 = XMFLOAT3(0.1f, 0.1f, 0.1f);
 	pMat->Roughness = 1.0f;
@@ -158,6 +159,7 @@ void Sky::BuildRenderItem(void)
 
 void Sky::BuildGeometry(void)
 {
+	m_eShapeType = ST_SHPERE;
 	Object::BuildGeometry();
 }
 

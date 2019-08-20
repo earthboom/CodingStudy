@@ -121,7 +121,7 @@ void Utility_Manager::BuildDescriptorHeaps(void)
 
 	//Create the SRV heap
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-	srvHeapDesc.NumDescriptors = textureDescriptorCount + blurDescriptorCount;//7;
+	srvHeapDesc.NumDescriptors = 14;// textureDescriptorCount + blurDescriptorCount;//7;
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	ThrowIfFailed(DEVICE->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSrvDescriptorHeap)));
@@ -132,18 +132,18 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 	//const D3D_SHADER_MACRO defines[] = { "FOG", "1", NULL, NULL };
 	const D3D_SHADER_MACRO alphaTestDefines[] = { "ALPHA_TEST", "1", NULL, NULL };
 
-	mShaders["standardVS"] = d3dutil::CompileShader(L"Shaders/Default.hlsl", nullptr, "VS", "vs_5_1");
-	mShaders["opaquePS"] = d3dutil::CompileShader(L"Shaders/Default.hlsl", nullptr, "PS", "ps_5_1");
+	mShaders["standardVS"]			= d3dutil::CompileShader(L"Shaders\\Default.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["opaquePS"]			= d3dutil::CompileShader(L"Shaders\\Default.hlsl", nullptr, "PS", "ps_5_1");
 
-	mShaders["shadowVS"] = d3dutil::CompileShader(L"Shaders/Shadows.hlsl", nullptr, "VS", "vs_5_1");
-	mShaders["shadowOpaquePS"] = d3dutil::CompileShader(L"Shaders/Shadows.hlsl", nullptr, "PS", "ps_5_1");
-	mShaders["shadowAlphaTestPS"] = d3dutil::CompileShader(L"Shaders/Shadows.hlsl", alphaTestDefines, "PS", "vs_5_1");
+	mShaders["shadowVS"]			= d3dutil::CompileShader(L"Shaders\\Shadows.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["shadowOpaquePS"]		= d3dutil::CompileShader(L"Shaders\\Shadows.hlsl", nullptr, "PS", "ps_5_1");
+	mShaders["shadowAlphaTestedPS"]	= d3dutil::CompileShader(L"Shaders\\Shadows.hlsl", alphaTestDefines, "PS", "ps_5_1");
 
-	mShaders["debugVS"] = d3dutil::CompileShader(L"Shaders/ShadowDbug.hlsl", nullptr, "VS", "vs_5_1");
-	mShaders["debugPS"] = d3dutil::CompileShader(L"Shaders/ShadowDbug.hlsl", nullptr, "PS", "ps_5_1");
+	mShaders["debugVS"]				= d3dutil::CompileShader(L"Shaders\\ShadowDebug.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["debugPS"]				= d3dutil::CompileShader(L"Shaders\\ShadowDebug.hlsl", nullptr, "PS", "ps_5_1");
 
-	mShaders["skyVS"] = d3dutil::CompileShader(L"Shaders/Sky.hlsl", nullptr, "VS", "vs_5_1");
-	mShaders["skyPS"] = d3dutil::CompileShader(L"Shaders/Sky.hlsl", nullptr, "PS", "ps_5_1");
+	mShaders["skyVS"]				= d3dutil::CompileShader(L"Shaders\\Sky.hlsl", nullptr, "VS", "vs_5_1");
+	mShaders["skyPS"]				= d3dutil::CompileShader(L"Shaders\\Sky.hlsl", nullptr, "PS", "ps_5_1");
 
 	mInputLayout =
 	{

@@ -42,6 +42,27 @@ struct VertexOut
 	float2 TexC			:	TEXCOORD;
 };
 
+// An array of textures, which is only supported in shader model 5.1+.  Unlike Texture2DArray, the textures
+// in this array can be different sizes and formats, making it more flexible than texture arrays.
+//Texture2D gDiffuseMap[7] : register(t0);
+
+// Put in space1, so the texture array does not overlap with these resources.  
+// The texture array will occupy registers t0, t1, ..., t6 in space0. 
+//StructuredBuffer<InstanceData> gInstanceData : register(t0, space1);
+//StructuredBuffer<MaterialData> gMaterialData : register(t1, space1);
+
+
+//cbuffer cbPerObject : register(b1)
+//{
+//    float4x4 gWorld;
+//    float4x4 gTexTransform;
+//    uint gMaterialIndex;
+//    uint gObjPad0;
+//    uint gObjPad1;
+//    uint gObjPad2;
+//}
+
+//VertexOut VS(VertexIn vin, uint instanceID : SV_InstanceID)
 VertexOut VS(VertexIn vin)
 {
 	VertexOut vout = (VertexOut)0.0f;
@@ -109,10 +130,10 @@ float4 PS(VertexOut pin) : SV_Target
 	float3 shadowFactor = float3(1.0f, 1.0f, 1.0f);
 	shadowFactor[0] = CalcShadowFactor(pin.ShadowPosH);
 
-	const float shininess = (1.0f - roughness) * normalMapSample.a;
+	const float shininess = (1.0f - roughness) * normalMapSample.a;;
 	Material mat = { diffuseAlbedo, fresnelR0, shininess };
 	float4 directLight = ComputeLighting(gLights, mat, pin.PosW,
-		bumpedNormalW, toEyeW, shadowFactor);
+		pin.NormalW, toEyeW, shadowFactor);
 
 	float4 litColor = ambient + directLight;
 
