@@ -109,11 +109,11 @@ void Skull::BuildRenderItem(void)
 	ritem->Mat = UTIL.Get_Materials()[m_matName].get();
 	ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
 	ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	ritem->InstanceCount = 1;
+	//ritem->InstanceCount = 1;
 	ritem->IndexCount = ritem->Geo->DrawArgs[m_submeshName].IndexCount;
 	ritem->StartIndexLocation = ritem->Geo->DrawArgs[m_submeshName].StartIndexLocation;
 	ritem->BaseVertexLocation = ritem->Geo->DrawArgs[m_submeshName].BaseVertexLocation;
-	ritem->Bounds = ritem->Geo->DrawArgs[m_submeshName].Bounds;
+	//ritem->Bounds = ritem->Geo->DrawArgs[m_submeshName].Bounds;
 
 	//ritem->Instances.resize(1);
 	//ritem->Instances[0].World = MathHelper::Identity4x4();

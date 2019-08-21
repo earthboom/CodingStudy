@@ -98,9 +98,9 @@ typedef struct Material
 
 struct MaterialData
 {
-	XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
-	XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
-	float Roughness = 64.0f;
+	DirectX::XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
+	DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
+	float Roughness = 0.5f;
 
 	//using Texture mapping
 	XMFLOAT4X4 MatTransform = MathHelper::Identity4x4();
@@ -150,7 +150,7 @@ struct RenderItem
 	RenderItem(void) = default;
 	RenderItem(const RenderItem&) = delete;
 
-	bool Visible = TRUE;
+	//bool Visible = TRUE;
 
 	DirectX::XMFLOAT4X4 World = MathHelper::Identity4x4();
 
@@ -165,11 +165,11 @@ struct RenderItem
 
 	D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-	BoundingBox Bounds;
-	std::vector<InstanceData> Instances;
+	//BoundingBox Bounds;
+	//std::vector<InstanceData> Instances;
 
 	UINT IndexCount = 0;
-	UINT InstanceCount = 0;
+	//UINT InstanceCount = 0;
 	UINT StartIndexLocation = 0;
 	int BaseVertexLocation = 0;
 };
@@ -212,6 +212,7 @@ struct PassConstants
 	DirectX::XMFLOAT4X4 InvProj = MathHelper::Identity4x4();
 	DirectX::XMFLOAT4X4 ViewProj = MathHelper::Identity4x4();
 	DirectX::XMFLOAT4X4 InvViewProj = MathHelper::Identity4x4();
+	DirectX::XMFLOAT4X4 ShadowTransform = MathHelper::Identity4x4();
 
 	DirectX::XMFLOAT3 EyePosW = { 0.0f, 0.0f, 0.0f };
 

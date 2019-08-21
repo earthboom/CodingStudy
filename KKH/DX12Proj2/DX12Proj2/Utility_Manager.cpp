@@ -43,19 +43,23 @@ void Utility_Manager::UtilityInitialize(void)
 
 void Utility_Manager::BuildRootSignature(void)
 {
-	CD3DX12_DESCRIPTOR_RANGE texTable;
-	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 8, 0, 0);
+	CD3DX12_DESCRIPTOR_RANGE texTable0;
+	texTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 2, 0, 0);
 
-	CD3DX12_ROOT_PARAMETER slotRootParameter[4];
+	CD3DX12_DESCRIPTOR_RANGE texTable1;
+	texTable1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 10, 2, 0);
 
-	slotRootParameter[0].InitAsShaderResourceView(0, 1);
-	slotRootParameter[1].InitAsShaderResourceView(1, 1);
-	slotRootParameter[2].InitAsConstantBufferView(0);
-	slotRootParameter[3].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
+	CD3DX12_ROOT_PARAMETER slotRootParameter[5];
+
+	slotRootParameter[0].InitAsConstantBufferView(0);
+	slotRootParameter[1].InitAsConstantBufferView(1);
+	slotRootParameter[2].InitAsShaderResourceView(0, 1);
+	slotRootParameter[3].InitAsDescriptorTable(1, &texTable0, D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[4].InitAsDescriptorTable(1, &texTable1, D3D12_SHADER_VISIBILITY_PIXEL);
 
 	auto staticSamplers = GetStaticSamplers();
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(4, slotRootParameter, 
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(5, slotRootParameter, 
 		(UINT)staticSamplers.size(), staticSamplers.data(), 
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
@@ -150,7 +154,7 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	};
 }
 
@@ -193,8 +197,6 @@ void Utility_Manager::BuildPSOs(void)
 	psoDesc.DSVFormat = g_Graphics->Get_DepthStencilFormat();
 
 	ThrowIfFailed(DEVICE->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
-
-
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC samPsoDesc = psoDesc;
 	samPsoDesc.RasterizerState.DepthBias = 100000;
@@ -475,48 +477,48 @@ void Utility_Manager::UpdateObjectCBs(const CTimer& mt)
 
 void Utility_Manager::UpdateInstanceData(const CTimer& mt)
 {
-	XMMATRIX view = CURR_CAM->GetView();
-	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+	//XMMATRIX view = CURR_CAM->GetView();
+	//XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
 
-	auto currInstanceBuffer = mCurrFrameResource->InstanceBuffer.get();
-	int visibleInstanceCount = 0;
-	for (auto& e : mAllRitem)
-	{
-		const auto& instanceData = e->Instances;
-		
-		UINT matIndex = e->Mat->DiffuseSrvHeapIndex + 1;
+	//auto currInstanceBuffer = mCurrFrameResource->InstanceBuffer.get();
+	//int visibleInstanceCount = 0;
+	//for (auto& e : mAllRitem)
+	//{
+	//	const auto& instanceData = e->Instances;
+	//	
+	//	UINT matIndex = e->Mat->DiffuseSrvHeapIndex + 1;
 
-		for (UINT i = 0; i < (UINT)instanceData.size(); ++i)
-		{
-			XMMATRIX world = XMLoadFloat4x4(&instanceData[i].World);
-			XMMATRIX texTransform = XMLoadFloat4x4(&instanceData[i].TexTransform);
+	//	for (UINT i = 0; i < (UINT)instanceData.size(); ++i)
+	//	{
+	//		XMMATRIX world = XMLoadFloat4x4(&instanceData[i].World);
+	//		XMMATRIX texTransform = XMLoadFloat4x4(&instanceData[i].TexTransform);
 
-			XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(world), world);
+	//		XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(world), world);
 
-			XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);
+	//		XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);
 
-			BoundingFrustum localSpaceFrustum;
-			mCamFrustum.Transform(localSpaceFrustum, viewToLocal);
+	//		BoundingFrustum localSpaceFrustum;
+	//		mCamFrustum.Transform(localSpaceFrustum, viewToLocal);
 
-			if ((localSpaceFrustum.Contains(e->Bounds) != DirectX::DISJOINT) || (g_FrustumCullingEnabled == FALSE))
-			{
-				InstanceData data;
-				XMStoreFloat4x4(&data.World, XMMatrixTranspose(world));
-				XMStoreFloat4x4(&data.TexTransform, XMMatrixTranspose(texTransform));
-				//data.MaterialIndex = instanceData[i].MaterialIndex;
-				data.MaterialIndex = matIndex;
+	//		if ((localSpaceFrustum.Contains(e->Bounds) != DirectX::DISJOINT) || (g_FrustumCullingEnabled == FALSE))
+	//		{
+	//			InstanceData data;
+	//			XMStoreFloat4x4(&data.World, XMMatrixTranspose(world));
+	//			XMStoreFloat4x4(&data.TexTransform, XMMatrixTranspose(texTransform));
+	//			//data.MaterialIndex = instanceData[i].MaterialIndex;
+	//			data.MaterialIndex = matIndex;
 
-				currInstanceBuffer->CopyData(visibleInstanceCount++, data);
-			}
-		}
+	//			currInstanceBuffer->CopyData(visibleInstanceCount++, data);
+	//		}
+	//	}
 
-		//e->InstanceCount = visibleInstanceCount;
-		//visibleInstanceCount = 0;
+	//	//e->InstanceCount = visibleInstanceCount;
+	//	//visibleInstanceCount = 0;
 
-		std::wostringstream outs;
-		outs.precision(6);
-		outs << L"Instancing and Culling" << L"   " << e->InstanceCount << L" objects visible out of " << e->Instances.size();
-	}
+	//	std::wostringstream outs;
+	//	outs.precision(6);
+	//	outs << L"Instancing and Culling" << L"   " << e->InstanceCount << L" objects visible out of " << e->Instances.size();
+	//}
 }
 
 void Utility_Manager::UpdateMaterialCBs(const CTimer& mt)
@@ -629,22 +631,22 @@ void Utility_Manager::UpdateReflectedPassCB(const CTimer& mt)
 
 void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const std::vector<RenderItem*>& ritems)
 {
-	//UINT objCBByteSize = d3dutil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+	UINT objCBByteSize = d3dutil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 	//UINT matCBByteSize = d3dutil::CalcConstantBufferByteSize(sizeof(MaterialConstants));
 
-	//auto objectCB = mCurrFrameResource->ObjectCB->Resource();
+	auto objectCB = mCurrFrameResource->ObjectCB->Resource();
 	//auto matCB = mCurrFrameResource->MaterialBuffer->Resource();//MaterialCB->Resource();
 
-	auto instanceBuffer = mCurrFrameResource->InstanceBuffer->Resource();
-	UINT InstanceBufByteSize = sizeof(InstanceData);
-	UINT instanceAllbufsize = 1;
+	//auto instanceBuffer = mCurrFrameResource->InstanceBuffer->Resource();
+	//UINT InstanceBufByteSize = sizeof(InstanceData);
+	//UINT instanceAllbufsize = 1;
 	// For each render item...
 	for (size_t i = 0; i < ritems.size(); ++i)
 	{
 		auto ri = ritems[i];
 
-		if(ri->Visible == FALSE)
-			continue;
+		//if(ri->Visible == FALSE)
+		//	continue;
 
 		cmdList->IASetVertexBuffers(0, 1, &ri->Geo->VertexBufferView());
 		cmdList->IASetIndexBuffer(&ri->Geo->IndexBufferView());
@@ -653,17 +655,15 @@ void Utility_Manager::DrawRenderItems(ID3D12GraphicsCommandList * cmdList, const
 		//CD3DX12_GPU_DESCRIPTOR_HANDLE tex(mSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 		//tex.Offset(ri->Mat->DiffuseSrvHeapIndex, mCbvSrvDescriptorSize);
 
-		//D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ri->objCBIndex * objCBByteSize;
+		D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress() + ri->objCBIndex * objCBByteSize;
 		//D3D12_GPU_VIRTUAL_ADDRESS matCBAddress = matCB->GetGPUVirtualAddress() + ri->Mat->MatCBIndex * matCBByteSize;
 
-		//cmdList->SetGraphicsRootDescriptorTable(0, tex);
-		//cmdList->SetGraphicsRootConstantBufferView(1, objCBAddress);
-		//cmdList->SetGraphicsRootConstantBufferView(3, matCBAddress);
+		cmdList->SetGraphicsRootConstantBufferView(0, objCBAddress);
 		
-		D3D12_GPU_VIRTUAL_ADDRESS instAddress = instanceBuffer->GetGPUVirtualAddress() + ri->objCBIndex * InstanceBufByteSize;
-		g_Graphics->Get_CommandList()->SetGraphicsRootShaderResourceView(0, instAddress);
+		//D3D12_GPU_VIRTUAL_ADDRESS instAddress = instanceBuffer->GetGPUVirtualAddress() + ri->objCBIndex * InstanceBufByteSize;
+		//g_Graphics->Get_CommandList()->SetGraphicsRootShaderResourceView(0, instAddress);
 		
-		cmdList->DrawIndexedInstanced(ri->IndexCount, ri->InstanceCount, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
+		cmdList->DrawIndexedInstanced(ri->IndexCount, 1, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
 		//instanceAllbufsize += ri->InstanceCount;
 	}
 }

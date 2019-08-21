@@ -84,86 +84,86 @@ void Mouse_Manager::OnMouseMove(WPARAM btnState, int x, int y)
 	mLastMousePos.y = y;
 }
 
-void Mouse_Manager::Pick(int sx, int sy)
-{
-	XMFLOAT4X4 P = g_Proj;
-
-	// Compute picking ray in view space
-	float vx = (2.0f * sx / WINSIZE_X - 1.0f) / P(0, 0);
-	float vy = (-2.0f * sy / WINSIZE_Y + 1.0f) / P(1, 1);
-
-	XMVECTOR rayOrigin = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-	XMVECTOR rayDir = XMVectorSet(vx, vy, 1.0f, 0.0f);
-
-	XMMATRIX V = CURR_CAM->GetView();
-	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(V), V);
-
-	for (auto& e : mPickedRitem)
-		e->Visible = FALSE;
-
-	for (auto ri : UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE))
-	{
-		auto geo = ri->Geo;
-		if (ri->Visible == FALSE)
-			continue;
-
-		XMMATRIX W = XMLoadFloat4x4(&ri->World);
-		XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(W), W);
-
-		XMMATRIX toLocal = XMMatrixMultiply(invView, invWorld);
-
-		rayOrigin = XMVector3TransformCoord(rayOrigin, toLocal);
-		rayDir = XMVector3TransformNormal(rayDir, toLocal);
-
-		rayDir = XMVector3Normalize(rayDir);
-
-		float tmin = 0.0f;
-		if (ri->Bounds.Intersects(rayOrigin, rayDir, tmin))
-		{
-			RenderItem* pickItem = nullptr;
-			for (auto e : mPickedRitem)
-			{
-				if (e->Geo->Name == ri->Geo->Name)
-					pickItem = e;
-			}
-
-			auto vertices = (VERTEX*)geo->VertexBufferCPU->GetBufferPointer();
-			auto indices = (std::uint32_t*)geo->IndexBufferCPU->GetBufferPointer();
-			UINT triCount = ri->IndexCount / 3;
-
-			tmin = Infinity;
-			for (UINT i = 0; i < triCount; ++i)
-			{
-				UINT i0 = indices[i * 3 + 0];
-				UINT i1 = indices[i * 3 + 1];
-				UINT i2 = indices[i * 3 + 2];
-
-				XMVECTOR v0 = XMLoadFloat3(&vertices[i0].Pos);
-				XMVECTOR v1 = XMLoadFloat3(&vertices[i1].Pos);
-				XMVECTOR v2 = XMLoadFloat3(&vertices[i2].Pos);
-
-				float t = 0.0f;
-				if (TriangleTests::Intersects(rayOrigin, rayDir, v0, v1, v2, t))
-				{
-					if (t < tmin)
-					{
-						tmin = t;
-						UINT pickedTriangle = i;
-
-						pickItem->Visible = TRUE;
-						pickItem->IndexCount = 3;
-						pickItem->BaseVertexLocation = 0;
-
-						pickItem->World = ri->World;
-						pickItem->NumFramesDirty = NumFrameResources;
-
-						pickItem->StartIndexLocation = 3 * pickedTriangle;
-					}
-				}
-			}
-		}
-	}
-}
+//void Mouse_Manager::Pick(int sx, int sy)
+//{
+//	XMFLOAT4X4 P = g_Proj;
+//
+//	// Compute picking ray in view space
+//	float vx = (2.0f * sx / WINSIZE_X - 1.0f) / P(0, 0);
+//	float vy = (-2.0f * sy / WINSIZE_Y + 1.0f) / P(1, 1);
+//
+//	XMVECTOR rayOrigin = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+//	XMVECTOR rayDir = XMVectorSet(vx, vy, 1.0f, 0.0f);
+//
+//	XMMATRIX V = CURR_CAM->GetView();
+//	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(V), V);
+//
+//	for (auto& e : mPickedRitem)
+//		e->Visible = FALSE;
+//
+//	for (auto ri : UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE))
+//	{
+//		auto geo = ri->Geo;
+//		if (ri->Visible == FALSE)
+//			continue;
+//
+//		XMMATRIX W = XMLoadFloat4x4(&ri->World);
+//		XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(W), W);
+//
+//		XMMATRIX toLocal = XMMatrixMultiply(invView, invWorld);
+//
+//		rayOrigin = XMVector3TransformCoord(rayOrigin, toLocal);
+//		rayDir = XMVector3TransformNormal(rayDir, toLocal);
+//
+//		rayDir = XMVector3Normalize(rayDir);
+//
+//		float tmin = 0.0f;
+//		if (ri->Bounds.Intersects(rayOrigin, rayDir, tmin))
+//		{
+//			RenderItem* pickItem = nullptr;
+//			for (auto e : mPickedRitem)
+//			{
+//				if (e->Geo->Name == ri->Geo->Name)
+//					pickItem = e;
+//			}
+//
+//			auto vertices = (VERTEX*)geo->VertexBufferCPU->GetBufferPointer();
+//			auto indices = (std::uint32_t*)geo->IndexBufferCPU->GetBufferPointer();
+//			UINT triCount = ri->IndexCount / 3;
+//
+//			tmin = Infinity;
+//			for (UINT i = 0; i < triCount; ++i)
+//			{
+//				UINT i0 = indices[i * 3 + 0];
+//				UINT i1 = indices[i * 3 + 1];
+//				UINT i2 = indices[i * 3 + 2];
+//
+//				XMVECTOR v0 = XMLoadFloat3(&vertices[i0].Pos);
+//				XMVECTOR v1 = XMLoadFloat3(&vertices[i1].Pos);
+//				XMVECTOR v2 = XMLoadFloat3(&vertices[i2].Pos);
+//
+//				float t = 0.0f;
+//				if (TriangleTests::Intersects(rayOrigin, rayDir, v0, v1, v2, t))
+//				{
+//					if (t < tmin)
+//					{
+//						tmin = t;
+//						UINT pickedTriangle = i;
+//
+//						pickItem->Visible = TRUE;
+//						pickItem->IndexCount = 3;
+//						pickItem->BaseVertexLocation = 0;
+//
+//						pickItem->World = ri->World;
+//						pickItem->NumFramesDirty = NumFrameResources;
+//
+//						pickItem->StartIndexLocation = 3 * pickedTriangle;
+//					}
+//				}
+//			}
+//		}
+//	}
+//}
 
 //void Mouse_Manager::SetPieckedRitem(void)
 //{	

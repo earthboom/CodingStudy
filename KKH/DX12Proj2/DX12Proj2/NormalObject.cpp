@@ -103,11 +103,11 @@ void NormalObject::BuildRenderItem(void)
 		ritem->Mat = UTIL.Get_Materials()[m_matName].get();
 		ritem->Geo = UTIL.Get_Geomesh()[m_Name].get();
 		ritem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		ritem->InstanceCount = m_vecInstanceData.size();
+		//ritem->InstanceCount = m_vecInstanceData.size();
 		ritem->IndexCount = ritem->Geo->DrawArgs[m_submeshName].IndexCount;
 		ritem->StartIndexLocation = ritem->Geo->DrawArgs[m_submeshName].StartIndexLocation;
 		ritem->BaseVertexLocation = ritem->Geo->DrawArgs[m_submeshName].BaseVertexLocation;
-		ritem->Bounds = ritem->Geo->DrawArgs[m_submeshName].Bounds;
+		//ritem->Bounds = ritem->Geo->DrawArgs[m_submeshName].Bounds;
 
 		UTIL.Get_Drawlayer((int)DrawLayer::DL_OPAUQE).push_back(ritem.get());
 		UTIL.Get_Ritemvec().push_back(std::move(ritem));
