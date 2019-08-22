@@ -29,6 +29,8 @@ bool MainApp::Ready_MainApp(void)
 	CAM_MGR.CreateCamera();
 	CURR_CAM->SetPosition(0.0f, 2.0f, -15.0f);
 
+	UTIL.Get_ShadowMap() = std::make_unique<ShadowMap>(DEVICE.Get(), 2048, 2048);
+
 	LoadTexture();
 
 	UTIL.OnResize();

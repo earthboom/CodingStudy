@@ -72,7 +72,7 @@ inline std::wstring AnsiToWString(const std::string& str)
 
 inline const float AspectRatio(void) { return static_cast<float>(WINSIZE_X) / WINSIZE_Y; }
 
-inline std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers(void)
+inline std::array<const CD3DX12_STATIC_SAMPLER_DESC, 7> GetStaticSamplers(void)
 {
 	const CD3DX12_STATIC_SAMPLER_DESC pointWrap(
 		0,									//shaderRegister
@@ -120,5 +120,17 @@ inline std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers(void)
 		0.0f,
 		8);
 
-	return { pointWrap, pointClamp, linearWrap, linearClamp, anisotropicWrap ,anisotropicClamp };
+	const CD3DX12_STATIC_SAMPLER_DESC shadow(
+		6,
+		D3D12_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT,
+		D3D12_TEXTURE_ADDRESS_MODE_BORDER,
+		D3D12_TEXTURE_ADDRESS_MODE_BORDER,
+		D3D12_TEXTURE_ADDRESS_MODE_BORDER,
+		0.0f,
+		16,
+		D3D12_COMPARISON_FUNC_LESS_EQUAL,
+		D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK
+	);
+
+	return { pointWrap, pointClamp, linearWrap, linearClamp, anisotropicWrap ,anisotropicClamp, shadow };
 }
