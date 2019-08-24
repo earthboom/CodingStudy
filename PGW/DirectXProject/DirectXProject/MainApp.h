@@ -31,17 +31,18 @@ private:
 	void UpdateMaterialBuffer(const GameTimer& gt);
 	void UpdateMainPassCB(const GameTimer& gt);
 
+	void DefineSkullAnimation();
 	void LoadTextures();
 	void BuildRootSignature();
 	void BuildDescriptorHeaps();
 	void BuildShadersAndInputLayout();
-	void BuildCarGeometry();
+	void BuildShapeGeometry();
+	void BuildSkullGeometry();
 	void BuildPSOs();
 	void BuildFrameResources();
 	void BuildMaterials();
 	void BuildRenderItems();
 	void DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems);
-	void Pick(int sx, int sy);
 
 	std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
 
@@ -69,13 +70,17 @@ private:
 	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
 	// Render items divided by PSO.
-	std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];
+	std::vector<RenderItem*> mOpaqueRitems;
 
-	RenderItem* mPickedRitem = nullptr;
+	RenderItem* mSkullRitem = nullptr;
+	XMFLOAT4X4 mSkullWorld = MathHelper::Identity4x4();
 
 	PassConstants mMainPassCB;
 
 	Camera mCamera;
+
+	float mAnimTimePos = 0.0f;
+	BoneAnimation mSkullAnimation;
 
 	POINT mLastMousePos;
 };
