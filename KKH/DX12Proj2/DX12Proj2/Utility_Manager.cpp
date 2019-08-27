@@ -44,22 +44,23 @@ void Utility_Manager::UtilityInitialize(void)
 void Utility_Manager::BuildRootSignature(void)
 {
 	CD3DX12_DESCRIPTOR_RANGE texTable0;
-	texTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 2, 0, 0);
+	texTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 3, 0, 0);
 
 	CD3DX12_DESCRIPTOR_RANGE texTable1;
-	texTable1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 10, 2, 0);
+	texTable1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 48, 3, 0);
 
-	CD3DX12_ROOT_PARAMETER slotRootParameter[5];
+	CD3DX12_ROOT_PARAMETER slotRootParameter[6];
 
 	slotRootParameter[0].InitAsConstantBufferView(0);
 	slotRootParameter[1].InitAsConstantBufferView(1);
-	slotRootParameter[2].InitAsShaderResourceView(0, 1);
-	slotRootParameter[3].InitAsDescriptorTable(1, &texTable0, D3D12_SHADER_VISIBILITY_PIXEL);
-	slotRootParameter[4].InitAsDescriptorTable(1, &texTable1, D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[2].InitAsConstantBufferView(2);
+	slotRootParameter[3].InitAsShaderResourceView(0, 1);
+	slotRootParameter[4].InitAsDescriptorTable(1, &texTable0, D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[5].InitAsDescriptorTable(1, &texTable1, D3D12_SHADER_VISIBILITY_PIXEL);
 
 	auto staticSamplers = GetStaticSamplers();
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(5, slotRootParameter, 
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(6, slotRootParameter, 
 		(UINT)staticSamplers.size(), staticSamplers.data(), 
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
@@ -125,7 +126,7 @@ void Utility_Manager::BuildDescriptorHeaps(void)
 
 	//Create the SRV heap
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-	srvHeapDesc.NumDescriptors = 14;// textureDescriptorCount + blurDescriptorCount;//7;
+	srvHeapDesc.NumDescriptors = 64;// textureDescriptorCount + blurDescriptorCount;//7;
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	ThrowIfFailed(DEVICE->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSrvDescriptorHeap)));
@@ -135,6 +136,7 @@ void Utility_Manager::BuildShadersAndInputLayer(void)
 {
 	//const D3D_SHADER_MACRO defines[] = { "FOG", "1", NULL, NULL };
 	const D3D_SHADER_MACRO alphaTestDefines[] = { "ALPHA_TEST", "1", NULL, NULL };
+	const D3D_SHADER_MACRO skinnedDefines[] = { "SKINNED", "1", NULL, NULL };
 
 	mShaders["standardVS"]			= d3dutil::CompileShader(L"Shaders\\Default.hlsl", nullptr, "VS", "vs_5_1");
 	mShaders["opaquePS"]			= d3dutil::CompileShader(L"Shaders\\Default.hlsl", nullptr, "PS", "ps_5_1");

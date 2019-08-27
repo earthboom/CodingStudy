@@ -50,8 +50,13 @@ cbuffer cbPerObject : register(b0)
 	uint		gObjPad2;
 };
 
+cbuffer cbSkinned : register(b1)
+{
+    float4x4 gBoneTransform[96];
+};
+
 // Constant data that varies per pass.
-cbuffer cbPass : register(b1)
+cbuffer cbPass : register(b2)
 {
 	float4x4	gView;
 	float4x4	gInvView;
@@ -59,6 +64,7 @@ cbuffer cbPass : register(b1)
 	float4x4	gInvProj;
 	float4x4	gViewProj;
 	float4x4	gInvViewProj;
+    float4x4    gViewProjTex;
 	float4x4	gShadowTransform;
 	float3		gEyePosW;
 	float		cbPerObjectPad1;
