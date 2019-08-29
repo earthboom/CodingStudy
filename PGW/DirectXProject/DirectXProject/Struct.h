@@ -5,103 +5,7 @@
 #include "d3dUtil.h"
 #include "MathHelper.h"
 #include "Function.h"
-
-
-///<summary>
-/// A Keyframe defines the bone transformation at an instant in time.
-///</summary>
-struct Keyframe
-{
-	float TimePos;
-
-	Keyframe(): TimePos(0.0f),
-		Translation(0.0f, 0.0f, 0.0f),
-		Scale(1.0f, 1.0f, 1.0f),
-		RotationQuat(0.0f, 0.0f, 0.0f, 1.0f)
-	{}
-	~Keyframe(){}
-
-	
-	DirectX::XMFLOAT3 Translation;
-	DirectX::XMFLOAT3 Scale;
-	DirectX::XMFLOAT4 RotationQuat;
-};
-
-
-///<summary>
-/// A BoneAnimation is defined by a list of keyframes.  For time
-/// values inbetween two keyframes, we interpolate between the
-/// two nearest keyframes that bound the time.  
-///
-/// We assume an animation always has two keyframes.
-///</summary>
-struct BoneAnimation
-{
-	float GetStartTime()const {
-		return Keyframes.front().TimePos;
-	}
-
-	float GetEndTime()const {
-		float f = Keyframes.back().TimePos;
-
-		return f;
-	}
-
-	void Interpolate(float t, DirectX::XMFLOAT4X4& M)const
-	{
-		if (t <= Keyframes.front().TimePos)
-		{
-			XMVECTOR S = XMLoadFloat3(&Keyframes.front().Scale);
-			XMVECTOR P = XMLoadFloat3(&Keyframes.front().Translation);
-			XMVECTOR Q = XMLoadFloat4(&Keyframes.front().RotationQuat);
-
-			XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-			XMStoreFloat4x4(&M, XMMatrixAffineTransformation(S, zero, Q, P));
-		}
-		else if (t >= Keyframes.back().TimePos)
-		{
-			XMVECTOR S = XMLoadFloat3(&Keyframes.back().Scale);
-			XMVECTOR P = XMLoadFloat3(&Keyframes.back().Translation);
-			XMVECTOR Q = XMLoadFloat4(&Keyframes.back().RotationQuat);
-
-			XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-			XMStoreFloat4x4(&M, XMMatrixAffineTransformation(S, zero, Q, P));
-		}
-		else
-		{
-			for (UINT i = 0; i < Keyframes.size() - 1; ++i)
-			{
-				if (t >= Keyframes[i].TimePos && t <= Keyframes[i + 1].TimePos)
-				{
-					float lerpPercent = (t - Keyframes[i].TimePos) / (Keyframes[i + 1].TimePos - Keyframes[i].TimePos);
-
-					XMVECTOR s0 = XMLoadFloat3(&Keyframes[i].Scale);
-					XMVECTOR s1 = XMLoadFloat3(&Keyframes[i + 1].Scale);
-
-					XMVECTOR p0 = XMLoadFloat3(&Keyframes[i].Translation);
-					XMVECTOR p1 = XMLoadFloat3(&Keyframes[i + 1].Translation);
-
-					XMVECTOR q0 = XMLoadFloat4(&Keyframes[i].RotationQuat);
-					XMVECTOR q1 = XMLoadFloat4(&Keyframes[i + 1].RotationQuat);
-
-					XMVECTOR S = XMVectorLerp(s0, s1, lerpPercent);
-					XMVECTOR P = XMVectorLerp(p0, p1, lerpPercent);
-					XMVECTOR Q = XMQuaternionSlerp(q0, q1, lerpPercent);
-
-					XMVECTOR zero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-					XMStoreFloat4x4(&M, XMMatrixAffineTransformation(S, zero, Q, P));
-
-					break;
-				}
-			}
-		}
-	}
-
-	std::vector<Keyframe> Keyframes;
-
-};
-
-
+#include "SkinnedData.h"
 
 struct ObjectConstants
 {
@@ -113,6 +17,10 @@ struct ObjectConstants
 	UINT     ObjPad2;
 };
 
+struct SkinnedConstants
+{
+	DirectX::XMFLOAT4X4 BoneTransforms[96];
+};
 
 struct PassConstants
 {
@@ -122,6 +30,8 @@ struct PassConstants
 	DirectX::XMFLOAT4X4 InvProj = MathHelper::Identity4x4();
 	DirectX::XMFLOAT4X4 ViewProj = MathHelper::Identity4x4();
 	DirectX::XMFLOAT4X4 InvViewProj = MathHelper::Identity4x4();
+	DirectX::XMFLOAT4X4 ViewProjTex = MathHelper::Identity4x4();
+	DirectX::XMFLOAT4X4 ShadowTransform = MathHelper::Identity4x4();
 	DirectX::XMFLOAT3 EyePosW = { 0.0f, 0.0f, 0.0f };
 	float cbPerObjectPad1 = 0.0f;
 	DirectX::XMFLOAT2 RenderTargetSize = { 0.0f, 0.0f };
@@ -140,17 +50,36 @@ struct PassConstants
 	Light Lights[MaxLights];
 };
 
+struct SsaoConstants
+{
+	DirectX::XMFLOAT4X4 Proj;
+	DirectX::XMFLOAT4X4 InvProj;
+	DirectX::XMFLOAT4X4 ProjTex;
+	DirectX::XMFLOAT4   OffsetVectors[14];
+
+	// For SsaoBlur.hlsl
+	DirectX::XMFLOAT4 BlurWeights[3];
+
+	DirectX::XMFLOAT2 InvRenderTargetSize = { 0.0f, 0.0f };
+
+	// Coordinates given in view space.
+	float OcclusionRadius = 0.5f;
+	float OcclusionFadeStart = 0.2f;
+	float OcclusionFadeEnd = 2.0f;
+	float SurfaceEpsilon = 0.05f;
+};
+
 struct MaterialData
 {
 	DirectX::XMFLOAT4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
 	DirectX::XMFLOAT3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
-	float Roughness = 64.0f;
+	float Roughness = 0.5f;
 
 	// Used in texture mapping.
 	DirectX::XMFLOAT4X4 MatTransform = MathHelper::Identity4x4();
 
 	UINT DiffuseMapIndex = 0;
-	UINT MaterialPad0;
+	UINT NormalMapIndex = 0;
 	UINT MaterialPad1;
 	UINT MaterialPad2;
 };
@@ -160,6 +89,17 @@ struct Vertex
 	DirectX::XMFLOAT3 Pos;
 	DirectX::XMFLOAT3 Normal;
 	DirectX::XMFLOAT2 TexC;
+	DirectX::XMFLOAT3 TangentU;
+};
+
+struct SkinnedVertex
+{
+	DirectX::XMFLOAT3 Pos;
+	DirectX::XMFLOAT3 Normal;
+	DirectX::XMFLOAT2 TexC;
+	DirectX::XMFLOAT3 TangentU;
+	DirectX::XMFLOAT3 BoneWeights;
+	BYTE BoneIndices[4];
 };
 
 // Stores the resources needed for the CPU to build the command lists
@@ -168,20 +108,21 @@ struct FrameResource
 {
 public:
 
-	FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT materialCount)
+	FrameResource(ID3D12Device* device, UINT passCount, UINT objectCount, UINT skinnedObjectCount, UINT materialCount)
 	{
 		ThrowIfFailed(device->CreateCommandAllocator(
 			D3D12_COMMAND_LIST_TYPE_DIRECT,
 			IID_PPV_ARGS(CmdListAlloc.GetAddressOf())));
 
 		PassCB = std::make_unique<UploadBuffer<PassConstants>>(device, passCount, true);
+		SsaoCB = std::make_unique<UploadBuffer<SsaoConstants>>(device, 1, true);
 		MaterialBuffer = std::make_unique<UploadBuffer<MaterialData>>(device, materialCount, false);
 		ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(device, objectCount, true);
+		SkinnedCB = std::make_unique<UploadBuffer<SkinnedConstants>>(device, skinnedObjectCount, true);
 	}
-
 	FrameResource(const FrameResource& rhs) = delete;
 	FrameResource& operator=(const FrameResource& rhs) = delete;
-	~FrameResource() {}
+	~FrameResource(){}
 
 	// We cannot reset the allocator until the GPU is done processing the commands.
 	// So each frame needs their own allocator.
@@ -191,12 +132,37 @@ public:
 	// that reference it.  So each frame needs their own cbuffers.
 	std::unique_ptr<UploadBuffer<PassConstants>> PassCB = nullptr;
 	std::unique_ptr<UploadBuffer<ObjectConstants>> ObjectCB = nullptr;
-
+	std::unique_ptr<UploadBuffer<SkinnedConstants>> SkinnedCB = nullptr;
+	std::unique_ptr<UploadBuffer<SsaoConstants>> SsaoCB = nullptr;
 	std::unique_ptr<UploadBuffer<MaterialData>> MaterialBuffer = nullptr;
 
 	// Fence value to mark commands up to this fence point.  This lets us
 	// check if these frame resources are still in use by the GPU.
 	UINT64 Fence = 0;
+};
+
+struct SkinnedModelInstance
+{
+	SkinnedData* SkinnedInfo = nullptr;
+	std::vector<DirectX::XMFLOAT4X4> FinalTransforms;
+	std::string ClipName;
+	float TimePos = 0.0f;
+
+	// Called every frame and increments the time position, interpolates the 
+	// animations for each bone based on the current animation clip, and 
+	// generates the final transforms which are ultimately set to the effect
+	// for processing in the vertex shader.
+	void UpdateSkinnedAnimation(float dt)
+	{
+		TimePos += dt;
+
+		// Loop animation
+		if (TimePos > SkinnedInfo->GetClipEndTime(ClipName))
+			TimePos = 0.0f;
+
+		// Compute the final transforms for this time position.
+		SkinnedInfo->GetFinalTransforms(ClipName, TimePos, FinalTransforms);
+	}
 };
 
 // Lightweight structure stores parameters to draw a shape.  This will
@@ -232,6 +198,12 @@ struct RenderItem
 	UINT IndexCount = 0;
 	UINT StartIndexLocation = 0;
 	int BaseVertexLocation = 0;
+
+	// Only applicable to skinned render-items.
+	UINT SkinnedCBIndex = -1;
+
+	// nullptr if this render-item is not animated by skinned mesh.
+	SkinnedModelInstance* SkinnedModelInst = nullptr;
 };
 
 
