@@ -1,46 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Common">
-      <UniqueIdentifier>83352640-7cba-40c0-933b-22c1ab13001a</UniqueIdentifier>
-    </Filter>
     <Filter Include="Assets">
       <UniqueIdentifier>252647c9-cd2b-47e5-8d3d-92b02cd21758</UniqueIdentifier>
       <Extensions>bmp;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
     </Filter>
-    <Filter Include="Content">
-      <UniqueIdentifier>9f1ff1c4-e82e-4e35-ad65-a9e0b609d9d7</UniqueIdentifier>
-    </Filter>
-    <ClInclude Include="Common\d3dx12.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\DirectXHelper.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\StepTimer.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\DeviceResources.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClCompile Include="Common\DeviceResources.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
     <ClInclude Include="Content\Sample3DSceneRenderer.h">
-      <Filter>Content</Filter>
-    </ClInclude>
-    <ClInclude Include="Content\ShaderStructures.h">
-      <Filter>Content</Filter>
+      <Filter>01.System</Filter>
     </ClInclude>
     <ClCompile Include="Content\Sample3DSceneRenderer.cpp">
-      <Filter>Content</Filter>
+      <Filter>01.System</Filter>
     </ClCompile>
-    <FxCompile Include="Content\SamplePixelShader.hlsl">
-      <Filter>Content</Filter>
-    </FxCompile>
-    <FxCompile Include="Content\SampleVertexShader.hlsl">
-      <Filter>Content</Filter>
-    </FxCompile>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
       <Filter>Assets</Filter>
     </Image>
@@ -62,5 +32,127 @@
     <Image Include="Assets\Wide310x150Logo.scale-200.png">
       <Filter>Assets</Filter>
     </Image>
+    <Filter Include="00.Client">
+      <UniqueIdentifier>{f326668d-be72-45c0-b3d2-6088afa201d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Client\00.MainApp">
+      <UniqueIdentifier>{89890fb0-52c2-415e-8ae5-e5a4885deeed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Client\99.Default">
+      <UniqueIdentifier>{098f25f9-64b7-47bb-8aaa-8d96b6b86d56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System">
+      <UniqueIdentifier>9f1ff1c4-e82e-4e35-ad65-a9e0b609d9d7</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy">
+      <UniqueIdentifier>{a5a8f079-2e43-4dca-8bf4-a06b0bcc75f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\99.hlsl">
+      <UniqueIdentifier>{46e656e6-2ed1-437c-b015-19a2372cd7c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Helper">
+      <UniqueIdentifier>{c58747e8-2306-40c4-8771-c8259ae8c652}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Head">
+      <UniqueIdentifier>83352640-7cba-40c0-933b-22c1ab13001a</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\00.Graphic">
+      <UniqueIdentifier>{b54a5bcd-24be-454c-8c97-3c67c019a260}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\01.Time">
+      <UniqueIdentifier>{c47e80d2-006a-4b29-a4b9-658fe6646baf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\02.Camera">
+      <UniqueIdentifier>{90e40a65-0b37-4dbf-86f3-52fb6302249d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\00.Uiltiy_Manager">
+      <UniqueIdentifier>{042a05b2-d7cf-4315-a7d8-f30525d83701}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\01.Things">
+      <UniqueIdentifier>{b6dc7fd2-0cb2-4b4d-9cec-b627edfb579a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\01.Things\Object">
+      <UniqueIdentifier>{c291150a-dba3-4762-9766-cf8f4423b16d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\01.Things\Object\Component">
+      <UniqueIdentifier>{68c71925-5235-4cec-bde5-c558da18940e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="App.cpp">
+      <Filter>00.Client\00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="DX12Proj_2Main.cpp">
+      <Filter>00.Client\99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>00.Client\99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\DeviceResources.cpp">
+      <Filter>01.System\00.Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="UtiltyMgr.cpp">
+      <Filter>02.Utiltiy\00.Uiltiy_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>02.Utiltiy\01.Things\Object\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>02.Utiltiy\01.Things\Object</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="App.h">
+      <Filter>00.Client\00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="DX12Proj_2Main.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\d3dx12.h">
+      <Filter>98.Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DirectXHelper.h">
+      <Filter>98.Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\ShaderStructures.h">
+      <Filter>99.Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\StepTimer.h">
+      <Filter>01.System\01.Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DeviceResources.h">
+      <Filter>01.System\00.Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="Const.h">
+      <Filter>99.Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>99.Head</Filter>
+    </ClInclude>
+    <ClInclude Include="UtiltyMgr.h">
+      <Filter>02.Utiltiy\00.Uiltiy_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>02.Utiltiy\01.Things\Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>02.Utiltiy\01.Things\Object</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest">
+      <Filter>00.Client\99.Default</Filter>
+    </AppxManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Content\SampleVertexShader.hlsl">
+      <Filter>02.Utiltiy\99.hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="Content\SamplePixelShader.hlsl">
+      <Filter>02.Utiltiy\99.hlsl</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
