@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Assets">
+      <UniqueIdentifier>e61c72eb-eb5c-414d-8eaf-ce77308b01de</UniqueIdentifier>
+      <Extensions>bmp;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
+    </Filter>
+    <ClInclude Include="Content\Sample3DSceneRenderer.h">
+      <Filter>01.System</Filter>
+    </ClInclude>
+    <ClCompile Include="Content\Sample3DSceneRenderer.cpp">
+      <Filter>01.System</Filter>
+    </ClCompile>
+    <Image Include="Assets\LockScreenLogo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SplashScreen.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square150x150Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\StoreLogo.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Wide310x150Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Filter Include="00.Client">
+      <UniqueIdentifier>c34b16fe-f4a6-41e4-8268-5700c12259ec</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System">
+      <UniqueIdentifier>5382e90d-f1cc-49e4-9f6b-ebd8e15debbd</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Client\00.MainApp">
+      <UniqueIdentifier>{18d835e7-98bb-466b-ab4b-81348faa5ab8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Client\99.Default">
+      <UniqueIdentifier>{849c08f0-0233-4e2e-b369-2826a7a181ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\00.Graphic">
+      <UniqueIdentifier>{0f77ae12-e765-4644-b2a6-455ebc1c4dd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\01.Time">
+      <UniqueIdentifier>{4496c74a-445c-49fb-b510-c458592646ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\02.Camera">
+      <UniqueIdentifier>{19b6e5da-5849-4e8a-8406-870b92139e65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility">
+      <UniqueIdentifier>{16432166-e4ad-4c4c-9c3b-5450fb6f4415}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\00.Uiltiy_Manager">
+      <UniqueIdentifier>{c299b5aa-8d77-4a60-9af1-8cd5664c03a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\01.Component">
+      <UniqueIdentifier>{ef9df040-cde7-4e0b-abb6-b5ce02962653}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Objects">
+      <UniqueIdentifier>{b7e08226-f659-4739-97d3-53ca59222d0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\99.hlsl">
+      <UniqueIdentifier>{5fd0dd5d-16d7-4468-b91d-d98526ce2f55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Helper">
+      <UniqueIdentifier>{33091ba1-f8f6-4f70-951b-08d3bb085562}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Head">
+      <UniqueIdentifier>{2011c59e-57eb-4a40-bea8-09b5ef696d57}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>00.Client\99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="App.cpp">
+      <Filter>00.Client\99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\DeviceResources.cpp">
+      <Filter>01.System\00.Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS_toolMain.cpp">
+      <Filter>00.Client\00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>02.Utility\01.Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>02.Utility\02.Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="UtiltyMgr.cpp">
+      <Filter>02.Utility\00.Uiltiy_Manager</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="App.h">
+      <Filter>00.Client\99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\StepTimer.h">
+      <Filter>01.System\01.Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DeviceResources.h">
+      <Filter>01.System\00.Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS_toolMain.h">
+      <Filter>00.Client\00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\d3dx12.h">
+      <Filter>98.Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DirectXHelper.h">
+      <Filter>98.Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\ShaderStructures.h">
+      <Filter>99.Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Const.h">
+      <Filter>99.Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>99.Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>02.Utility\01.Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>02.Utility\02.Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="UtiltyMgr.h">
+      <Filter>02.Utility\00.Uiltiy_Manager</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest">
+      <Filter>00.Client\99.Default</Filter>
+    </AppxManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Content\SampleVertexShader.hlsl">
+      <Filter>02.Utility\99.hlsl</Filter>
+    </FxCompile>
+    <FxCompile Include="Content\SamplePixelShader.hlsl">
+      <Filter>02.Utility\99.hlsl</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
