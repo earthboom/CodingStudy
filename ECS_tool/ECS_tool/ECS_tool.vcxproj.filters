@@ -59,12 +59,6 @@
     <Filter Include="02.Utility\00.Uiltiy_Manager">
       <UniqueIdentifier>{c299b5aa-8d77-4a60-9af1-8cd5664c03a8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utility\01.Component">
-      <UniqueIdentifier>{ef9df040-cde7-4e0b-abb6-b5ce02962653}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utility\02.Objects">
-      <UniqueIdentifier>{b7e08226-f659-4739-97d3-53ca59222d0d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.Utility\99.hlsl">
       <UniqueIdentifier>{5fd0dd5d-16d7-4468-b91d-d98526ce2f55}</UniqueIdentifier>
     </Filter>
@@ -73,6 +67,15 @@
     </Filter>
     <Filter Include="99.Head">
       <UniqueIdentifier>{2011c59e-57eb-4a40-bea8-09b5ef696d57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\01.Objects">
+      <UniqueIdentifier>{b7e08226-f659-4739-97d3-53ca59222d0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\01.Objects\Component">
+      <UniqueIdentifier>{ef9df040-cde7-4e0b-abb6-b5ce02962653}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utility\02.Character">
+      <UniqueIdentifier>{11318e2c-fd6e-418c-8c76-d9c71a5575e1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -89,13 +92,16 @@
       <Filter>00.Client\00.MainApp</Filter>
     </ClCompile>
     <ClCompile Include="Component.cpp">
-      <Filter>02.Utility\01.Component</Filter>
+      <Filter>02.Utility\01.Objects\Component</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
-      <Filter>02.Utility\02.Objects</Filter>
+      <Filter>02.Utility\01.Objects</Filter>
     </ClCompile>
     <ClCompile Include="UtiltyMgr.cpp">
       <Filter>02.Utility\00.Uiltiy_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>02.Utility\02.Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -130,13 +136,16 @@
       <Filter>99.Head</Filter>
     </ClInclude>
     <ClInclude Include="Component.h">
-      <Filter>02.Utility\01.Component</Filter>
+      <Filter>02.Utility\01.Objects\Component</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
-      <Filter>02.Utility\02.Objects</Filter>
+      <Filter>02.Utility\01.Objects</Filter>
     </ClInclude>
     <ClInclude Include="UtiltyMgr.h">
       <Filter>02.Utility\00.Uiltiy_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>02.Utility\02.Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

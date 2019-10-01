@@ -2,6 +2,8 @@
 #include "ECS_toolMain.h"
 #include "Common\DirectXHelper.h"
 
+#include "UtiltyMgr.h"
+
 using namespace ECS_tool;
 using namespace Windows::Foundation;
 using namespace Windows::System::Threading;
@@ -25,6 +27,8 @@ void ECS_toolMain::CreateRenderers(const std::shared_ptr<DX::DeviceResources>& d
 {
 	// TODO: Replace this with your app's content initialization.
 	m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(deviceResources));
+
+	UTIL.SetDeviceResources(deviceResources);
 
 	OnWindowSizeChanged();
 }

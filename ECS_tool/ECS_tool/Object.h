@@ -4,11 +4,11 @@
 
 class Object : public Component
 {
-protected:
+public:
 	explicit Object(void);
 	Object(const Object&) = delete;
 	Object& operator=(const Object&) = delete;
-	~Object(void);
+	virtual ~Object(void);
 
 public:
 	virtual bool Initialize(void);

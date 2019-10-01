@@ -8,7 +8,7 @@ protected:
 	explicit Component(void);
 	Component(const Component&) = delete;
 	Component& operator=(const Component&) = delete;
-	~Component(void);
+	virtual ~Component(void);
 
 protected:
 	virtual bool Initialize(void) PURE;
