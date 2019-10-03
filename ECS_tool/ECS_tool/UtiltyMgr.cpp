@@ -1,55 +1,111 @@
 #include "pch.h"
 #include "UtiltyMgr.h"
 
-#include "Common\DirectXHelper.h"
 #include <ppltasks.h>
 #include <synchapi.h>
 
 using namespace ECS_tool;
+using namespace DirectX;
 
 Platform::String^ AngleKey = "Angle";
 Platform::String^ TrackingKey = "Tracking";
 
 UtiltyMgr::UtiltyMgr(void)
-	: m_fAngle(0.0f), m_bTracking(FALSE)
+	: m_fAngle(0.0f), m_bTracking(FALSE),
+	m_cbvDescriptorSize(0), m_mappedConstantBuffer(nullptr), 
+	m_bLoadingComplete(FALSE)
 {
 	m_vecObject.clear();
 
-	LoadState();
+	//LoadState();
 	ZeroMemory(&m_constantBufferData, sizeof(m_constantBufferData));
 
-	CreateDeviceDependentResources();
-	CreateWindowSizeDependentResources();
+	//CreateDeviceDependentResources();
+	//CreateWindowSizeDependentResources();
 }
 
 UtiltyMgr::~UtiltyMgr(void)
 {
+	m_mappedConstantBuffer = nullptr;
 }
 
 void UtiltyMgr::Object_Initialize(void)
 {
 	for (auto& Obj : m_vecObject)
 	{
-		Obj.Initialize();
+		Obj->Initialize();
 	}
 }
 
 void UtiltyMgr::Object_Update(DX::StepTimer const& timer)
 {
-	for (auto& Obj : m_vecObject)
+	if (m_bLoadingComplete)
 	{
-		Obj.Update(timer);
-	}
+		for (auto& Obj : m_vecObject)
+		{
+			Obj->Update(timer);
+		}
+	}	
 }
 
-void UtiltyMgr::Object_Render(DX::StepTimer const& timer)
+bool UtiltyMgr::Object_Render(DX::StepTimer const& timer)
 {
+	if (!m_bLoadingComplete)
+		return FALSE;
+
+	DX::ThrowIfFailed(m_deviceResources->GetCommandAllocator()->Reset());
+
+	DX::ThrowIfFailed(m_commandList->Reset(m_deviceResources->GetCommandAllocator(), m_pipelineState.Get()));
 
 
-	for (auto& Obj : m_vecObject)
+	PIXBeginEvent(m_commandList.Get(), 0, L"Draw the cube");
 	{
-		Obj.Render(timer);
+		// Set the graphics root signature and descriptor heaps to be used by this frame.
+		m_commandList->SetGraphicsRootSignature(m_rootSignature.Get());
+		ID3D12DescriptorHeap* ppHeaps[] = { m_cbvHeap.Get() };
+		m_commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+
+		// Bind the current frame's constant buffer to the pipeline.
+		CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle(m_cbvHeap->GetGPUDescriptorHandleForHeapStart(), m_deviceResources->GetCurrentFrameIndex(), m_cbvDescriptorSize);
+		m_commandList->SetGraphicsRootDescriptorTable(0, gpuHandle);
+
+		// Set the viewport and scissor rectangle.
+		D3D12_VIEWPORT viewport = m_deviceResources->GetScreenViewport();
+		m_commandList->RSSetViewports(1, &viewport);
+		m_commandList->RSSetScissorRects(1, &m_scissorRect);
+
+		// Indicate this resource will be in use as a render target.
+		CD3DX12_RESOURCE_BARRIER renderTargetResourceBarrier =
+			CD3DX12_RESOURCE_BARRIER::Transition(m_deviceResources->GetRenderTarget(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		m_commandList->ResourceBarrier(1, &renderTargetResourceBarrier);
+
+		// Record drawing commands.
+		D3D12_CPU_DESCRIPTOR_HANDLE renderTargetView = m_deviceResources->GetRenderTargetView();
+		D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = m_deviceResources->GetDepthStencilView();
+		m_commandList->ClearRenderTargetView(renderTargetView, DirectX::Colors::CornflowerBlue, 0, nullptr);
+		m_commandList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
+		m_commandList->OMSetRenderTargets(1, &renderTargetView, false, &depthStencilView);
+
+		for (auto& Obj : m_vecObject)
+		{
+			Obj->Render(timer);
+		}
+
+		CD3DX12_RESOURCE_BARRIER presentResourceBarrier =
+			CD3DX12_RESOURCE_BARRIER::Transition(m_deviceResources->GetRenderTarget(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+		m_commandList->ResourceBarrier(1, &presentResourceBarrier);
 	}
+
+	PIXEndEvent(m_commandList.Get());
+
+	DX::ThrowIfFailed(m_commandList->Close());
+
+	// Execute the command list.
+	ID3D12CommandList* ppCommandLists[] = { m_commandList.Get() };
+	m_deviceResources->GetCommandQueue()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+
+	return TRUE;
 }
 
 void UtiltyMgr::CreateDeviceDependentResources(void)
@@ -80,11 +136,11 @@ void UtiltyMgr::CreateDeviceDependentResources(void)
 		NAME_D3D12_OBJECT(m_rootSignature);
 	}
 
-	auto createVSTask = DX::ReadDataAsync(L"Content\SampleVertexShader.cso").then([this](std::vector<byte>& fileData) {
+	auto createVSTask = DX::ReadDataAsync(L"SampleVertexShader.cso").then([this](std::vector<byte>& fileData) {
 		m_vertexShader = fileData;
 		});
 
-	auto createPSTask = DX::ReadDataAsync(L"Content\SamplePixelShader.cso").then([this](std::vector<byte>& fileData) {
+	auto createPSTask = DX::ReadDataAsync(L"SamplePixelShader.cso").then([this](std::vector<byte>& fileData) {
 		m_pixelShader = fileData;
 		});
 
@@ -118,18 +174,52 @@ void UtiltyMgr::CreateDeviceDependentResources(void)
 	});
 
 	auto createAssetsTask = createPipelineStateTask.then([this]() {
-		auto d3dDevice = m_deviceResources->GetD3DDevice();
+		Object_Initialize();
+	});
 
-		DX::ThrowIfFailed(d3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_deviceResources->GetCommandAllocator(), m_pipelineState.Get(), IID_PPV_ARGS(&m_commandList)));
-		NAME_D3D12_OBJECT(m_commandList);
+	createAssetsTask.then([this]() {
+		m_bLoadingComplete = TRUE;
 	});
 }
 
 void UtiltyMgr::CreateWindowSizeDependentResources(void)
 {
+	Windows::Foundation::Size outputSize = m_deviceResources->GetOutputSize();
+	float aspectRatio = outputSize.Width / outputSize.Height;
+	float fovAngleY = 70.0f * XM_PI / 180.0f;
+
+	D3D12_VIEWPORT viewport = m_deviceResources->GetScreenViewport();
+	m_scissorRect = { 0, 0, static_cast<LONG>(viewport.Width), static_cast<LONG>(viewport.Height) };
+
+	if (aspectRatio < 1.0f)
+	{
+		fovAngleY *= 2.0f;
+	}
+
+	XMMATRIX perspectiveMatrix = XMMatrixPerspectiveFovRH(
+		fovAngleY,
+		aspectRatio,
+		0.01f,
+		100.0f
+	);
+
+	XMFLOAT4X4 orientation = m_deviceResources->GetOrientationTransform3D();
+	XMMATRIX orientationMatrix = XMLoadFloat4x4(&orientation);
+
+	XMStoreFloat4x4(
+		&m_constantBufferData.projection,
+		XMMatrixTranspose(perspectiveMatrix * orientationMatrix)
+	);
+
+	// Eye is at (0,0.7,1.5), looking at point (0,-0.1,0) with the up-vector along the y-axis.
+	static const XMVECTORF32 eye = { 0.0f, 0.7f, 1.5f, 0.0f };
+	static const XMVECTORF32 at = { 0.0f, -0.1f, 0.0f, 0.0f };
+	static const XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
+
+	XMStoreFloat4x4(&m_constantBufferData.view, XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
 }
 
-void UtiltyMgr::LoadState(void)
+void ECS_tool::UtiltyMgr::SaveState(void)
 {
 	auto state = Windows::Storage::ApplicationData::Current->LocalSettings->Values;
 	if (state->HasKey(AngleKey))
@@ -142,6 +232,22 @@ void UtiltyMgr::LoadState(void)
 	state->Insert(TrackingKey, Windows::Foundation::PropertyValue::CreateSingle(m_bTracking));
 }
 
+void UtiltyMgr::LoadState(void)
+{
+	auto state = Windows::Storage::ApplicationData::Current->LocalSettings->Values;
+	if (state->HasKey(AngleKey))
+	{
+		m_fAngle = safe_cast<Windows::Foundation::IPropertyValue^>(state->Lookup(AngleKey))->GetSingle();
+		state->Remove(AngleKey);
+	}
+	if (state->HasKey(TrackingKey))
+	{		
+		m_bTracking = safe_cast<Windows::Foundation::IPropertyValue^>(state->Lookup(TrackingKey))->GetBoolean();
+		state->Remove(TrackingKey);
+	}
+}
+
 void UtiltyMgr::Rotate(float radians)
 {
+
 }

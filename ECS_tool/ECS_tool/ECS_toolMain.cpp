@@ -4,6 +4,8 @@
 
 #include "UtiltyMgr.h"
 
+#include "Character.h"
+
 using namespace ECS_tool;
 using namespace Windows::Foundation;
 using namespace Windows::System::Threading;
@@ -26,9 +28,15 @@ ECS_toolMain::ECS_toolMain()
 void ECS_toolMain::CreateRenderers(const std::shared_ptr<DX::DeviceResources>& deviceResources)
 {
 	// TODO: Replace this with your app's content initialization.
-	m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(deviceResources));
+	//m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(deviceResources));
 
-	UTIL.SetDeviceResources(deviceResources);
+	UTIL.LoadState();
+	UTIL.CreateDeviceDependentResources();
+	UTIL.CreateWindowSizeDependentResources();
+
+	PCHARACTER pcharacter = std::make_shared<Character>();
+
+	UTIL.GetVecObject().push_back((pcharacter));
 
 	OnWindowSizeChanged();
 }
@@ -40,7 +48,8 @@ void ECS_toolMain::Update()
 	m_timer.Tick([&]()
 	{
 		// TODO: Replace this with your app's content update functions.
-		m_sceneRenderer->Update(m_timer);
+		//m_sceneRenderer->Update(m_timer);
+		UTIL.Object_Update(m_timer);
 	});
 }
 
@@ -56,14 +65,16 @@ bool ECS_toolMain::Render()
 
 	// Render the scene objects.
 	// TODO: Replace this with your app's content rendering functions.
-	return m_sceneRenderer->Render();
+	//return m_sceneRenderer->Render();
+	return UTIL.Object_Render(m_timer);
 }
 
 // Updates application state when the window's size changes (e.g. device orientation change)
 void ECS_toolMain::OnWindowSizeChanged()
 {
 	// TODO: Replace this with the size-dependent initialization of your app's content.
-	m_sceneRenderer->CreateWindowSizeDependentResources();
+	//m_sceneRenderer->CreateWindowSizeDependentResources();
+	UTIL.CreateWindowSizeDependentResources();
 }
 
 // Notifies the app that it is being suspended.
@@ -74,8 +85,8 @@ void ECS_toolMain::OnSuspending()
 	// Process lifetime management may terminate suspended apps at any time, so it is
 	// good practice to save any state that will allow the app to restart where it left off.
 
-	m_sceneRenderer->SaveState();
-
+	//m_sceneRenderer->SaveState();
+	UTIL.SaveState();
 	// If your application uses video memory allocations that are easy to re-create,
 	// consider releasing that memory to make it available to other applications.
 }
@@ -91,6 +102,8 @@ void ECS_toolMain::OnDeviceRemoved()
 {
 	// TODO: Save any necessary application or renderer state and release the renderer
 	// and its resources which are no longer valid.
-	m_sceneRenderer->SaveState();
-	m_sceneRenderer = nullptr;
+	//m_sceneRenderer->SaveState();
+	//m_sceneRenderer = nullptr;
+
+	UTIL.SaveState();
 }

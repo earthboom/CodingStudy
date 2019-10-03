@@ -5,12 +5,6 @@
       <UniqueIdentifier>e61c72eb-eb5c-414d-8eaf-ce77308b01de</UniqueIdentifier>
       <Extensions>bmp;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
     </Filter>
-    <ClInclude Include="Content\Sample3DSceneRenderer.h">
-      <Filter>01.System</Filter>
-    </ClInclude>
-    <ClCompile Include="Content\Sample3DSceneRenderer.cpp">
-      <Filter>01.System</Filter>
-    </ClCompile>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
       <Filter>Assets</Filter>
     </Image>

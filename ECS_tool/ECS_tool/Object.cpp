@@ -8,6 +8,7 @@ Object::Object(void)
 
 Object::~Object(void)
 {
+	m_constantBuffer->Unmap(0, nullptr);
 }
 
 bool Object::Initialize(void)

@@ -13,7 +13,7 @@ protected:
 public:
 	static T& GetInstance(void)
 	{
-		std::call_once(singleton_flag, []() {m_pInstance = std::make_uniuqe<T>(); });
+		std::call_once(singleton_flag, []() {m_pInstance = std::make_unique<T>(); });
 		return *(m_pInstance.get());
 	}
 
