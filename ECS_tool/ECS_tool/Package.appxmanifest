@@ -7,11 +7,11 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="3629b6e0-f1f8-42a9-b1ae-423abceecd40"
+    Name="1a2c561a-6cb1-436c-9399-4c03430465b9"
     Publisher="CN=Kwak Kyeung Hoon"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="3629b6e0-f1f8-42a9-b1ae-423abceecd40" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="1a2c561a-6cb1-436c-9399-4c03430465b9" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>ECS_tool</DisplayName>

@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Assets">
-      <UniqueIdentifier>e61c72eb-eb5c-414d-8eaf-ce77308b01de</UniqueIdentifier>
+      <UniqueIdentifier>e06ff343-0bd7-48ca-b535-33774c7f2b9a</UniqueIdentifier>
       <Extensions>bmp;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
     </Filter>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
@@ -27,101 +27,95 @@
       <Filter>Assets</Filter>
     </Image>
     <Filter Include="00.Client">
-      <UniqueIdentifier>c34b16fe-f4a6-41e4-8268-5700c12259ec</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.System">
-      <UniqueIdentifier>5382e90d-f1cc-49e4-9f6b-ebd8e15debbd</UniqueIdentifier>
+      <UniqueIdentifier>50fa221d-929d-4e37-ae6b-4809a585f544</UniqueIdentifier>
     </Filter>
     <Filter Include="00.Client\00.MainApp">
-      <UniqueIdentifier>{18d835e7-98bb-466b-ab4b-81348faa5ab8}</UniqueIdentifier>
+      <UniqueIdentifier>{078647dc-b067-4d80-8aa6-0814b6135ad5}</UniqueIdentifier>
     </Filter>
     <Filter Include="00.Client\99.Default">
-      <UniqueIdentifier>{849c08f0-0233-4e2e-b369-2826a7a181ef}</UniqueIdentifier>
+      <UniqueIdentifier>{36158aec-dde4-4b0b-a5ea-473f5c1ac858}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.System\00.Graphic">
-      <UniqueIdentifier>{0f77ae12-e765-4644-b2a6-455ebc1c4dd9}</UniqueIdentifier>
+    <Filter Include="01.System">
+      <UniqueIdentifier>d060609c-1f74-4930-9418-a8aadc9548a7</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.System\01.Time">
-      <UniqueIdentifier>{4496c74a-445c-49fb-b510-c458592646ce}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.System\02.Camera">
-      <UniqueIdentifier>{19b6e5da-5849-4e8a-8406-870b92139e65}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utility">
-      <UniqueIdentifier>{16432166-e4ad-4c4c-9c3b-5450fb6f4415}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utility\00.Uiltiy_Manager">
-      <UniqueIdentifier>{c299b5aa-8d77-4a60-9af1-8cd5664c03a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.Utility\99.hlsl">
-      <UniqueIdentifier>{5fd0dd5d-16d7-4468-b91d-d98526ce2f55}</UniqueIdentifier>
+    <Filter Include="02.Utiltiy">
+      <UniqueIdentifier>{2e507555-bb2c-44b1-aaee-7cfc2f188223}</UniqueIdentifier>
     </Filter>
     <Filter Include="98.Helper">
-      <UniqueIdentifier>{33091ba1-f8f6-4f70-951b-08d3bb085562}</UniqueIdentifier>
+      <UniqueIdentifier>{1250cabb-030f-454e-a0b3-2c001202a757}</UniqueIdentifier>
     </Filter>
     <Filter Include="99.Head">
-      <UniqueIdentifier>{2011c59e-57eb-4a40-bea8-09b5ef696d57}</UniqueIdentifier>
+      <UniqueIdentifier>{544216be-e073-4f58-9a56-e1f91a08de30}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utility\01.Objects">
-      <UniqueIdentifier>{b7e08226-f659-4739-97d3-53ca59222d0d}</UniqueIdentifier>
+    <Filter Include="02.Utiltiy\00.Utiltiy_Manager">
+      <UniqueIdentifier>{d56e2c03-71e3-4d7a-9ac4-524b623725a1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utility\01.Objects\Component">
-      <UniqueIdentifier>{ef9df040-cde7-4e0b-abb6-b5ce02962653}</UniqueIdentifier>
+    <Filter Include="02.Utiltiy\01.Renderer">
+      <UniqueIdentifier>{bb45fade-b20b-4a75-a22e-c48abfd4235f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.Utility\02.Character">
-      <UniqueIdentifier>{11318e2c-fd6e-418c-8c76-d9c71a5575e1}</UniqueIdentifier>
+    <Filter Include="01.System\00.Graphic">
+      <UniqueIdentifier>{589aed5b-2b67-4c9a-9d06-ca43332721ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.System\01.Time">
+      <UniqueIdentifier>{39ee7946-879f-407e-9805-8eea165692f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\02.Objects">
+      <UniqueIdentifier>{5acfc1b9-ae69-480a-af43-5c9a6ea2fa82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\99.hlsl">
+      <UniqueIdentifier>{001cec7c-98c3-4255-b753-529718c62acd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.Utiltiy\02.Objects\00.Component">
+      <UniqueIdentifier>{f1c1bb81-9a31-4418-ba00-93ad4b5e5d40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Resource">
+      <UniqueIdentifier>{6f245e64-40db-41da-9b26-8c6de1836d3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Resource\00.Resource_Manager">
+      <UniqueIdentifier>{3f47acd2-0e22-4fb1-b417-386ba3e1e1ef}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>00.Client\99.Default</Filter>
-    </ClCompile>
     <ClCompile Include="App.cpp">
+      <Filter>00.Client\00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS_toolMain.cpp">
+      <Filter>00.Client\00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
       <Filter>00.Client\99.Default</Filter>
     </ClCompile>
     <ClCompile Include="Common\DeviceResources.cpp">
       <Filter>01.System\00.Graphic</Filter>
     </ClCompile>
-    <ClCompile Include="ECS_toolMain.cpp">
-      <Filter>00.Client\00.MainApp</Filter>
+    <ClCompile Include="Object.cpp">
+      <Filter>02.Utiltiy\02.Objects</Filter>
     </ClCompile>
     <ClCompile Include="Component.cpp">
-      <Filter>02.Utility\01.Objects\Component</Filter>
+      <Filter>02.Utiltiy\02.Objects\00.Component</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>02.Utility\01.Objects</Filter>
+    <ClCompile Include="Content\Renderer.cpp">
+      <Filter>02.Utiltiy\01.Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="UtiltyMgr.cpp">
-      <Filter>02.Utility\00.Uiltiy_Manager</Filter>
+    <ClCompile Include="UtilityMgr.cpp">
+      <Filter>02.Utiltiy\00.Utiltiy_Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Character.cpp">
-      <Filter>02.Utility\02.Character</Filter>
+    <ClCompile Include="Cube.cpp">
+      <Filter>02.Utiltiy\02.Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceMgr.cpp">
+      <Filter>03.Resource\00.Resource_Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>00.Client\99.Default</Filter>
-    </ClInclude>
     <ClInclude Include="App.h">
-      <Filter>00.Client\99.Default</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\StepTimer.h">
-      <Filter>01.System\01.Time</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\DeviceResources.h">
-      <Filter>01.System\00.Graphic</Filter>
+      <Filter>00.Client\00.MainApp</Filter>
     </ClInclude>
     <ClInclude Include="ECS_toolMain.h">
       <Filter>00.Client\00.MainApp</Filter>
     </ClInclude>
-    <ClInclude Include="Common\d3dx12.h">
-      <Filter>98.Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\DirectXHelper.h">
-      <Filter>98.Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="Content\ShaderStructures.h">
-      <Filter>99.Head</Filter>
+    <ClInclude Include="pch.h">
+      <Filter>00.Client\99.Default</Filter>
     </ClInclude>
     <ClInclude Include="Const.h">
       <Filter>99.Head</Filter>
@@ -129,17 +123,41 @@
     <ClInclude Include="Singleton.h">
       <Filter>99.Head</Filter>
     </ClInclude>
-    <ClInclude Include="Component.h">
-      <Filter>02.Utility\01.Objects\Component</Filter>
+    <ClInclude Include="Content\ShaderStructures.h">
+      <Filter>99.Head</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\d3dx12.h">
+      <Filter>98.Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DirectXHelper.h">
+      <Filter>98.Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DeviceResources.h">
+      <Filter>01.System\00.Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\StepTimer.h">
+      <Filter>01.System\01.Time</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
-      <Filter>02.Utility\01.Objects</Filter>
+      <Filter>02.Utiltiy\02.Objects</Filter>
     </ClInclude>
-    <ClInclude Include="UtiltyMgr.h">
-      <Filter>02.Utility\00.Uiltiy_Manager</Filter>
+    <ClInclude Include="Component.h">
+      <Filter>02.Utiltiy\02.Objects\00.Component</Filter>
     </ClInclude>
-    <ClInclude Include="Character.h">
-      <Filter>02.Utility\02.Character</Filter>
+    <ClInclude Include="Content\Renderer.h">
+      <Filter>02.Utiltiy\01.Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="UtilityMgr.h">
+      <Filter>02.Utiltiy\00.Utiltiy_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>02.Utiltiy\02.Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Struct.h">
+      <Filter>99.Head</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceMgr.h">
+      <Filter>03.Resource\00.Resource_Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -149,10 +167,10 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Content\SampleVertexShader.hlsl">
-      <Filter>02.Utility\99.hlsl</Filter>
+      <Filter>02.Utiltiy\99.hlsl</Filter>
     </FxCompile>
     <FxCompile Include="Content\SamplePixelShader.hlsl">
-      <Filter>02.Utility\99.hlsl</Filter>
+      <Filter>02.Utiltiy\99.hlsl</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

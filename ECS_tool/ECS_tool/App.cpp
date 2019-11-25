@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "App.h"
 
-#include "UtiltyMgr.h"
-
 #include <ppltasks.h>
 
 using namespace ECS_tool;
@@ -223,7 +221,6 @@ std::shared_ptr<DX::DeviceResources> App::GetDeviceResources()
 	if (m_deviceResources == nullptr)
 	{
 		m_deviceResources = std::make_shared<DX::DeviceResources>();
-		UTIL.SetDeviceResources(m_deviceResources);
 		m_deviceResources->SetWindow(CoreWindow::GetForCurrentThread());
 		m_main->CreateRenderers(m_deviceResources);
 	}

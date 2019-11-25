@@ -21,7 +21,7 @@ bool Object::Update(DX::StepTimer const& timer)
 	return TRUE;
 }
 
-bool Object::Render(DX::StepTimer const& timer)
+bool Object::Render(void)
 {
 	return TRUE;
 }

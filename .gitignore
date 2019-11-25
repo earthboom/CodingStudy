@@ -1,5 +1,9 @@
 #ignore
 
+#----ECS_tool----
+ECS_tool/Debug/
+ECS_tool/ECS_tool/Debug/
+
 #----KKH-----
 KKH/Direct3D_Project/Debug/
 KKH/Direct3D_Project/Release/

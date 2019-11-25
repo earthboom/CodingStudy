@@ -13,5 +13,5 @@ protected:
 protected:
 	virtual bool Initialize(void) PURE;
 	virtual bool Update(DX::StepTimer const& timer) PURE;
-	virtual bool Render(DX::StepTimer const& timer) PURE;
+	virtual bool Render(void) PURE;
 };
