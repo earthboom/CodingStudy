@@ -14,6 +14,7 @@ namespace ECS_tool
 	public:
 		Renderer(const std::shared_ptr<DX::DeviceResources>& deviceResources);
 		~Renderer();
+		void LoadMesh(void);
 		void CreateObject(void);
 		void CreateDeviceDependentResources();
 		void CreateWindowSizeDependentResources();

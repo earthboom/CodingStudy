@@ -37,7 +37,7 @@ void ECS_toolMain::Update()
 	m_timer.Tick([&]()
 	{
 		// TODO: Replace this with your app's content update functions.
-			g_sceneRenderer->Update(m_timer);
+		g_sceneRenderer->Update(m_timer);
 	});
 }
 

@@ -159,6 +159,9 @@
     <ClInclude Include="ResourceMgr.h">
       <Filter>03.Resource\00.Resource_Manager</Filter>
     </ClInclude>
+    <ClInclude Include="Function.h">
+      <Filter>99.Head</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

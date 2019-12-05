@@ -9,11 +9,13 @@
 #include <DirectXColors.h>
 #include <DirectXMath.h>
 #include <memory>
-#include <vector>
 #include <agile.h>
 #include <concrt.h>
 #include <iostream>
+
 #include <map>
+#include <unordered_map>
+#include <vector>
 
 #include <fbxsdk.h>
 
@@ -25,9 +27,12 @@
 
 #include "Common/DirectXHelper.h"
 
+#include "Function.h"
 #include "Singleton.h"
 #include "Struct.h"
 #include "Const.h"
+
+#include "ResourceMgr.h"
 
 #include "ECS_toolMain.h"
 #include "Object.h"

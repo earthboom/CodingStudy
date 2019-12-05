@@ -263,6 +263,7 @@
     <ClInclude Include="Common\StepTimer.h" />
     <ClInclude Include="Content\Renderer.h" />
     <ClInclude Include="Content\ShaderStructures.h" />
+    <ClInclude Include="Function.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ResourceMgr.h" />
